@@ -1,0 +1,15 @@
+KanjiVG Attribution Notice
+
+The hiragana stroke paths in this project are derived from KanjiVG.
+
+KanjiVG:
+https://kanjivg.tagaini.net/
+
+Copyright:
+Ulrich Apel and KanjiVG contributors
+
+License:
+Creative Commons Attribution-ShareAlike 3.0
+https://creativecommons.org/licenses/by-sa/3.0/
+
+The paths are embedded and visually adjusted for use in this child-friendly tracing application.

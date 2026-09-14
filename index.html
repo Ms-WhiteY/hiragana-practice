@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fff7ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ひらがなれんしゅう">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>ひらがな なぞりれんしゅう</title>
+<style>
+:root{
+  --bg:#fff7ec;--card:#fff;--ink:#35333d;--sub:#77727b;
+  --yellow:#ffd766;--blue:#4f9dff;--green:#55c98a;--orange:#ff8c68;
+  --guide:#ddd8d2;--active:#ffd2c3;--done:#c9eed8;
+  --shadow:0 12px 30px rgba(80,60,40,.12)
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);overscroll-behavior:none}
+body{padding:max(10px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));touch-action:manipulation}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+.app{max-width:1050px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
+h1{font-size:clamp(19px,3vw,30px);margin:0}
+.stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
+.letters{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.letter{border:0;background:#fff;border-radius:19px;min-height:66px;font-size:clamp(30px,6vw,48px);font-weight:800;box-shadow:var(--shadow)}
+.letter.selected{outline:4px solid var(--yellow)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:12px}
+.card{background:#fff;border-radius:25px;box-shadow:var(--shadow)}
+.boardCard{padding:10px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 8px}
+.prompt{font-weight:900;font-size:clamp(17px,2.3vw,24px)}
+.counter{font-weight:800;font-size:14px;background:#f5f1ec;border-radius:999px;padding:7px 10px;white-space:nowrap}
+.board{
+  position:relative;aspect-ratio:1/1;width:100%;max-height:74vh;overflow:hidden;border-radius:21px;
+  background:
+    linear-gradient(#f2eee8 1px,transparent 1px) 0 50%/100% 50% no-repeat,
+    linear-gradient(90deg,#f2eee8 1px,transparent 1px) 50% 0/50% 100% no-repeat,
+    #fffdfa;
+  touch-action:none;user-select:none;-webkit-user-select:none
+}
+svg{display:block;width:100%;height:100%;touch-action:none}
+.guideStroke{fill:none;stroke:var(--guide);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;opacity:.82}
+.guideStroke.active{stroke:var(--active);opacity:1}
+.guideStroke.done{stroke:var(--done);opacity:1}
+.trace{fill:none;stroke:var(--blue);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.demoTrace{fill:none;stroke:var(--orange);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.startDot{fill:var(--green);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 .8px .9px rgba(0,0,0,.17))}
+.startNum{fill:#fff;font-size:7px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.endDot{fill:#fff;stroke:var(--orange);stroke-width:1.3}
+.endMark{fill:var(--orange);font-size:6px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.side{display:flex;flex-direction:column;gap:10px}
+.panel{padding:14px}
+.sample{height:126px;display:flex;align-items:center;justify-content:center}
+.sample svg{width:122px;height:122px}
+.sampleStroke{fill:none;stroke:#35333d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mode button,.actions button{border:0;border-radius:16px;padding:11px 7px;font-weight:900;background:#f2efeb}
+.mode button.active{background:#dff1ff;outline:3px solid #a6d4ff}
+.actions{display:grid;gap:8px}
+.actions button.primary{background:#ffe188}
+.actions button.green{background:#e5f6ea}
+.hint{font-size:14px;line-height:1.55;color:var(--sub);margin:10px 0 0}
+.toast{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(53,51,61,.94);color:#fff;border-radius:999px;padding:11px 17px;font-weight:900;opacity:0;transition:.18s;pointer-events:none;white-space:nowrap;z-index:5;max-width:92%;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;bottom:25px}
+.celebrate{position:absolute;inset:0;display:none;z-index:8;align-items:center;justify-content:center;background:rgba(255,253,250,.9);text-align:center}
+.celebrate.show{display:flex}
+.celebrate .star{display:block;font-size:clamp(70px,15vw,130px);animation:bounce .55s ease-in-out infinite alternate}
+.celebrate strong{font-size:clamp(28px,6vw,55px)}
+@keyframes bounce{to{transform:translateY(-12px) rotate(5deg)}}
+.footer{text-align:center;color:#8b858d;font-size:11px;margin:12px 0 2px;line-height:1.5}
+.footer a{color:inherit}
+.install{display:none;margin:0 0 10px;border:0;border-radius:15px;background:#e8f4ff;padding:10px 14px;font-weight:800;width:100%}
+@media(max-width:760px){
+  .layout{grid-template-columns:1fr}
+  .side{display:grid;grid-template-columns:1fr 1fr}
+  .sample{height:86px}.sample svg{height:82px;width:82px}
+}
+@media(max-width:480px){
+  body{padding-left:7px;padding-right:7px}
+  .letters{gap:5px}.letter{min-height:55px;border-radius:15px}
+  .side{grid-template-columns:1fr}.panel.samplePanel{display:none}
+  .boardCard{padding:7px}.board{border-radius:17px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>✏️ ひらがな なぞりれんしゅう</h1>
+  <div class="stars">⭐ <span id="stars">0</span></div>
+</header>
+
+<button id="installBtn" class="install">📱 この端末にアプリとして入れる</button>
+<div class="letters" id="letters"></div>
+
+<div class="layout">
+<section class="card boardCard">
+  <div class="topline">
+    <div class="prompt" id="prompt">みどりの まるから はじめよう！</div>
+    <div class="counter" id="counter"></div>
+  </div>
+
+  <div class="board" id="board">
+    <svg id="svg" viewBox="0 0 109 109" aria-label="ひらがな練習">
+      <g id="guideLayer"></g>
+      <g id="traceLayer"></g>
+      <g id="markerLayer"></g>
+    </svg>
+    <div class="toast" id="toast"></div>
+    <div class="celebrate" id="celebrate">
+      <div><span class="star">🌟</span><strong id="celebrateText">できた！</strong></div>
+    </div>
+  </div>
+</section>
+
+<aside class="side">
+  <div class="card panel samplePanel">
+    <div class="sample"><svg id="sampleSvg" viewBox="0 0 109 109" aria-hidden="true"></svg></div>
+    <div class="mode">
+      <button id="traceMode" class="active">なぞる</button>
+      <button id="freeMode">じぶんで</button>
+    </div>
+    <p class="hint">「なぞる」は書き順をチェック。<br>「じぶんで」は自由に書けます。</p>
+  </div>
+
+  <div class="card panel actions">
+    <button class="primary" id="demoBtn">▶ おてほん</button>
+    <button class="green" id="resetBtn">↻ もういちど</button>
+    <button id="clearBtn">🧽 けす</button>
+    <p class="hint">指でもタッチペンでもOK。<br>少しくらいはみ出しても大丈夫！</p>
+  </div>
+</aside>
+</div>
+
+<div class="footer">
+  書き順データ: <a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a>
+  （CC BY-SA 3.0）を使用・表示調整しています。<br>
+  個人情報の送信・広告・アクセス解析はありません。
+</div>
+</div>
+
+<script>
+/*
+  Stroke data derived from KanjiVG (Copyright Ulrich Apel and contributors)
+  https://kanjivg.tagaini.net/
+  Licensed under Creative Commons Attribution-ShareAlike 3.0:
+  https://creativecommons.org/licenses/by-sa/3.0/
+*/
+const DATA = {
+  "あ":[
+    "M31.01,33c0.88,0.88,2.75,1.82,5.25,1.75c8.62-0.25,20-2.12,29.5-4.25c1.51-0.34,4.62-0.88,6.62-0.5",
+    "M49.76,17.62c0.88,1,1.82,3.26,1.38,5.25c-3.75,16.75-6.25,38.13-5.13,53.63c0.41,5.7,1.88,10.88,3.38,13.62",
+    "M65.63,44.12c0.75,1.12,1.16,4.39,0.5,6.12c-4.62,12.26-11.24,23.76-25.37,35.76c-6.86,5.83-15.88,3.75-16.25-8.38c-0.34-10.87,13.38-23.12,32.38-26.74c12.42-2.37,27,1.38,30.5,12.75c4.05,13.18-3.76,26.37-20.88,30.49"
+  ],
+  "い":[
+    "M21.5,29.66c2.01,2.17,2.61,4.68,2.17,7.43c-3.09,19.16-1.03,32.01,7.93,41.45c6.12,6.45,6.26,3.14,7.04-5.21",
+    "M72.96,36.51c9.44,8.05,17.79,18.82,18.41,33.83"
+  ],
+  "う":[
+    "M42,15.5c5.62,2.12,9.62,3,12.88,3c8.27,0,8,1.12-0.38,5.5",
+    "M33,42.38c2.12,1.12,4.12,2.88,8.5,1.38c4.38-1.5,12.75-7.12,18.5-7c5.75,0.12,10.25,5,10.25,18c0,15.49-8.25,30.24-24.37,41.24"
+  ],
+  "え":[
+    "M40.52,13.25c5.62,2.12,10,3,14.12,3c8.27,0,8,1.12-0.38,5.5",
+    "M32.52,45.12c1.88,1.25,4.5,1.75,7.38,0.62c3.29-1.29,17-7.88,21.25-9.88c4.25-2,8.32,0.04,4.38,4.62c-12.26,14.27-27.26,31.52-39.51,44.4c-3.26,3.42-0.58,3.54,1.5,1.37c13.5-14.12,18.12-20.12,23.62-20.12c7.13,0,3.5,16.75,6.75,22.38c3.25,5.63,19.12,3.75,26.12,2.12"
+  ],
+  "お":[
+    "M22.88,35.12c1.38,1,3.62,2.38,6,2.12c2.38-0.26,19.62-5.12,21.12-5.74c1.5-0.62,4-1.25,5.88-2",
+    "M41.5,16.12c2.25,1,3.59,4.39,3.12,7.38c-2.5,16.12-3.37,45.53-2.25,58.38c0.75,8.62-0.64,10.45-7.12,7.12c-5.13-2.62-13.75-8-13.75-12.38c0-7.5,24.38-23.62,44.75-23.62c17.25,0,25,8.25,25,17.25c0,8.25-9.38,18.88-26.75,21",
+    "M73,22.12c5.38,2.62,8.88,5.88,10.62,8.25c2.27,3.08,0.38,4.5-1.12,5"
+  ]
+};
+
+const order=['あ','い','う','え','お'];
+const NS='http://www.w3.org/2000/svg';
+let current='あ',mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
+let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
+let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
+
+const $=id=>document.getElementById(id);
+const letters=$('letters'),svg=$('svg'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
+      markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
+      celebrate=$('celebrate');
+$('stars').textContent=stars;
+
+for(const ch of order){
+  const b=document.createElement('button');
+  b.className='letter'; b.textContent=ch;
+  b.setAttribute('aria-label',`${ch}をれんしゅう`);
+  b.onclick=()=>select(ch);
+  letters.appendChild(b);
+}
+
+function mkPath(d,cls){
+  const p=document.createElementNS(NS,'path');
+  p.setAttribute('d',d);
+  if(cls)p.setAttribute('class',cls);
+  return p;
+}
+function circle(x,y,r,cls){
+  const c=document.createElementNS(NS,'circle');
+  c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r);c.setAttribute('class',cls);
+  return c;
+}
+function label(x,y,s,cls){
+  const t=document.createElementNS(NS,'text');
+  t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('class',cls);t.textContent=s;
+  return t;
+}
+function setSelected(){
+  [...letters.children].forEach((b,i)=>b.classList.toggle('selected',order[i]===current));
+}
+function render(resetTrace=true){
+  if(resetTrace)traceLayer.innerHTML='';
+  guideLayer.innerHTML=''; markerLayer.innerHTML=''; sampleSvg.innerHTML='';
+  celebrate.classList.remove('show'); setSelected();
+
+  const ss=DATA[current];
+  ss.forEach((d,i)=>{
+    let cls='guideStroke';
+    if(mode==='trace'){
+      if(i<strokeIndex)cls+=' done';
+      else if(i===strokeIndex)cls+=' active';
+    }
+    guideLayer.appendChild(mkPath(d,cls));
+    sampleSvg.appendChild(mkPath(d,'sampleStroke'));
+  });
+
+  if(mode==='trace'){
+    $('counter').textContent=`${Math.min(strokeIndex+1,ss.length)} / ${ss.length} がめ`;
+    if(strokeIndex<ss.length){
+      addMarkers(strokeIndex);
+      $('prompt').textContent='みどりの まるから はじめよう！';
+    }else{
+      $('prompt').textContent='できた！ 🌟';
+    }
+  }else{
+    $('counter').textContent='じゆう';
+    $('prompt').textContent='おてほんを見ながら かいてみよう！';
+  }
+}
+
+function samplesFor(d,n=180){
+  const p=mkPath(d);
+  p.style.visibility='hidden';
+  svg.appendChild(p);
+  const L=p.getTotalLength(),a=[];
+  for(let i=0;i<=n;i++)a.push(p.getPointAtLength(L*i/n));
+  p.remove();
+  return a;
+}
+function addMarkers(i){
+  markerLayer.innerHTML='';
+  const s=samplesFor(DATA[current][i]);
+  const a=s[0],z=s[s.length-1];
+  markerLayer.appendChild(circle(a.x,a.y,5.3,'startDot'));
+  markerLayer.appendChild(label(a.x,a.y,String(i+1),'startNum'));
+  markerLayer.appendChild(circle(z.x,z.y,3.7,'endDot'));
+  markerLayer.appendChild(label(z.x,z.y,'✓','endMark'));
+}
+function svgPoint(ev){
+  const p=svg.createSVGPoint();
+  p.x=ev.clientX;p.y=ev.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function nearest(pt,samples){
+  let best=0,bd=Infinity;
+  for(let i=0;i<samples.length;i++){
+    const d=dist(pt,samples[i]);
+    if(d<bd){bd=d;best=i}
+  }
+  return {i:best,d:bd};
+}
+function pointsD(a){
+  if(!a.length)return'';
+  let d=`M${a[0].x.toFixed(2)} ${a[0].y.toFixed(2)}`;
+  for(let i=1;i<a.length;i++)d+=` L${a[i].x.toFixed(2)} ${a[i].y.toFixed(2)}`;
+  return d;
+}
+function say(s){
+  toast.textContent=s;toast.classList.add('show');
+  clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('show'),1250);
+}
+function beep(ok=true){
+  try{
+    const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();
+    o.connect(g);g.connect(a.destination);o.frequency.value=ok?660:220;g.gain.value=.045;o.start();o.stop(a.currentTime+.1);
+    o.onended=()=>a.close();
+  }catch(e){}
+}
+
+function start(ev){
+  if(demoing)return;
+  ev.preventDefault();
+  if(mode==='trace'&&strokeIndex>=DATA[current].length){
+    say('「もういちど」で もう1かいできるよ！');return;
+  }
+  const p=svgPoint(ev);
+  if(mode==='trace'){
+    const s=samplesFor(DATA[current][strokeIndex]),a=s[0];
+    if(dist(p,a)>12){
+      say('みどりの まるから はじめよう！');beep(false);return;
+    }
+  }
+  down=true;pointerId=ev.pointerId;
+  try{svg.setPointerCapture(pointerId)}catch(e){}
+  points=[p];maxProgress=0;offCount=0;backtrackCount=0;lastNearest=0;
+  const tr=mkPath(`M${p.x} ${p.y}`,'trace');tr.id='live';traceLayer.appendChild(tr);
+}
+
+function move(ev){
+  if(!down||ev.pointerId!==pointerId)return;
+  ev.preventDefault();
+  const p=svgPoint(ev);
+  if(dist(p,points[points.length-1])<.6)return;
+  points.push(p);
+  const live=$('live');if(live)live.setAttribute('d',pointsD(points));
+
+  if(mode==='trace'){
+    const s=samplesFor(DATA[current][strokeIndex]);
+    const n=nearest(p,s);
+    const prog=n.i/(s.length-1);
+    maxProgress=Math.max(maxProgress,prog);
+    if(n.d>12.5)offCount++;
+    if(n.i+18<lastNearest)backtrackCount++;
+    if(n.i>lastNearest)lastNearest=n.i;
+  }
+}
+
+function end(ev){
+  if(!down||ev.pointerId!==pointerId)return;
+  ev.preventDefault();down=false;pointerId=null;
+  if(mode==='free')return;
+
+  const s=samplesFor(DATA[current][strokeIndex]),z=s[s.length-1],last=points[points.length-1];
+  const offRatio=offCount/Math.max(1,points.length);
+  const backRatio=backtrackCount/Math.max(1,points.length);
+
+  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && backRatio<.18){
+    const live=$('live');if(live)live.removeAttribute('id');
+    strokeIndex++;beep(true);
+
+    if(strokeIndex>=DATA[current].length){
+      stars++;
+      localStorage.setItem('hiragana-stars-v3',String(stars));
+      $('stars').textContent=stars;
+      $('prompt').textContent='できた！ 🌟';
+      $('counter').textContent=`${DATA[current].length} / ${DATA[current].length} がめ`;
+      render(false);
+      $('celebrateText').textContent=`「${current}」できた！`;
+      celebrate.classList.add('show');
+      setTimeout(()=>celebrate.classList.remove('show'),1600);
+    }else{
+      render(false);say('じょうず！ つぎの せん ✨');
+    }
+  }else{
+    const live=$('live');if(live)live.remove();
+    if(maxProgress<.42)say('さいごまで なぞってみよう！');
+    else if(backRatio>=.18)say('やじるしの むきに かいてみよう！');
+    else say('もういっかい やってみよう！');
+    beep(false);
+  }
+}
+
+function select(ch){current=ch;strokeIndex=0;render()}
+function setMode(m){
+  mode=m;strokeIndex=0;
+  $('traceMode').classList.toggle('active',m==='trace');
+  $('freeMode').classList.toggle('active',m==='free');
+  render();
+}
+
+async function demo(){
+  if(demoing)return;
+  demoing=true;
+  const oldMode=mode;
+  mode='trace';strokeIndex=0;render();traceLayer.innerHTML='';
+
+  for(let k=0;k<DATA[current].length;k++){
+    strokeIndex=k;render(false);
+    const s=samplesFor(DATA[current][k],120);
+    const p=mkPath('','demoTrace');traceLayer.appendChild(p);
+    const a=[];
+    for(const q of s){
+      a.push(q);p.setAttribute('d',pointsD(a));
+      await new Promise(r=>setTimeout(r,7));
+    }
+    await new Promise(r=>setTimeout(r,180));
+  }
+
+  await new Promise(r=>setTimeout(r,400));
+  demoing=false;mode=oldMode;strokeIndex=0;render();
+}
+
+svg.addEventListener('pointerdown',start,{passive:false});
+svg.addEventListener('pointermove',move,{passive:false});
+svg.addEventListener('pointerup',end,{passive:false});
+svg.addEventListener('pointercancel',end,{passive:false});
+$('traceMode').onclick=()=>setMode('trace');
+$('freeMode').onclick=()=>setMode('free');
+$('resetBtn').onclick=()=>{strokeIndex=0;render()};
+$('clearBtn').onclick=()=>{traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;render()}};
+$('demoBtn').onclick=demo;
+celebrate.onclick=()=>celebrate.classList.remove('show');
+
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block';
+});
+$('installBtn').onclick=async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').style.display='none';
+};
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+render();
+</script>
+</body>
+</html>
