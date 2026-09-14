@@ -262,6 +262,14 @@ function samplesFor(d,n=180){
   p.remove();
   return a;
 }
+function tmpPointOnPath(d,length){
+  const p=mkPath(d);
+  p.style.visibility='hidden';
+  svg.appendChild(p);
+  const q=p.getPointAtLength(length);
+  p.remove();
+  return q;
+}
 function addMarkers(i){
   markerLayer.innerHTML='';
   const d=DATA[current][i];
@@ -275,18 +283,24 @@ function addMarkers(i){
   const total=tmp.getTotalLength();
   tmp.remove();
 
-  const fractions=total>55?[0.30,0.66]:[0.48];
-  for(const f of fractions){
-    const idx=Math.max(5,Math.min(s.length-6,Math.round((s.length-1)*f)));
-    const before=s[idx-5], center=s[idx], after=s[idx+5];
+  // 長い・曲がりの多い画ほど矢印を増やす。
+  // だいたい24 SVG単位ごと、最大7個まで表示する。
+  const arrowCount=Math.max(1,Math.min(7,Math.round(total/24)));
+  for(let n=1;n<=arrowCount;n++){
+    const L=total*(n/(arrowCount+1));
+    const center=tmpPointOnPath(d,L);
+    const before=tmpPointOnPath(d,Math.max(0,L-1.7));
+    const after=tmpPointOnPath(d,Math.min(total,L+1.7));
     let ux=after.x-before.x, uy=after.y-before.y;
     const len=Math.hypot(ux,uy)||1;
     ux/=len; uy/=len;
     const vx=-uy, vy=ux;
-    const tip={x:center.x+ux*5.2,y:center.y+uy*5.2};
-    const base={x:center.x-ux*2.7,y:center.y-uy*2.7};
-    const left={x:base.x+vx*3.4,y:base.y+vy*3.4};
-    const right={x:base.x-vx*3.4,y:base.y-vy*3.4};
+
+    // 矢印を小さくして、曲線上に細かく置く。
+    const tip={x:center.x+ux*3.7,y:center.y+uy*3.7};
+    const base={x:center.x-ux*2.0,y:center.y-uy*2.0};
+    const left={x:base.x+vx*2.5,y:base.y+vy*2.5};
+    const right={x:base.x-vx*2.5,y:base.y-vy*2.5};
     markerLayer.appendChild(polygon([tip,left,right],'dirArrow'));
   }
 
@@ -301,9 +315,14 @@ function svgPoint(ev){
   return p.matrixTransform(svg.getScreenCTM().inverse());
 }
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-function nearest(pt,samples){
-  let best=0,bd=Infinity;
-  for(let i=0;i<samples.length;i++){
+function nearestProgressAware(pt,samples,anchor){
+  // 「あ」3画目や「お」2画目のように線が交差・接近する画では、
+  // 全経路から最短点を探すと昔の位置へ飛び「逆向き」と誤判定しやすい。
+  // 現在位置の少し後ろ〜十分先だけを探索して、進行方向を安定させる。
+  const start=Math.max(0,anchor-14);
+  const end=Math.min(samples.length-1,anchor+55);
+  let best=anchor,bd=Infinity;
+  for(let i=start;i<=end;i++){
     const d=dist(pt,samples[i]);
     if(d<bd){bd=d;best=i}
   }
@@ -315,7 +334,7 @@ function pointsD(a){
   for(let i=1;i<a.length;i++)d+=` L${a[i].x.toFixed(2)} ${a[i].y.toFixed(2)}`;
   return d;
 }
-function speak(text){
+function speak(text,force=false){
   if(!('speechSynthesis' in window))return;
   try{
     window.speechSynthesis.cancel();
@@ -376,11 +395,15 @@ function move(ev){
 
   if(mode==='trace'){
     const s=samplesFor(DATA[current][strokeIndex]);
-    const n=nearest(p,s);
+    const n=nearestProgressAware(p,s,lastNearest);
     const prog=n.i/(s.length-1);
     maxProgress=Math.max(maxProgress,prog);
     if(n.d>12.5)offCount++;
-    if(n.i+18<lastNearest)backtrackCount++;
+
+    // 一瞬の交差・手ぶれでは「逆向き」にしない。
+    // 現在までの最遠位置から大きく戻る動きが複数回続いた場合だけ加点する。
+    const backward=lastNearest-n.i;
+    if(backward>12 && maxProgress>.18)backtrackCount++;
     if(n.i>lastNearest)lastNearest=n.i;
   }
 }
@@ -393,8 +416,9 @@ function end(ev){
   const s=samplesFor(DATA[current][strokeIndex]),z=s[s.length-1],last=points[points.length-1];
   const offRatio=offCount/Math.max(1,points.length);
   const backRatio=backtrackCount/Math.max(1,points.length);
+  const clearlyReverse=backtrackCount>=8 && backRatio>.22;
 
-  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && backRatio<.18){
+  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && !clearlyReverse){
     const live=$('live');if(live)live.removeAttribute('id');
     strokeIndex++;beep(true);
 
@@ -415,7 +439,7 @@ function end(ev){
   }else{
     const live=$('live');if(live)live.remove();
     if(maxProgress<.42)say('さいごまで なぞってみよう！','さいごまで、なぞってみよう。');
-    else if(backRatio>=.18)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。オレンジのやじるしのほうへ、なぞってね。');
+    else if(clearlyReverse)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。オレンジのやじるしのほうへ、なぞってね。');
     else say('もういっかい やってみよう！','もういっかい、やってみよう。');
     beep(false);
   }
@@ -462,7 +486,7 @@ $('freeMode').onclick=()=>setMode('free');
 $('resetBtn').onclick=()=>{strokeIndex=0;render()};
 $('clearBtn').onclick=()=>{traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;render()}};
 $('demoBtn').onclick=demo;
-$('listenBtn').onclick=()=>speak(currentInstruction());
+$('listenBtn').onclick=()=>speak(currentInstruction(),true);
 if(!('speechSynthesis' in window)){
   $('listenBtn').textContent='🔇 こえ非対応';
   $('listenBtn').disabled=true;
