@@ -52,6 +52,8 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .startNum{fill:#fff;font-size:7px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .endDot{fill:#fff;stroke:var(--orange);stroke-width:1.3}
 .endMark{fill:var(--orange);font-size:6px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.dirArrow{fill:var(--orange);stroke:#fff;stroke-width:.9;paint-order:stroke;filter:drop-shadow(0 .8px .9px rgba(0,0,0,.18));animation:arrowPulse .7s ease-in-out infinite alternate;pointer-events:none}
+@keyframes arrowPulse{to{opacity:.48}}
 .side{display:flex;flex-direction:column;gap:10px}
 .panel{padding:14px}
 .sample{height:126px;display:flex;align-items:center;justify-content:center}
@@ -100,7 +102,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <div class="layout">
 <section class="card boardCard">
   <div class="topline">
-    <div class="prompt" id="prompt">みどりの まるから はじめよう！</div>
+    <div class="prompt" id="prompt">🟢から 🟠▶のほうへ！</div>
     <div class="counter" id="counter"></div>
   </div>
 
@@ -129,6 +131,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 
   <div class="card panel actions">
     <button class="primary" id="demoBtn">▶ おてほん</button>
+    <button id="listenBtn">🔊 きく</button>
     <button class="green" id="resetBtn">↻ もういちど</button>
     <button id="clearBtn">🧽 けす</button>
     <p class="hint">指でもタッチペンでもOK。<br>少しくらいはみ出しても大丈夫！</p>
@@ -206,6 +209,12 @@ function circle(x,y,r,cls){
   c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r);c.setAttribute('class',cls);
   return c;
 }
+function polygon(points,cls){
+  const p=document.createElementNS(NS,'polygon');
+  p.setAttribute('points',points.map(q=>`${q.x.toFixed(2)},${q.y.toFixed(2)}`).join(' '));
+  p.setAttribute('class',cls);
+  return p;
+}
 function label(x,y,s,cls){
   const t=document.createElementNS(NS,'text');
   t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('class',cls);t.textContent=s;
@@ -234,7 +243,7 @@ function render(resetTrace=true){
     $('counter').textContent=`${Math.min(strokeIndex+1,ss.length)} / ${ss.length} がめ`;
     if(strokeIndex<ss.length){
       addMarkers(strokeIndex);
-      $('prompt').textContent='みどりの まるから はじめよう！';
+      $('prompt').textContent='🟢から 🟠▶のほうへ！';
     }else{
       $('prompt').textContent='できた！ 🌟';
     }
@@ -255,8 +264,32 @@ function samplesFor(d,n=180){
 }
 function addMarkers(i){
   markerLayer.innerHTML='';
-  const s=samplesFor(DATA[current][i]);
+  const d=DATA[current][i];
+  const s=samplesFor(d);
   const a=s[0],z=s[s.length-1];
+
+  // 書く向きを文字が読めなくても分かるよう、線上にオレンジ色の矢印を表示。
+  const tmp=mkPath(d);
+  tmp.style.visibility='hidden';
+  svg.appendChild(tmp);
+  const total=tmp.getTotalLength();
+  tmp.remove();
+
+  const fractions=total>55?[0.30,0.66]:[0.48];
+  for(const f of fractions){
+    const idx=Math.max(5,Math.min(s.length-6,Math.round((s.length-1)*f)));
+    const before=s[idx-5], center=s[idx], after=s[idx+5];
+    let ux=after.x-before.x, uy=after.y-before.y;
+    const len=Math.hypot(ux,uy)||1;
+    ux/=len; uy/=len;
+    const vx=-uy, vy=ux;
+    const tip={x:center.x+ux*5.2,y:center.y+uy*5.2};
+    const base={x:center.x-ux*2.7,y:center.y-uy*2.7};
+    const left={x:base.x+vx*3.4,y:base.y+vy*3.4};
+    const right={x:base.x-vx*3.4,y:base.y-vy*3.4};
+    markerLayer.appendChild(polygon([tip,left,right],'dirArrow'));
+  }
+
   markerLayer.appendChild(circle(a.x,a.y,5.3,'startDot'));
   markerLayer.appendChild(label(a.x,a.y,String(i+1),'startNum'));
   markerLayer.appendChild(circle(z.x,z.y,3.7,'endDot'));
@@ -282,9 +315,29 @@ function pointsD(a){
   for(let i=1;i<a.length;i++)d+=` L${a[i].x.toFixed(2)} ${a[i].y.toFixed(2)}`;
   return d;
 }
-function say(s){
+function speak(text){
+  if(!('speechSynthesis' in window))return;
+  try{
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='ja-JP';
+    u.rate=.90;
+    u.pitch=1.12;
+    u.volume=1;
+    const voices=window.speechSynthesis.getVoices();
+    const ja=voices.find(v=>(v.lang||'').toLowerCase().startsWith('ja'));
+    if(ja)u.voice=ja;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function currentInstruction(){
+  if(mode==='free')return `${current}。おてほんを見ながら、じぶんで書いてみよう。`;
+  return `${current}。みどりのまるから、オレンジのやじるしのほうへ、なぞってね。`;
+}
+function say(s,spoken=s){
   toast.textContent=s;toast.classList.add('show');
-  clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('show'),1250);
+  clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('show'),1450);
+  speak(spoken);
 }
 function beep(ok=true){
   try{
@@ -298,13 +351,13 @@ function start(ev){
   if(demoing)return;
   ev.preventDefault();
   if(mode==='trace'&&strokeIndex>=DATA[current].length){
-    say('「もういちど」で もう1かいできるよ！');return;
+    say('「もういちど」で もう1かいできるよ！','もういちど、をおしてね。');return;
   }
   const p=svgPoint(ev);
   if(mode==='trace'){
     const s=samplesFor(DATA[current][strokeIndex]),a=s[0];
     if(dist(p,a)>12){
-      say('みどりの まるから はじめよう！');beep(false);return;
+      say('🟢から はじめよう！','みどりのまるから、はじめよう。');beep(false);return;
     }
   }
   down=true;pointerId=ev.pointerId;
@@ -354,29 +407,32 @@ function end(ev){
       render(false);
       $('celebrateText').textContent=`「${current}」できた！`;
       celebrate.classList.add('show');
-      setTimeout(()=>celebrate.classList.remove('show'),1600);
+      speak(`${current}、できた！すごい！`);
+      setTimeout(()=>celebrate.classList.remove('show'),1800);
     }else{
-      render(false);say('じょうず！ つぎの せん ✨');
+      render(false);say('じょうず！ つぎの せん ✨','じょうず！つぎのせんだよ。');
     }
   }else{
     const live=$('live');if(live)live.remove();
-    if(maxProgress<.42)say('さいごまで なぞってみよう！');
-    else if(backRatio>=.18)say('やじるしの むきに かいてみよう！');
-    else say('もういっかい やってみよう！');
+    if(maxProgress<.42)say('さいごまで なぞってみよう！','さいごまで、なぞってみよう。');
+    else if(backRatio>=.18)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。オレンジのやじるしのほうへ、なぞってね。');
+    else say('もういっかい やってみよう！','もういっかい、やってみよう。');
     beep(false);
   }
 }
 
-function select(ch){current=ch;strokeIndex=0;render()}
+function select(ch){current=ch;strokeIndex=0;render();speak(currentInstruction())}
 function setMode(m){
   mode=m;strokeIndex=0;
   $('traceMode').classList.toggle('active',m==='trace');
   $('freeMode').classList.toggle('active',m==='free');
   render();
+  speak(currentInstruction());
 }
 
 async function demo(){
   if(demoing)return;
+  speak(`${current}のおてほんを、みてね。`);
   demoing=true;
   const oldMode=mode;
   mode='trace';strokeIndex=0;render();traceLayer.innerHTML='';
@@ -406,6 +462,11 @@ $('freeMode').onclick=()=>setMode('free');
 $('resetBtn').onclick=()=>{strokeIndex=0;render()};
 $('clearBtn').onclick=()=>{traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;render()}};
 $('demoBtn').onclick=demo;
+$('listenBtn').onclick=()=>speak(currentInstruction());
+if(!('speechSynthesis' in window)){
+  $('listenBtn').textContent='🔇 こえ非対応';
+  $('listenBtn').disabled=true;
+}
 celebrate.onclick=()=>celebrate.classList.remove('show');
 
 let deferredPrompt=null;
