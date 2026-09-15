@@ -25,8 +25,8 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
 h1{font-size:clamp(19px,3vw,30px);margin:0}
 .stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
-.rowTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 auto 8px;max-width:620px}
-.rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(17px,2.6vw,23px);font-weight:900;box-shadow:var(--shadow)}
+.rowTabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 auto 8px;max-width:760px}
+.rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(15px,2.3vw,21px);font-weight:900;box-shadow:var(--shadow)}
 .rowTab.selected{background:var(--yellow);outline:3px solid #efb72d}
 .letters{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
 .letter{border:0;background:#fff;border-radius:19px;min-height:66px;font-size:clamp(30px,6vw,48px);font-weight:800;box-shadow:var(--shadow)}
@@ -51,6 +51,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .guideStroke.done{stroke:var(--done);opacity:1}
 .trace{fill:none;stroke:var(--blue);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 .demoTrace{fill:none;stroke:var(--orange);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.hanamaru{display:none;opacity:.22;pointer-events:none}
+.hanamaru.show{display:block}
+.hanamaruStroke{fill:none;stroke:#e8563f;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.hanamaruRing{fill:none;stroke:#e8563f;stroke-width:3.6;stroke-linecap:round}
 .startDot{fill:var(--green);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 .8px .9px rgba(0,0,0,.17))}
 .startNum{fill:#fff;font-size:7px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .endDot{fill:#fff;stroke:var(--orange);stroke-width:1.3}
@@ -71,9 +75,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 @keyframes checkpointPulse{from{opacity:.58;stroke-width:1.45}to{opacity:1;stroke-width:2.15}}
 .side{display:flex;flex-direction:column;gap:10px}
 .panel{padding:14px}
-.sample{height:126px;display:flex;align-items:center;justify-content:center}
-.sample svg{width:122px;height:122px}
+.sample{height:104px;display:flex;align-items:center;justify-content:center}
+.sample svg{width:100px;height:100px}
 .sampleStroke{fill:none;stroke:#35333d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.exampleWord{text-align:center;color:var(--sub);font-size:14px;font-weight:800;line-height:1.4;margin:-2px 0 9px}
 .mode{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .mode button,.actions button{border:0;border-radius:16px;padding:11px 7px;font-weight:900;background:#f2efeb}
 .mode button.active{background:#dff1ff;outline:3px solid #a6d4ff}
@@ -95,13 +100,14 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 @media(max-width:760px){
   .layout{grid-template-columns:1fr}
   .side{display:grid;grid-template-columns:1fr 1fr}
-  .sample{height:86px}.sample svg{height:82px;width:82px}
+  .sample{height:72px}.sample svg{height:72px;width:72px}
+  .exampleWord{font-size:13px;margin:-1px 0 7px}
 }
 @media(max-width:480px){
   body{padding-left:7px;padding-right:7px}
-  .rowTabs{gap:5px}.rowTab{min-height:44px;border-radius:14px}
+  .rowTabs{gap:4px}.rowTab{min-height:44px;border-radius:13px;font-size:15px}
   .letters{gap:5px}.letter{min-height:55px;border-radius:15px}
-  .side{grid-template-columns:1fr}.panel.samplePanel{display:none}
+  .side{grid-template-columns:1fr}
   .boardCard{padding:7px}.board{border-radius:17px}
 }
 </style>
@@ -126,6 +132,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 
   <div class="board" id="board">
     <svg id="svg" viewBox="0 0 109 109" aria-label="ひらがな練習">
+      <g id="hanamaruLayer" class="hanamaru" aria-hidden="true">
+        <path class="hanamaruStroke" d="M54.5,13 C60,4 68,8 66,21 C76,8 84,15 78,27 C91,20 98,29 85,36 C101,35 102,47 88,49 C102,56 98,67 85,62 C96,75 88,83 77,70 C82,87 71,91 65,75 C62,93 50,94 53,76 C42,91 32,84 40,70 C25,80 18,69 31,61 C14,64 11,52 29,49 C13,41 18,30 34,35 C25,21 35,14 43,26 C42,9 52,4 54.5,13 Z"/>
+        <path class="hanamaruRing" d="M54,31 C73,29 87,42 86,59 C85,77 70,86 52,85 C33,85 22,70 25,52 C27,37 40,30 54,31"/>
+      </g>
       <g id="guideLayer"></g>
       <g id="traceLayer"></g>
       <g id="markerLayer"></g>
@@ -140,6 +150,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <aside class="side">
   <div class="card panel samplePanel">
     <div class="sample"><svg id="sampleSvg" viewBox="0 0 109 109" aria-hidden="true"></svg></div>
+    <div class="exampleWord" id="exampleWord"></div>
     <div class="mode">
       <button id="traceMode" class="active">なぞる</button>
       <button id="freeMode">じぶんで</button>
@@ -244,24 +255,76 @@ const DATA = {
   ],
   "そ":[
     "M38.4,22c1.88,1.25,4.98,1.05,7.5,0.38c6.5-1.75,13.25-3.75,19.38-5.38c4.63-1.23,7.18,2.06,3.62,5.25c-12.12,10.87-31.14,24.4-40,30.25c-6.25,4.12-5.88,5.75,1.38,3.88c17.08-4.42,35.96-8.68,50.12-10.38c9.38-1.12,9.62,0.12,0.5,1.38c-15.82,2.17-34.38,14.25-34.38,26.5c0,12.88,11.62,20.38,31.5,16.62"
+  ],
+  "た":[
+    "M24.38,35.38c1.38,0.62,3.88,1.51,6.38,1.12c6.5-1,16.25-2.88,24.88-4.75c2.64-0.57,5.38-1.5,7.62-2.38",
+    "M45,16.88c0.75,1.25,0.87,3.62,0.38,5.25c-6.35,20.94-12.75,36.37-18.88,52.37c-1.36,3.56-4.75,11.75-6,14.62",
+    "M56.38,53.25c12.38-2.75,18.25-3.7,23.62-3.12c15.12,1.62-1.12,2.25-4.25,4.88",
+    "M54.13,82.25c4.38,7,14.25,8.12,34.5,5.62"
+  ],
+  "ち":[
+    "M24.5,32.62c1.38,0.62,3.88,1.51,6.38,1.12c6.5-1,18.25-4.12,26.88-6c2.64-0.57,5.38-1.5,7.62-2.38",
+    "M45.62,15.62c0.75,1.25,0.71,3.58,0.38,5.25c-3,15-4.25,22.59-8.38,38.62c-3.25,12.62-5.38,11.12,3.62,4.38c8.29-6.21,19.75-9.5,28.5-9.5c8.62,0,14.58,5.88,14.5,14.5c-0.12,13.5-16.5,20.62-29.88,23.25"
+  ],
+  "つ":[
+    "M14,44.75c1.88,1.62,4.68,2.09,8.12,0.62c17.88-7.62,30-11.12,44.88-10.88c12.56,0.21,22.98,7.17,22.87,19.17c-0.18,18.77-24.75,28.71-45.01,32.08"
+  ],
+  "て":[
+    "M20.5,26.38c1.87,1.62,4.42,1.97,8.12,1.37c21.75-3.5,33-5.12,50.12-8.38c12.34-2.34,13-0.88,0.38,1.38c-17.89,3.19-33.78,19.12-33.78,37.62c0,20.5,17.91,30.25,35.16,30.25"
+  ],
+  "と":[
+    "M35.5,18.38c1.74,0.74,3.62,2.62,4.12,5.37c0.5,2.75,4.75,25,5.38,28.12",
+    "M78.12,25.5c0.25,1.88,0.04,4.09-2.25,5.75c-6.37,4.63-13.22,8.49-22.75,15.25c-12.88,9.12-21.62,18.38-21.62,27.5c0,10.12,8.5,13.88,26.88,13.88c6.25,0,14.75-0.12,21.62-1.25"
+  ],
+  "な":[
+    "M22.88,28.96c1.18,0.58,3.3,1.1,5.47,1.05c5.53-0.13,10.9-0.98,16.52-2.42c4.82-1.23,9.13-3.12,11.38-4.22",
+    "M42.99,14c0.63,0.89,0.56,2.52,0.31,3.72c-2.96,14.16-7.95,26.56-14.25,37.87c-2.05,3.69-4.25,7.24-6.55,10.65",
+    "M72.26,23.25c6.88,2.5,12.62,5.62,14.75,9.5c4.06,7.41-0.25,3.38-3.5,3.88",
+    "M68.88,44.62c-1,1.88-2.14,5.24-1.88,8.25c0.62,7,1.5,13.12,1.5,20.62c0,20-27.88,19.75-27.88,9.38c0-5.62,8.25-8.25,13.88-8.25c8.75,0,21.5,3.25,29.75,11.5"
+  ],
+  "に":[
+    "M24.53,22.75c1.25,1.5,1.62,3.75,1.12,6.38c-3,15.88-9,32.5-7.38,47.62c2.02,18.84,4.5,5.75,8.5-3.5",
+    "M53.2,30.64c0.96,0.79,2.44,1.58,5.1,1.35c6.98-0.61,15.01-3.3,22.04-3.36c13.19-0.11,1.5,3.75-8.39,7.35",
+    "M52.53,68c1.76,12.92,11.92,16.01,24.23,14.93c5.08-0.45,8.9-0.8,14.27-2.06"
+  ],
+  "ぬ":[
+    "M25.38,28.5c2,1.38,2.97,3.23,3.38,5.88c1.87,12.18,4.12,23.92,8.54,34.67c1.79,4.36,3.96,8.33,6.84,12.46",
+    "M57.12,19.25c0.88,2.12,1.06,3.79,0.62,5.88c-3.12,15-13.14,39.81-18.12,48.62c-11.87,21-20.62,1.25-20.62-4.5c0-22.63,43.75-44.25,62.36-29.59c7.66,6.03,9.8,14.58,9.14,23.34c-2,26.75-32.88,28.38-32.88,16.88c0-9.38,17.38-7.12,27.12-1.12c3.1,1.91,7.25,5.25,9.5,7.5"
+  ],
+  "ね":[
+    "M33.29,14.5c1.62,1.62,2.1,3.21,1.88,5.88c-1.03,11.93-2.06,31.66-2.53,53.12c-0.1,4.62-0.18,9.31-0.22,14",
+    "M17.16,37.88c1.62,0.88,3.25,1.38,5.62,0.75c2.14-0.56,7.8-2.31,12.37-4.03c6.26-2.35,6.88-1.47,3.12,3.63c-5.56,7.53-13.02,17.38-18.48,26.77c-5.6,9.62-3.45,8.3,2,3c19.12-18.62,38.5-39.12,54.12-39.12c11.38,0,12.88,11.25,12.88,32.5c0,28.62-30.18,24.88-30.18,16.26c0-9.63,18.73-7.82,28.06-1.88c2.75,1.75,5.88,4.88,7.5,6.75"
+  ],
+  "の":[
+    "M53.82,28.62c1,1.5,1.34,4.12,0.88,6.62c-1.75,9.5-6.89,25-10.75,33.12c-9.63,20.26-16.55,14.74-24.38-1.98c-9.13-19.5,23.5-48.88,50.63-40.38c32.38,10.15,28,54.62-4.75,60.88"
   ]
 };
 
 const ROWS=[
   {label:'あ行',chars:['あ','い','う','え','お']},
   {label:'か行',chars:['か','き','く','け','こ']},
-  {label:'さ行',chars:['さ','し','す','せ','そ']}
+  {label:'さ行',chars:['さ','し','す','せ','そ']},
+  {label:'た行',chars:['た','ち','つ','て','と']},
+  {label:'な行',chars:['な','に','ぬ','ね','の']}
 ];
+const CHAR_INFO={
+  'あ':{word:'あさがお'},'い':{word:'いぬ'},'う':{word:'うさぎ'},'え':{word:'えんぴつ'},'お':{word:'おにぎり'},
+  'か':{word:'かさ'},'き':{word:'きりん'},'く':{word:'くるま'},'け':{word:'けんだま'},'こ':{word:'こあら'},
+  'さ':{word:'さかな'},'し':{word:'しまうま'},'す':{word:'すいか'},'せ':{word:'せみ'},'そ':{word:'そら'},
+  'た':{word:'たぬき'},'ち':{word:'ちょうちょ'},'つ':{word:'つき'},'て':{word:'てんとうむし'},'と':{word:'とまと'},
+  'な':{word:'なす'},'に':{word:'にんじん'},'ぬ':{word:'ぬいぐるみ'},'ね':{word:'ねこ'},'の':{word:'のり'}
+};
 const NS='http://www.w3.org/2000/svg';
 let currentRowIndex=0,current=ROWS[0].chars[0],mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
+let hanamaruVisible=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 
 const $=id=>document.getElementById(id);
 const rowTabs=$('rowTabs'),letters=$('letters'),svg=$('svg'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
-      celebrate=$('celebrate');
+      celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
 $('stars').textContent=stars;
 
@@ -322,6 +385,8 @@ function render(resetTrace=true){
   if(resetTrace)traceLayer.innerHTML='';
   guideLayer.innerHTML=''; markerLayer.innerHTML=''; sampleSvg.innerHTML='';
   celebrate.classList.remove('show'); setSelected();
+  hanamaruLayer.classList.toggle('show',mode==='trace'&&hanamaruVisible);
+  exampleWord.textContent=`${CHAR_INFO[current].word}の「${current}」`;
 
   const ss=DATA[current];
   ss.forEach((d,i)=>{
@@ -420,7 +485,15 @@ const VISIBLE_CHECKPOINT_MAX=4;
 // 自動配置で大きな折れ・回り込みを拾いにくい画だけ、内部CPの代表位置をデータで指定する。
 const VISIBLE_CHECKPOINT_INDEX_OVERRIDES={
   'く:1':[0,1,2],
-  'す:2':[2,3,5]
+  'す:2':[2,3,5],
+  'ち:2':[2,4,5],
+  'つ:1':[2,3,4],
+  'て:1':[2,4,5],
+  'と:2':[1,2,3],
+  'な:4':[1,2],
+  'ぬ:2':[2,4,6,8],
+  'ね:2':[2,5,7,8],
+  'の:1':[2,3,5,7]
 };
 function checkpointsFor(samples){
   const lengths=[0];
@@ -565,8 +638,9 @@ function speak(text,force=false){
   }catch(e){}
 }
 function currentInstruction(){
-  if(mode==='free')return `${current}。おてほんを見ながら、じぶんで書いてみよう。`;
-  return `${current}。みどりのまるから、オレンジのやじるしのほうへ、なぞってね。`;
+  const introduction=`${current}。${CHAR_INFO[current].word}の『${current}』だよ。`;
+  if(mode==='free')return `${introduction}おてほんを見ながら、じぶんで書いてみよう。`;
+  return `${introduction}みどりのまるから、オレンジのやじるしのほうへ、なぞってね。`;
 }
 function say(s,spoken=s){
   toast.textContent=s;toast.classList.add('show');
@@ -628,7 +702,10 @@ function move(ev){
 function end(ev){
   if(!down||ev.pointerId!==pointerId)return;
   ev.preventDefault();down=false;pointerId=null;
-  if(mode==='free')return;
+  if(mode==='free'){
+    const live=$('live');if(live)live.removeAttribute('id');
+    return;
+  }
 
   const s=samplesFor(DATA[current][strokeIndex]),z=s[s.length-1],last=points[points.length-1];
   const offRatio=offCount/Math.max(1,points.length);
@@ -646,6 +723,7 @@ function end(ev){
       $('stars').textContent=stars;
       $('prompt').textContent='できた！ 🌟';
       $('counter').textContent=`${DATA[current].length} / ${DATA[current].length} がめ`;
+      hanamaruVisible=true;
       render(false);
       $('celebrateText').textContent=`「${current}」できた！`;
       celebrate.classList.add('show');
@@ -664,17 +742,24 @@ function end(ev){
   }
 }
 
-function select(ch){current=ch;strokeIndex=0;render();speak(currentInstruction())}
+function select(ch){
+  if(demoing)return;
+  current=ch;strokeIndex=0;hanamaruVisible=false;render();speak(currentInstruction());
+}
 function selectRow(index){
-  currentRowIndex=index;current=ROWS[index].chars[0];strokeIndex=0;
+  if(demoing)return;
+  currentRowIndex=index;current=ROWS[index].chars[0];strokeIndex=0;hanamaruVisible=false;
   buildLetters();render();speak(currentInstruction());
 }
-function setMode(m){
-  mode=m;strokeIndex=0;
+async function setMode(m){
+  if(demoing)return;
+  if(mode===m){speak(currentInstruction());return}
+  mode=m;strokeIndex=0;hanamaruVisible=false;
   $('traceMode').classList.toggle('active',m==='trace');
   $('freeMode').classList.toggle('active',m==='free');
   render();
-  speak(currentInstruction());
+  if(m==='free')await demo();
+  else speak(currentInstruction());
 }
 
 async function demo(){
@@ -682,6 +767,13 @@ async function demo(){
   speak(`${current}のおてほんを、みてね。`);
   demoing=true;
   const oldMode=mode;
+  const oldHanamaru=hanamaruVisible;
+  const savedFreePaths=oldMode==='free'
+    ? [...traceLayer.querySelectorAll('.trace')].map(path=>{
+        const copy=path.cloneNode();copy.removeAttribute('id');return copy;
+      })
+    : [];
+  hanamaruVisible=false;
   mode='trace';strokeIndex=0;render();traceLayer.innerHTML='';
 
   for(let k=0;k<DATA[current].length;k++){
@@ -702,7 +794,10 @@ async function demo(){
   }
 
   await new Promise(r=>setTimeout(r,400));
-  demoing=false;mode=oldMode;strokeIndex=0;render();
+  demoing=false;mode=oldMode;strokeIndex=0;
+  hanamaruVisible=oldMode==='trace'&&oldHanamaru;
+  render();
+  if(oldMode==='free')savedFreePaths.forEach(path=>traceLayer.appendChild(path));
 }
 
 svg.addEventListener('pointerdown',start,{passive:false});
@@ -711,8 +806,8 @@ svg.addEventListener('pointerup',end,{passive:false});
 svg.addEventListener('pointercancel',end,{passive:false});
 $('traceMode').onclick=()=>setMode('trace');
 $('freeMode').onclick=()=>setMode('free');
-$('resetBtn').onclick=()=>{strokeIndex=0;render()};
-$('clearBtn').onclick=()=>{traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;render()}};
+$('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;render()};
+$('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;hanamaruVisible=false;render()}};
 $('demoBtn').onclick=demo;
 $('listenBtn').onclick=()=>speak(currentInstruction(),true);
 if(!('speechSynthesis' in window)){
