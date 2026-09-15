@@ -25,6 +25,9 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
 h1{font-size:clamp(19px,3vw,30px);margin:0}
 .stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
+.rowTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 auto 8px;max-width:620px}
+.rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(17px,2.6vw,23px);font-weight:900;box-shadow:var(--shadow)}
+.rowTab.selected{background:var(--yellow);outline:3px solid #efb72d}
 .letters{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
 .letter{border:0;background:#fff;border-radius:19px;min-height:66px;font-size:clamp(30px,6vw,48px);font-weight:800;box-shadow:var(--shadow)}
 .letter.selected{outline:4px solid var(--yellow)}
@@ -96,6 +99,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 }
 @media(max-width:480px){
   body{padding-left:7px;padding-right:7px}
+  .rowTabs{gap:5px}.rowTab{min-height:44px;border-radius:14px}
   .letters{gap:5px}.letter{min-height:55px;border-radius:15px}
   .side{grid-template-columns:1fr}.panel.samplePanel{display:none}
   .boardCard{padding:7px}.board{border-radius:17px}
@@ -110,6 +114,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 </header>
 
 <button id="installBtn" class="install">📱 この端末にアプリとして入れる</button>
+<div class="rowTabs" id="rowTabs" role="group" aria-label="ひらがなの行を選ぶ"></div>
 <div class="letters" id="letters"></div>
 
 <div class="layout">
@@ -190,30 +195,90 @@ const DATA = {
     "M22.88,35.12c1.38,1,3.62,2.38,6,2.12c2.38-0.26,19.62-5.12,21.12-5.74c1.5-0.62,4-1.25,5.88-2",
     "M41.5,16.12c2.25,1,3.59,4.39,3.12,7.38c-2.5,16.12-3.37,45.53-2.25,58.38c0.75,8.62-0.64,10.45-7.12,7.12c-5.13-2.62-13.75-8-13.75-12.38c0-7.5,24.38-23.62,44.75-23.62c17.25,0,25,8.25,25,17.25c0,8.25-9.38,18.88-26.75,21",
     "M73,22.12c5.38,2.62,8.88,5.88,10.62,8.25c2.27,3.08,0.38,4.5-1.12,5"
+  ],
+  "か":[
+    "M24.62,38.62c1.88,1.62,4.65,2.33,8.62,1c25.5-8.5,29.5-4.13,29.5,7.62c0,9.38-1.24,17.46-4.25,25.25c-7.62,19.76-10.87,17.39-16.12,10.89",
+    "M48.5,17.5c1,1.38,1.29,4.7,0.5,7.12c-5,15.25-18.02,40.93-19.62,43.88c-3.12,5.75-6.38,11.88-9.38,16.25",
+    "M77.37,31.62c7.5,6.88,13.25,15.75,15,24.88"
+  ],
+  "き":[
+    "M30.5,30.25c1.88,0.75,4.64,1.06,5.88,0.88c6.75-1,22.25-4.5,26.5-6c2.17-0.76,3.5-1.25,4.88-2.12",
+    "M36.25,48.7c2.01,0.85,4.97,1.2,6.29,0.99c7.23-1.13,23.82-5.09,28.37-6.79c2.32-0.86,3.75-1.41,5.22-2.4",
+    "M42,14.12c1.5,0.88,3.13,2.94,4,5.12c5.5,13.76,16,29.26,26.37,40.76c7.64,8.47,9.12,9.38-6,3.88",
+    "M33.75,83.25c10.62,9.75,27.25,8.62,38.12,5"
+  ],
+  "く":[
+    "M60.66,15c0.5,1.62,0.35,5.44-1,7.38c-6.75,9.62-14.3,19.08-18.62,24.5c-4,5-3.79,7.03-0.88,11c5.5,7.5,12.75,18.75,17.62,27.25c1.48,2.59,2.75,4.75,4.5,8.62"
+  ],
+  "け":[
+    "M24.67,19.75c1.25,1.5,2.62,3.75,2.12,6.38c-3,15.88-6.5,29.5-4.88,44.62c2.02,18.84,2.25,4.75,6.75-3.5",
+    "M53.67,38.62c2.12,1.38,4.28,1.89,6.88,1.5c8.25-1.25,15.39-2.57,20.62-4c2.76-0.74,5.26-1.12,6.88-1.12",
+    "M71.67,14.38c2.13,1.37,2.88,3.35,2.88,5.12c0,11.62,0.12,20.38,0.12,30.12c0,20.75-0.62,30.88-12.5,42.25"
+  ],
+  "こ":[
+    "M34.75,26.75c1.12,0.88,2.91,2.01,6,1.5c7.62-1.25,14.11-2.56,22.38-2.62c15.5-0.12,5.88,5-5.75,9",
+    "M30,68.12c2.25,14.5,15.26,17.96,31,16.75c6.5-0.5,11.88-1.25,17.62-2.88"
+  ],
+  "さ":[
+    "M27,38.9c2.42,1.33,5.38,1.47,8.32,1.06c8.79-1.24,28.67-7.76,34.15-10.43c2.79-1.36,3.78-1.91,6.28-3.53",
+    "M41.5,13.88c1.5,0.88,3.63,2.94,4.5,5.12c5.5,13.75,15.25,27.62,26.87,39.5c7.98,8.15,6.38,10-6,3.12",
+    "M35.25,80.5c4.5,11.75,20.88,12.5,38.38,7.5"
+  ],
+  "し":[
+    "M39.12,17.5c1.25,3.12,0.93,6.74,0.38,10.25c-2.12,13.5-3,26.5-3,39.12c0,27.38,19.88,30.12,45.5,17.25"
+  ],
+  "す":[
+    "M15.5,37.12c2.88,2.12,6.94,1.51,12.75,0.25c16.12-3.5,36.14-5.38,46.62-6.5c7-0.75,11.88-0.62,17.75,0.12",
+    "M57.62,13.38c2,1.5,2.75,3.25,2.75,5.88c0,10.38,0,35.12,0,40.75c0,14.62-15.62,16.38-15.62,1.75c0-14.25,18-14.12,18,6.38c0,13.25-7.75,21.5-16,28.38"
+  ],
+  "せ":[
+    "M16.5,49.93c2.88,2.42,6.86,1.57,12.75,0.53c19-3.34,33-5.72,47.12-7.64c6.99-0.95,11.88-1.21,17.75-0.36",
+    "M69.74,17.75c2,1.5,2.75,3.25,2.75,5.88c0,10.38,0,17.88,0,23.5c0,25.62-5.75,23.25-11.88,19",
+    "M35.62,26.25c2,1.5,2.75,3.25,2.75,5.88c0,10.38,0,28.38,0,34c0,14.5,6.38,19.55,20.14,19.55c10.24,0,13.74,0.07,22.61-1.68"
+  ],
+  "そ":[
+    "M38.4,22c1.88,1.25,4.98,1.05,7.5,0.38c6.5-1.75,13.25-3.75,19.38-5.38c4.63-1.23,7.18,2.06,3.62,5.25c-12.12,10.87-31.14,24.4-40,30.25c-6.25,4.12-5.88,5.75,1.38,3.88c17.08-4.42,35.96-8.68,50.12-10.38c9.38-1.12,9.62,0.12,0.5,1.38c-15.82,2.17-34.38,14.25-34.38,26.5c0,12.88,11.62,20.38,31.5,16.62"
   ]
 };
 
-const order=['あ','い','う','え','お'];
+const ROWS=[
+  {label:'あ行',chars:['あ','い','う','え','お']},
+  {label:'か行',chars:['か','き','く','け','こ']},
+  {label:'さ行',chars:['さ','し','す','せ','そ']}
+];
 const NS='http://www.w3.org/2000/svg';
-let current='あ',mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
+let currentRowIndex=0,current=ROWS[0].chars[0],mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 
 const $=id=>document.getElementById(id);
-const letters=$('letters'),svg=$('svg'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
+const rowTabs=$('rowTabs'),letters=$('letters'),svg=$('svg'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
       celebrate=$('celebrate');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
 $('stars').textContent=stars;
 
-for(const ch of order){
-  const b=document.createElement('button');
-  b.className='letter'; b.textContent=ch;
-  b.setAttribute('aria-label',`${ch}をれんしゅう`);
-  b.onclick=()=>select(ch);
-  letters.appendChild(b);
+function buildRowTabs(){
+  ROWS.forEach((row,index)=>{
+    const b=document.createElement('button');
+    b.className='rowTab';b.textContent=row.label;
+    b.setAttribute('aria-label',`${row.label}をひらく`);
+    b.onclick=()=>selectRow(index);
+    rowTabs.appendChild(b);
+  });
 }
+function buildLetters(){
+  letters.innerHTML='';
+  for(const ch of ROWS[currentRowIndex].chars){
+    const b=document.createElement('button');
+    b.className='letter';b.textContent=ch;b.dataset.char=ch;
+    b.setAttribute('aria-label',`${ch}をれんしゅう`);
+    b.onclick=()=>select(ch);
+    letters.appendChild(b);
+  }
+}
+buildRowTabs();buildLetters();
 
 function mkPath(d,cls){
   const p=document.createElementNS(NS,'path');
@@ -238,7 +303,14 @@ function label(x,y,s,cls){
   return t;
 }
 function setSelected(){
-  [...letters.children].forEach((b,i)=>b.classList.toggle('selected',order[i]===current));
+  [...rowTabs.children].forEach((b,index)=>{
+    const selected=index===currentRowIndex;
+    b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));
+  });
+  [...letters.children].forEach(b=>{
+    const selected=b.dataset.char===current;
+    b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));
+  });
 }
 function render(resetTrace=true){
   if(resetTrace)traceLayer.innerHTML='';
@@ -339,6 +411,11 @@ const CHECKPOINT_RADIUS=14;
 const VISIBLE_CHECKPOINT_MIN_LENGTH=96;
 const VISIBLE_CHECKPOINT_SPACING=60;
 const VISIBLE_CHECKPOINT_MAX=4;
+// 自動配置で大きな折れ・回り込みを拾いにくい画だけ、内部CPの代表位置をデータで指定する。
+const VISIBLE_CHECKPOINT_INDEX_OVERRIDES={
+  'く:1':[0,1,2],
+  'す:2':[2,3,5]
+};
 function checkpointsFor(samples){
   const lengths=[0];
   for(let i=1;i<samples.length;i++)lengths.push(lengths[i-1]+dist(samples[i-1],samples[i]));
@@ -401,7 +478,10 @@ function starPoints(center,outer=5.1,inner=2.45){
 }
 function prepareCheckpointState(samples){
   checkpoints=checkpointsFor(samples);
-  visibleCheckpointIndexes=visibleCheckpointIndexesFor(samples,checkpoints.length);
+  const override=VISIBLE_CHECKPOINT_INDEX_OVERRIDES[`${current}:${strokeIndex+1}`];
+  visibleCheckpointIndexes=override
+    ? override.filter(index=>index>=0&&index<checkpoints.length)
+    : visibleCheckpointIndexesFor(samples,checkpoints.length);
   visibleCheckpointIndex=0;
 }
 function addVisibleCheckpointMarkers(){
@@ -579,6 +659,10 @@ function end(ev){
 }
 
 function select(ch){current=ch;strokeIndex=0;render();speak(currentInstruction())}
+function selectRow(index){
+  currentRowIndex=index;current=ROWS[index].chars[0];strokeIndex=0;
+  buildLetters();render();speak(currentInstruction());
+}
 function setMode(m){
   mode=m;strokeIndex=0;
   $('traceMode').classList.toggle('active',m==='trace');
