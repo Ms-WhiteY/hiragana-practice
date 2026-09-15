@@ -17,12 +17,20 @@ iPad / Fire タブレット / PC のブラウザで使える、幼児向けの�
 外部API、広告、アクセス解析、ログイン機能はありません。
 星の数はブラウザの localStorage にだけ保存します。
 
-## 書き順データ
-このアプリのひらがな書き順パスは KanjiVG のデータを使用・表示調整しています。
+## License / ライセンス
 
-- KanjiVG: https://kanjivg.tagaini.net/
+### KanjiVG由来の書き順データ
+
+このアプリは、KanjiVGのSVGストロークデータから抽出したひらがなのpathデータを含み、ガイド表示、お手本アニメーション、なぞり判定に使用しています。表示サイズ、スタイル、アプリ内での利用形式は、このアプリ向けに調整しています。
+
+- KanjiVG公式サイト: https://kanjivg.tagaini.net/
+- GitHub repository: https://github.com/KanjiVG/kanjivg
 - Copyright: Ulrich Apel and KanjiVG contributors
-- License: Creative Commons Attribution-ShareAlike 3.0
-- https://creativecommons.org/licenses/by-sa/3.0/
+- License: Creative Commons Attribution-ShareAlike 3.0 (CC BY-SA 3.0)
+- License URL: https://creativecommons.org/licenses/by-sa/3.0/
 
-KanjiVG由来部分を改変・再配布する場合は、同ライセンス条件に従ってください。
+KanjiVG由来のストロークデータおよびその調整部分には、元のCC BY-SA 3.0の条件が適用されます。詳しくは [NOTICE_KANJIVG.txt](./NOTICE_KANJIVG.txt) を参照してください。
+
+### アプリ独自のコードとUI
+
+KanjiVG由来部分を除くHTML、CSS、JavaScriptおよびUIは、このアプリのために独自に作成されたものです。上記のKanjiVGに関する表示は、アプリ全体または独自コード全体をCC BY-SA 3.0で提供することを意味しません。このREADMEでは、独自コードに新しいライセンスを設定していません。

@@ -1,15 +1,20 @@
-KanjiVG Attribution Notice
+KanjiVG Attribution and License Notice
 
-The hiragana stroke paths in this project are derived from KanjiVG.
+This application contains hiragana stroke path data derived from KanjiVG SVG files.
 
-KanjiVG:
-https://kanjivg.tagaini.net/
+KanjiVG
+Official website: https://kanjivg.tagaini.net/
+GitHub repository: https://github.com/KanjiVG/kanjivg
+Copyright: Ulrich Apel and KanjiVG contributors
+License: Creative Commons Attribution-ShareAlike 3.0 (CC BY-SA 3.0)
+License URL: https://creativecommons.org/licenses/by-sa/3.0/
 
-Copyright:
-Ulrich Apel and KanjiVG contributors
+Use in this application
+-----------------------
+SVG path data is extracted from KanjiVG files and embedded in this application for stroke-guide rendering, stroke-order animation, and tracing evaluation. Its display size, visual styling, and integration format are adjusted for use in this child-friendly tracing application.
 
-License:
-Creative Commons Attribution-ShareAlike 3.0
-https://creativecommons.org/licenses/by-sa/3.0/
+The KanjiVG-derived stroke data and adaptations to that data remain subject to the original CC BY-SA 3.0 terms.
 
-The paths are embedded and visually adjusted for use in this child-friendly tracing application.
+Scope of this notice
+--------------------
+This notice applies to the KanjiVG-derived stroke data. It does not state that the independently created HTML, CSS, JavaScript, or user interface of this application is licensed under CC BY-SA 3.0, and it does not assign a new license to that independent application code.
