@@ -17,6 +17,17 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(new Request(event.request, {cache: 'no-store'})).then(response => {
+        if (!response.ok) return response;
+        const copy = response.clone();
+        return caches.open(CACHE).then(cache => cache.put('./index.html', copy)).then(() => response);
+      }).catch(() => caches.open(CACHE).then(cache => cache.match('./index.html')))
+    );
+    return;
+  }
+
   if (requestUrl.origin === self.location.origin && requestUrl.pathname.endsWith('/app-version.js')) {
     event.respondWith(
       fetch(new Request(event.request, {cache: 'no-store'})).then(response => {
