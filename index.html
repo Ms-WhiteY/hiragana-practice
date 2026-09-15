@@ -185,6 +185,7 @@ const order=['あ','い','う','え','お'];
 const NS='http://www.w3.org/2000/svg';
 let current='あ',mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
+let checkpoints=[],checkpointIndex=0;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 
 const $=id=>document.getElementById(id);
@@ -319,6 +320,44 @@ function svgPoint(ev){
   return p.matrixTransform(svg.getScreenCTM().inverse());
 }
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const CHECKPOINT_SPACING=24;
+const CHECKPOINT_RADIUS=14;
+function checkpointsFor(samples){
+  const lengths=[0];
+  for(let i=1;i<samples.length;i++)lengths.push(lengths[i-1]+dist(samples[i-1],samples[i]));
+  const total=lengths[lengths.length-1];
+  const count=Math.max(1,Math.min(10,Math.floor(total/CHECKPOINT_SPACING)));
+  const result=[];
+  let sampleIndex=1;
+  for(let i=1;i<=count;i++){
+    const target=total*i/(count+1);
+    while(sampleIndex<lengths.length-1&&lengths[sampleIndex]<target)sampleIndex++;
+    const before=sampleIndex-1;
+    const span=lengths[sampleIndex]-lengths[before]||1;
+    const ratio=(target-lengths[before])/span;
+    result.push({
+      x:samples[before].x+(samples[sampleIndex].x-samples[before].x)*ratio,
+      y:samples[before].y+(samples[sampleIndex].y-samples[before].y)*ratio
+    });
+  }
+  return result;
+}
+function checkpointDistance(cp,from,to){
+  const dx=to.x-from.x,dy=to.y-from.y;
+  const lengthSquared=dx*dx+dy*dy;
+  const t=lengthSquared?Math.max(0,Math.min(1,((cp.x-from.x)*dx+(cp.y-from.y)*dy)/lengthSquared)):0;
+  return {d:Math.hypot(cp.x-(from.x+dx*t),cp.y-(from.y+dy*t)),t};
+}
+function advanceCheckpoints(from,to){
+  // 次に必要な点だけを調べる。1回の速い移動で複数点を通る場合も、
+  // 移動線分上の通過順が前後しないものだけを順番に通過扱いにする。
+  let previousT=-.02;
+  while(checkpointIndex<checkpoints.length){
+    const hit=checkpointDistance(checkpoints[checkpointIndex],from,to);
+    if(hit.d>CHECKPOINT_RADIUS||hit.t<previousT+.01)break;
+    checkpointIndex++;previousT=hit.t;
+  }
+}
 function nearestProgressAware(pt,samples,anchor){
   // 「あ」3画目や「お」2画目のように線が交差・接近する画では、
   // 全経路から最短点を探すと昔の位置へ飛び「逆向き」と誤判定しやすい。
@@ -382,6 +421,7 @@ function start(ev){
     if(dist(p,a)>12){
       say('🟢から はじめよう！','みどりのまるから、はじめよう。');beep(false);return;
     }
+    checkpoints=checkpointsFor(s);checkpointIndex=0;
   }
   down=true;pointerId=ev.pointerId;
   try{svg.setPointerCapture(pointerId)}catch(e){}
@@ -409,6 +449,7 @@ function move(ev){
     const backward=lastNearest-n.i;
     if(backward>12 && maxProgress>.18)backtrackCount++;
     if(n.i>lastNearest)lastNearest=n.i;
+    advanceCheckpoints(points[points.length-2],p);
   }
 }
 
@@ -421,8 +462,9 @@ function end(ev){
   const offRatio=offCount/Math.max(1,points.length);
   const backRatio=backtrackCount/Math.max(1,points.length);
   const clearlyReverse=backtrackCount>=8 && backRatio>.22;
+  const followedWholePath=checkpointIndex===checkpoints.length;
 
-  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && !clearlyReverse){
+  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && !clearlyReverse && followedWholePath){
     const live=$('live');if(live)live.removeAttribute('id');
     strokeIndex++;beep(true);
 
