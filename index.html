@@ -53,6 +53,14 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .endDot{fill:#fff;stroke:var(--orange);stroke-width:1.3}
 .endMark{fill:var(--orange);font-size:6px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .dirArrow{fill:var(--orange);stroke:#fff;stroke-width:.9;paint-order:stroke;filter:drop-shadow(0 .8px .9px rgba(0,0,0,.18));animation:arrowPulse .7s ease-in-out infinite alternate;pointer-events:none}
+.pathCheckpoint{pointer-events:none}
+.checkpointHalo{fill:none;stroke:#e59a00;stroke-width:1.35;opacity:0}
+.checkpointStar{fill:#fff1b5;stroke:#d39400;stroke-width:.9;filter:drop-shadow(0 .7px .7px rgba(0,0,0,.15))}
+.checkpointNumber{fill:#684900;font-size:4.1px;font-weight:900;text-anchor:middle;dominant-baseline:central}
+.pathCheckpoint.next .checkpointHalo{opacity:.95}
+.pathCheckpoint.next .checkpointStar{fill:#ffe17c;stroke:#d98500;stroke-width:1.45}
+.pathCheckpoint.passed .checkpointStar{fill:#bce9c9;stroke:#3eaa63}
+.pathCheckpoint.passed .checkpointNumber{fill:#246b3b}
 @keyframes arrowPulse{to{opacity:.48}}
 .side{display:flex;flex-direction:column;gap:10px}
 .panel{padding:14px}
@@ -185,7 +193,7 @@ const order=['あ','い','う','え','お'];
 const NS='http://www.w3.org/2000/svg';
 let current='あ',mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
-let checkpoints=[],checkpointIndex=0;
+let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 
 const $=id=>document.getElementById(id);
@@ -309,6 +317,8 @@ function addMarkers(i){
     markerLayer.appendChild(polygon([tip,left,right],'dirArrow'));
   }
 
+  prepareCheckpointState(s);
+  addVisibleCheckpointMarkers();
   markerLayer.appendChild(circle(a.x,a.y,5.3,'startDot'));
   markerLayer.appendChild(label(a.x,a.y,String(i+1),'startNum'));
   markerLayer.appendChild(circle(z.x,z.y,3.7,'endDot'));
@@ -322,6 +332,9 @@ function svgPoint(ev){
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const CHECKPOINT_SPACING=24;
 const CHECKPOINT_RADIUS=14;
+const VISIBLE_CHECKPOINT_MIN_LENGTH=96;
+const VISIBLE_CHECKPOINT_SPACING=60;
+const VISIBLE_CHECKPOINT_MAX=4;
 function checkpointsFor(samples){
   const lengths=[0];
   for(let i=1;i<samples.length;i++)lengths.push(lengths[i-1]+dist(samples[i-1],samples[i]));
@@ -342,6 +355,72 @@ function checkpointsFor(samples){
   }
   return result;
 }
+function samplesLength(samples){
+  let total=0;
+  for(let i=1;i<samples.length;i++)total+=dist(samples[i-1],samples[i]);
+  return total;
+}
+function checkpointTurnScore(samples,index,checkpointCount){
+  const center=Math.round((index+1)/(checkpointCount+1)*(samples.length-1));
+  const gap=10;
+  const before=samples[Math.max(0,center-gap)],point=samples[center],after=samples[Math.min(samples.length-1,center+gap)];
+  const ax=point.x-before.x,ay=point.y-before.y,bx=after.x-point.x,by=after.y-point.y;
+  const lengths=Math.hypot(ax,ay)*Math.hypot(bx,by)||1;
+  return 1-(ax*bx+ay*by)/lengths;
+}
+function visibleCheckpointIndexesFor(samples,checkpointCount){
+  const total=samplesLength(samples);
+  if(total<VISIBLE_CHECKPOINT_MIN_LENGTH||checkpointCount<4)return[];
+  const count=Math.min(checkpointCount,VISIBLE_CHECKPOINT_MAX,Math.max(2,Math.round(total/VISIBLE_CHECKPOINT_SPACING)));
+  const result=[];
+  const interiorCount=checkpointCount-2;
+  for(let slot=0;slot<count;slot++){
+    const start=1+Math.floor(slot*interiorCount/count);
+    const end=1+Math.floor((slot+1)*interiorCount/count)-1;
+    let best=start,bestScore=-Infinity;
+    for(let index=start;index<=end;index++){
+      const score=checkpointTurnScore(samples,index,checkpointCount);
+      if(score>bestScore){best=index;bestScore=score}
+    }
+    result.push(best);
+  }
+  return result;
+}
+function starPoints(center,outer=4.2,inner=2){
+  const result=[];
+  for(let i=0;i<10;i++){
+    const radius=i%2?inner:outer;
+    const angle=-Math.PI/2+i*Math.PI/5;
+    result.push({x:center.x+Math.cos(angle)*radius,y:center.y+Math.sin(angle)*radius});
+  }
+  return result;
+}
+function prepareCheckpointState(samples){
+  checkpoints=checkpointsFor(samples);
+  visibleCheckpointIndexes=visibleCheckpointIndexesFor(samples,checkpoints.length);
+  visibleCheckpointIndex=0;
+}
+function addVisibleCheckpointMarkers(){
+  visibleCheckpointIndexes.forEach((index,number)=>{
+    const point=checkpoints[index];
+    const group=document.createElementNS(NS,'g');
+    group.setAttribute('class','pathCheckpoint');
+    group.setAttribute('data-checkpoint-index',String(index));
+    group.setAttribute('data-visible-index',String(number));
+    group.appendChild(circle(point.x,point.y,5.7,'checkpointHalo'));
+    group.appendChild(polygon(starPoints(point),'checkpointStar'));
+    group.appendChild(label(point.x,point.y+.15,String(number+1),'checkpointNumber'));
+    markerLayer.appendChild(group);
+  });
+  updateCheckpointMarkers();
+}
+function updateCheckpointMarkers(){
+  markerLayer.querySelectorAll('.pathCheckpoint').forEach(marker=>{
+    const index=Number(marker.getAttribute('data-visible-index'));
+    marker.classList.toggle('passed',index<visibleCheckpointIndex);
+    marker.classList.toggle('next',index===visibleCheckpointIndex);
+  });
+}
 function checkpointDistance(cp,from,to){
   const dx=to.x-from.x,dy=to.y-from.y;
   const lengthSquared=dx*dx+dy*dy;
@@ -349,14 +428,17 @@ function checkpointDistance(cp,from,to){
   return {d:Math.hypot(cp.x-(from.x+dx*t),cp.y-(from.y+dy*t)),t};
 }
 function advanceCheckpoints(from,to){
-  // 次に必要な点だけを調べる。1回の速い移動で複数点を通る場合も、
-  // 移動線分上の通過順が前後しないものだけを順番に通過扱いにする。
+  // 画面に見える次の星だけを調べる。1回の速い移動で複数の星を通る場合も、
+  // 移動線分上の通過順が前後しないものだけを番号順の通過扱いにする。
+  const before=visibleCheckpointIndex;
   let previousT=-.02;
-  while(checkpointIndex<checkpoints.length){
-    const hit=checkpointDistance(checkpoints[checkpointIndex],from,to);
+  while(visibleCheckpointIndex<visibleCheckpointIndexes.length){
+    const required=checkpoints[visibleCheckpointIndexes[visibleCheckpointIndex]];
+    const hit=checkpointDistance(required,from,to);
     if(hit.d>CHECKPOINT_RADIUS||hit.t<previousT+.01)break;
-    checkpointIndex++;previousT=hit.t;
+    visibleCheckpointIndex++;previousT=hit.t;
   }
+  if(visibleCheckpointIndex!==before)updateCheckpointMarkers();
 }
 function nearestProgressAware(pt,samples,anchor){
   // 「あ」3画目や「お」2画目のように線が交差・接近する画では、
@@ -421,7 +503,7 @@ function start(ev){
     if(dist(p,a)>12){
       say('🟢から はじめよう！','みどりのまるから、はじめよう。');beep(false);return;
     }
-    checkpoints=checkpointsFor(s);checkpointIndex=0;
+    prepareCheckpointState(s);updateCheckpointMarkers();
   }
   down=true;pointerId=ev.pointerId;
   try{svg.setPointerCapture(pointerId)}catch(e){}
@@ -462,9 +544,9 @@ function end(ev){
   const offRatio=offCount/Math.max(1,points.length);
   const backRatio=backtrackCount/Math.max(1,points.length);
   const clearlyReverse=backtrackCount>=8 && backRatio>.22;
-  const followedWholePath=checkpointIndex===checkpoints.length;
+  const passedAllStars=visibleCheckpointIndex===visibleCheckpointIndexes.length;
 
-  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && !clearlyReverse && followedWholePath){
+  if(maxProgress>.72 && dist(last,z)<16 && offRatio<.52 && !clearlyReverse && passedAllStars){
     const live=$('live');if(live)live.removeAttribute('id');
     strokeIndex++;beep(true);
 
@@ -486,6 +568,7 @@ function end(ev){
     const live=$('live');if(live)live.remove();
     if(maxProgress<.42)say('さいごまで なぞってみよう！','さいごまで、なぞってみよう。');
     else if(clearlyReverse)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。オレンジのやじるしのほうへ、なぞってね。');
+    else if(!passedAllStars&&visibleCheckpointIndexes.length)say('★を じゅんばんに とおってみよう！','ほしを、じゅんばんに、とおってみよう。');
     else say('もういっかい やってみよう！','もういっかい、やってみよう。');
     beep(false);
   }
@@ -512,8 +595,13 @@ async function demo(){
     const s=samplesFor(DATA[current][k],120);
     const p=mkPath('','demoTrace');traceLayer.appendChild(p);
     const a=[];
-    for(const q of s){
+    for(let i=0;i<s.length;i++){
+      const q=s[i];
       a.push(q);p.setAttribute('d',pointsD(a));
+      const progress=i/(s.length-1);
+      const before=visibleCheckpointIndex;
+      while(visibleCheckpointIndex<visibleCheckpointIndexes.length&&progress>=(visibleCheckpointIndexes[visibleCheckpointIndex]+1)/(checkpoints.length+1))visibleCheckpointIndex++;
+      if(visibleCheckpointIndex!==before)updateCheckpointMarkers();
       await new Promise(r=>setTimeout(r,7));
     }
     await new Promise(r=>setTimeout(r,180));
