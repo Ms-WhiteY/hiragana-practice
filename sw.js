@@ -2,7 +2,7 @@ importScripts('./app-version.js');
 
 const CACHE_PREFIX = 'hiragana-practice-';
 const CACHE = `${CACHE_PREFIX}v${self.APP_VERSION}`;
-const ASSETS = ['./','./index.html','./app-version.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const ASSETS = ['./','./index.html','./app-version.js','./manifest.webmanifest','./icon-192.png','./icon-512.png','./assets/hanamaru.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
   self.skipWaiting();

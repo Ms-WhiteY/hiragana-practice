@@ -25,7 +25,7 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
 h1{font-size:clamp(19px,3vw,30px);margin:0}
 .stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
-.rowTabs{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:1050px}
+.rowTabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:1050px}
 .rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(15px,2.3vw,21px);font-weight:900;box-shadow:var(--shadow)}
 .rowTab.selected{background:var(--yellow);outline:3px solid #efb72d}
 .letters{display:grid;grid-template-columns:repeat(var(--letter-count,5),minmax(0,1fr));gap:8px;margin-bottom:12px}
@@ -52,10 +52,9 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .guideStroke.done{stroke:var(--done);opacity:1}
 .trace{fill:none;stroke:var(--blue);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 .demoTrace{fill:none;stroke:var(--orange);stroke-width:5.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.hanamaru{display:none;opacity:.25;pointer-events:none}
+.hanamaru{display:none;opacity:.26;pointer-events:none}
 .hanamaru.show{display:block}
-.hanamaruPetals{fill:none;stroke:#e4553f;stroke-width:3.7;stroke-linecap:round;stroke-linejoin:round}
-.hanamaruCenter{fill:none;stroke:#e4553f;stroke-width:4.1;stroke-linecap:round;stroke-linejoin:round}
+.hanamaruImage{width:91px;height:91px}
 .startDot{fill:var(--green);stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 .8px .9px rgba(0,0,0,.17))}
 .startNum{fill:#fff;font-size:7px;font-weight:900;text-anchor:middle;dominant-baseline:central;pointer-events:none}
 .endDot{fill:#fff;stroke:var(--orange);stroke-width:1.3}
@@ -105,7 +104,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   .exampleWord{font-size:13px;margin:-1px 0 7px}
 }
 @media(max-width:900px){
-  .rowTabs{grid-template-columns:repeat(4,minmax(0,1fr));max-width:820px}
+  .rowTabs{grid-template-columns:repeat(5,minmax(0,1fr));max-width:820px}
 }
 @media(max-width:480px){
   body{padding-left:7px;padding-right:7px}
@@ -137,10 +136,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   <div class="board" id="board">
     <svg id="svg" viewBox="0 0 109 109" aria-label="ひらがな練習">
       <g id="hanamaruLayer" class="hanamaru" aria-hidden="true">
-        <g transform="rotate(-6 54.5 54.5)">
-          <path class="hanamaruPetals" d="M53,40 C43,35 41,22 48,14 C55,6 65,15 63,29 C62,35 58,39 53,40 M64,43 C68,32 81,27 89,34 C98,42 89,53 77,56 C71,58 66,53 64,43 M65,59 C76,56 87,64 86,75 C85,87 70,87 62,77 C58,71 59,64 65,59 M51,66 C58,76 52,90 41,92 C29,94 27,79 34,69 C39,62 46,61 51,66 M42,57 C32,64 19,58 18,47 C17,35 31,30 42,37 C48,41 49,50 42,57 M45,45 C40,38 42,30 48,27"/>
-          <path class="hanamaruCenter" d="M45,49 C48,41 61,39 68,46 C76,54 69,66 58,68 C47,70 39,61 42,51 C45,43 58,42 64,49 C70,56 63,63 56,62 C50,62 47,57 49,52 C51,48 57,47 60,50"/>
-        </g>
+        <image class="hanamaruImage" href="./assets/hanamaru.png" x="9" y="9" width="91" height="91" preserveAspectRatio="xMidYMid meet"/>
       </g>
       <g id="guideLayer"></g>
       <g id="traceLayer"></g>
@@ -362,6 +358,36 @@ const DATA = {
   "よ":[
     "M58.24,35.38c7.5-1.28,13.74-2.63,18.5-4.1c2.5-0.77,4.77-1.15,6.25-1.15",
     "M54.62,13.88c2.25,2.12,2.98,4.13,2.88,6.5c-0.75,17-0.12,34.88,1.39,53.5c1.88,23.07-34.89,20.88-34.89,11.5c0-12,26.25-8,35.98-4.12c8.1,3.23,11.52,4.88,18.52,10.38"
+  ],
+  "ら":[
+    "M35.33,15c3.75,3,9.22,4.41,16.5,4.25c11.12-0.25-0.25,2.38-1.25,3.5",
+    "M35.83,35.75c-2.14,4.34-2.79,8.67-3.11,13.24c-0.42,5.84-0.31,12.05-2.14,19.13c-3.16,12.27,1.49,4.77,3,3.5c11.88-10,21.7-12.67,32.61-12.49c9.21,0.15,16.85,5.19,16.76,13.88c-0.12,13.6-14.24,21.49-32.49,22.49"
+  ],
+  "り":[
+    "M38.75,25.25c1.25,1.5,2.24,4.03,1.62,6.62c-2.88,12.13-6.29,29.65-4.25,42.38c2,12.5,1.75-0.75,5.62-6.25",
+    "M69.37,18.75c2.25,2.12,2.88,4.12,2.88,6.5c0,2.38,0,26.38,0,35.75c0,16.5-5,25.75-12.62,33.12"
+  ],
+  "る":[
+    "M34.31,20.38c1.75,1.25,4.62,2.62,8.5,1.5c3.88-1.12,9.62-2.5,15.62-4.62c6-2.12,7.5-0.12,4.38,4.25c-3.12,4.37-18.89,24.62-27.75,34c-8.5,9-13.09,11.89,0.75,3.25c15.62-9.75,43-10.88,43,13.38c0,22.5-40.88,24.5-40.88,12.62c0-11.25,18.12-8.75,24.38-0.38"
+  ],
+  "れ":[
+    "M34.48,13c1.5,1.38,2.83,3.74,2.5,6.38c-0.5,4-2.75,44.5-2.75,52.88c0,8.38,0.12,16.62,0.12,19.5",
+    "M16.98,40.75c2.12,1.38,3.74,1.46,7.5,0c4.5-1.75,6.55-2.66,13-5.5c4.25-1.88,4.4,0.24,2.5,3.5c-5.25,9-10.5,16.75-18.88,27.62c-7.55,9.81-6.93,12.85,3.25,3.12c14-13.38,20.34-19.76,33.88-32.5c6.38-6,19.39-12.09,18.14,0.88c-1.02,10.63-1.89,22.13-2.29,30.75c-1.02,21.71,11.53,18,20.15,8.63"
+  ],
+  "ろ":[
+    "M36.95,21.88c1.5,2,4.62,3.62,8.5,2.5c3.88-1.12,8.12-2.25,14.12-4.38c6-2.13,6.53-0.1,3.38,4.25c-7.88,10.88-18,22.75-27.5,35.25c-7.49,9.86-10.68,11.32,2.88,2.25c17.38-11.62,46.62-14,46.62,8.12c0,15.62-16,22.5-32.12,25.12"
+  ],
+  "わ":[
+    "M38.53,14.75c1.5,1.38,2.22,3.73,2,6.38c-1,11.87-2.75,44.49-2.75,52.87c0,8.38-0.62,16.62-0.62,19.5",
+    "M17.53,40.75c2.12,1.38,3.68,1.3,7.5,0c5.88-2,9.8-3.16,16.25-6c4.25-1.88,6.12,0,2.75,4c-6.72,7.96-13,16.5-22.12,27.88c-7.75,9.66-7.54,12.21,3,2.88c21.88-19.38,49.75-35.62,63.5-21c14.36,15.27,1.62,36.62-23.38,42.62"
+  ],
+  "を":[
+    "M28.56,27.87c1.62,1.13,3.17,1.64,6.01,1.12c10.86-1.99,16.74-3.37,24.71-4.72c3.64-0.62,5.65-0.93,8.4-0.75",
+    "M49.93,14.38c0.75,1,1.48,3.22,0.38,5.62c-4.62,10.12-10,20.75-17.12,30.25c-9.25,12.33-9.25,11.19,2.12,2.5c9-6.88,23.75-12.12,22.88,19.88",
+    "M83.06,39.88c0.62,1.75,0,4-3,5.75c-3,1.75-49.62,24.16-44.75,38.25c3.28,9.48,17.93,9.12,29.98,7.75c4.48-0.51,9.15-1.12,12.4-1.75"
+  ],
+  "ん":[
+    "M56.35,16.5c0.75,1.75,1.13,5.83-0.38,8.25c-7,11.25-27.22,43.47-33.88,54.37c-9,14.75-7.62,16.25,1.5,1.25c17.86-29.36,32-23.76,32-6.75c0,25,19,26.5,34.25-5"
   ]
 };
 
@@ -373,7 +399,9 @@ const ROWS=[
   {label:'な行',chars:['な','に','ぬ','ね','の']},
   {label:'は行',chars:['は','ひ','ふ','へ','ほ']},
   {label:'ま行',chars:['ま','み','む','め','も']},
-  {label:'や行',chars:['や','ゆ','よ']}
+  {label:'や行',chars:['や','ゆ','よ']},
+  {label:'ら行',chars:['ら','り','る','れ','ろ']},
+  {label:'わ行',chars:['わ','を','ん']}
 ];
 const CHAR_INFO={
   'あ':{word:'あさがお'},'い':{word:'いぬ'},'う':{word:'うさぎ'},'え':{word:'えんぴつ'},'お':{word:'おにぎり'},
@@ -381,9 +409,13 @@ const CHAR_INFO={
   'さ':{word:'さかな'},'し':{word:'しまうま'},'す':{word:'すいか'},'せ':{word:'せみ'},'そ':{word:'そら'},
   'た':{word:'たぬき'},'ち':{word:'ちーず'},'つ':{word:'つき'},'て':{word:'てんとうむし'},'と':{word:'とまと'},
   'な':{word:'なす'},'に':{word:'にんじん'},'ぬ':{word:'ぬいぐるみ'},'ね':{word:'ねこ'},'の':{word:'のり'},
-  'は':{word:'はな',speechChar:'ハ'},'ひ':{word:'ひこうき'},'ふ':{word:'ふね'},'へ':{word:'へび',speechChar:'ヘ'},'ほ':{word:'ほし'},
+  'は':{word:'はな',speechChar:'ハ',speechExample:'ハ。「ハナ」の「ハ」だよ。'},'ひ':{word:'ひこうき'},'ふ':{word:'ふね'},'へ':{word:'へび',speechChar:'ヘ'},'ほ':{word:'ほし'},
   'ま':{word:'まくら'},'み':{word:'みかん'},'む':{word:'むし'},'め':{word:'めがね'},'も':{word:'もも'},
-  'や':{word:'やさい'},'ゆ':{word:'ゆき'},'よ':{word:'ようふく'}
+  'や':{word:'やさい'},'ゆ':{word:'ゆき'},'よ':{word:'ようふく'},
+  'ら':{word:'らいおん'},'り':{word:'りんご'},'る':{word:'るすばん'},'れ':{word:'れもん'},'ろ':{word:'ろぼっと'},
+  'わ':{word:'わに'},
+  'を':{word:'ごはんをたべる',displayExample:'ごはんをたべる の「を」',speechParts:['「を」。','ごはん','を','たべる、の「を」だよ。']},
+  'ん':{word:'ぱん',speechExample:'「ん」。「ぱん」の さいごの もじ だよ。'}
 };
 const NS='http://www.w3.org/2000/svg';
 let currentRowIndex=0,current=ROWS[0].chars[0],mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
@@ -462,7 +494,7 @@ function render(resetTrace=true){
   guideLayer.innerHTML=''; markerLayer.innerHTML=''; sampleSvg.innerHTML='';
   celebrate.classList.remove('show'); setSelected();
   hanamaruLayer.classList.toggle('show',mode==='trace'&&hanamaruVisible);
-  exampleWord.textContent=`${CHAR_INFO[current].word}の「${current}」`;
+  exampleWord.textContent=displayExample();
 
   const ss=DATA[current];
   ss.forEach((d,i)=>{
@@ -572,7 +604,11 @@ const VISIBLE_CHECKPOINT_INDEX_OVERRIDES={
   'な:4':[1,2],
   'ぬ:2':[2,4,6,8],
   'ね:2':[2,5,7,8],
-  'の:1':[2,3,5,7]
+  'の:1':[2,3,5,7],
+  'れ:2':[1,2,5,8],
+  'わ:2':[1,3,6,8],
+  'を:2':[1,3],
+  'ん:1':[1,3,5,7]
 };
 function checkpointsFor(samples){
   const lengths=[0];
@@ -701,34 +737,56 @@ function pointsD(a){
   for(let i=1;i<a.length;i++)d+=` L${a[i].x.toFixed(2)} ${a[i].y.toFixed(2)}`;
   return d;
 }
+const SPEECH_PART_PAUSE=250;
+let speechSequenceToken=0;
 function speak(text,force=false){
   if(!('speechSynthesis' in window))return;
   try{
+    const parts=(Array.isArray(text)?text:[text]).filter(Boolean);
+    if(!parts.length)return;
+    const token=++speechSequenceToken;
     window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='ja-JP';
-    u.rate=.90;
-    u.pitch=1.12;
-    u.volume=1;
     const voices=window.speechSynthesis.getVoices();
     const ja=voices.find(v=>(v.lang||'').toLowerCase().startsWith('ja'));
-    if(ja)u.voice=ja;
-    window.speechSynthesis.speak(u);
+    const play=index=>{
+      if(token!==speechSequenceToken||index>=parts.length)return;
+      const u=new SpeechSynthesisUtterance(parts[index]);
+      u.lang='ja-JP';
+      u.rate=.90;
+      u.pitch=1.12;
+      u.volume=1;
+      if(ja)u.voice=ja;
+      u.onend=()=>{
+        if(index+1<parts.length)setTimeout(()=>play(index+1),SPEECH_PART_PAUSE);
+      };
+      window.speechSynthesis.speak(u);
+    };
+    play(0);
   }catch(e){}
 }
 function speechCharacter(ch=current){
   return CHAR_INFO[ch].speechChar||ch;
 }
+function displayExample(ch=current){
+  const info=CHAR_INFO[ch];
+  return info.displayExample||`${info.word}の「${ch}」`;
+}
 function spokenIntroduction(ch=current){
   const info=CHAR_INFO[ch],spoken=speechCharacter(ch);
+  if(info.speechParts)return info.speechParts.join(' ');
+  if(info.speechExample)return info.speechExample;
   return info.speechChar
     ? `${spoken}。${info.word}の、${spoken}、だよ。`
     : `${spoken}。${info.word}の『${spoken}』だよ。`;
 }
+function speechWithSuffix(suffix,ch=current){
+  const parts=CHAR_INFO[ch].speechParts;
+  if(!parts)return `${spokenIntroduction(ch)}${suffix}`;
+  return parts.map((part,index)=>index===parts.length-1?`${part}${suffix}`:part);
+}
 function currentInstruction(){
-  const introduction=spokenIntroduction();
-  if(mode==='free')return `${introduction}おてほんを見ながら、じぶんで書いてみよう。`;
-  return `${introduction}みどりのまるから、オレンジのやじるしのほうへ、なぞってね。`;
+  if(mode==='free')return speechWithSuffix('おてほんを見ながら、じぶんで書いてみよう。');
+  return speechWithSuffix('みどりのまるから、オレンジのやじるしのほうへ、なぞってね。');
 }
 function say(s,spoken=s){
   toast.textContent=s;toast.classList.add('show');
@@ -878,7 +936,7 @@ function animateDemoStroke(d,path){
 }
 async function demo(){
   if(demoing)return;
-  speak(`${spokenIntroduction()}おてほんを、みてね。`);
+  speak(speechWithSuffix('おてほんを、みてね。'));
   demoing=true;
   const oldMode=mode;
   const oldHanamaru=hanamaruVisible;
