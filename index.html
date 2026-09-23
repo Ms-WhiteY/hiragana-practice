@@ -1152,8 +1152,7 @@ function speechWithSuffix(suffix,key=current){
   return parts.map((part,index)=>index===parts.length-1?`${part}${suffix}`:part);
 }
 function currentInstruction(){
-  if(mode==='free')return speechWithSuffix('おてほんを見ながら、じぶんで書いてみよう。');
-  return speechWithSuffix('みどりのまるから、オレンジのやじるしのほうへ、なぞってね。');
+  return speechWithSuffix('');
 }
 function say(s,spoken=s){
   toast.textContent=s;toast.classList.add('show');
@@ -1179,7 +1178,7 @@ function start(ev){
   if(mode==='trace'){
     const stroke=strokes[strokeIndex],s=samplesForStroke(stroke),a=s[0],tolerances=strokeTolerances(s,stroke);
     if(dist(p,a)>tolerances.start){
-      say('🟢から はじめよう！','みどりのまるから、はじめよう。');beep(false);return;
+      say('🟢から はじめよう！','');beep(false);return;
     }
     prepareCheckpointState(s,stroke);updateCheckpointMarkers();
   }
@@ -1250,7 +1249,7 @@ function end(ev){
   }else{
     const live=$('live');if(live)live.remove();
     if(maxProgress<.42)say('さいごまで なぞってみよう！','さいごまで、なぞってみよう。');
-    else if(clearlyReverse)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。オレンジのやじるしのほうへ、なぞってね。');
+    else if(clearlyReverse)say('ぎゃくむきだよ！ 🟠▶の ほうへ','ぎゃくむきだよ。');
     else if(!passedAllStars&&visibleCheckpointIndexes.length)say('★を じゅんばんに とおってみよう！','ほしを、じゅんばんに、とおってみよう。');
     else say('もういっかい やってみよう！','もういっかい、やってみよう。');
     beep(false);
@@ -1260,39 +1259,35 @@ function end(ev){
 async function select(ch){
   if(demoing)return;
   current=ch;strokeIndex=0;hanamaruVisible=false;render();
-  if(mode==='free')await demo();
-  else speak(currentInstruction());
+  speak(currentInstruction());
+  if(mode==='free')await demo(true);
 }
 async function selectSeries(index){
   if(demoing||index===currentSeriesIndex)return;
   currentSeriesIndex=index;current=firstChoiceKey();strokeIndex=0;hanamaruVisible=false;
   buildLetters();render();
-  if(mode==='free')await demo();
-  else speak(currentInstruction());
+  if(mode==='free')await demo(true);
 }
 async function selectRow(index){
   if(demoing)return;
   currentRowIndex=index;currentSeriesIndex=0;strokeIndex=0;hanamaruVisible=false;
   buildSeriesTabs();current=firstChoiceKey();buildLetters();render();
-  if(mode==='free')await demo();
-  else speak(currentInstruction());
+  if(mode==='free')await demo(true);
 }
 async function selectGroup(index){
   if(demoing||index===currentGroupIndex)return;
   currentGroupIndex=index;currentRowIndex=0;currentSeriesIndex=0;strokeIndex=0;hanamaruVisible=false;
   buildRowTabs();buildSeriesTabs();current=firstChoiceKey();buildLetters();render();
-  if(mode==='free')await demo();
-  else speak(currentInstruction());
+  if(mode==='free')await demo(true);
 }
 async function setMode(m){
   if(demoing)return;
-  if(mode===m){speak(currentInstruction());return}
+  if(mode===m)return;
   mode=m;strokeIndex=0;hanamaruVisible=false;
   $('traceMode').classList.toggle('active',m==='trace');
   $('freeMode').classList.toggle('active',m==='free');
   render();
-  if(m==='free')await demo();
-  else speak(currentInstruction());
+  if(m==='free')await demo(true);
 }
 
 function demoStrokeTiming(stroke){
@@ -1317,9 +1312,9 @@ function animateDemoStroke(stroke,path){
     requestAnimationFrame(draw);
   });
 }
-async function demo(){
+async function demo(silent=false){
   if(demoing)return;
-  speak(speechWithSuffix('おてほんを、みてね。'));
+  if(!silent)speak(speechWithSuffix('おてほんを、みてね。'));
   demoing=true;
   const oldMode=mode;
   const oldHanamaru=hanamaruVisible;
@@ -1356,7 +1351,7 @@ $('traceMode').onclick=()=>setMode('trace');
 $('freeMode').onclick=()=>setMode('free');
 $('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;render()};
 $('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;hanamaruVisible=false;render()}};
-$('demoBtn').onclick=demo;
+$('demoBtn').onclick=()=>demo();
 $('listenBtn').onclick=()=>speak(currentInstruction(),true);
 if(!('speechSynthesis' in window)){
   $('listenBtn').textContent='🔇 こえ非対応';
