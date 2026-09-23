@@ -50,14 +50,16 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .prompt{font-weight:900;font-size:clamp(17px,2.3vw,24px)}
 .counter{font-weight:800;font-size:14px;background:#f5f1ec;border-radius:999px;padding:7px 10px;white-space:nowrap}
 .board{
-  position:relative;aspect-ratio:1/1;width:100%;max-height:74vh;overflow:hidden;border-radius:21px;
-  background:
-    linear-gradient(#f2eee8 1px,transparent 1px) 0 50%/100% 50% no-repeat,
-    linear-gradient(90deg,#f2eee8 1px,transparent 1px) 50% 0/50% 100% no-repeat,
-    #fffdfa;
+  position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;border-radius:21px;
+  background:#fffdfa;
   touch-action:none;user-select:none;-webkit-user-select:none
 }
+.board.multiCell{width:min(100%,230px);margin:0 auto;border-radius:12px}
 svg{display:block;width:100%;height:100%;touch-action:none}
+.practiceCell{fill:#fffdfa;stroke:#d9cdbc;stroke-width:1.4;vector-effect:non-scaling-stroke}
+.practiceCell.active{fill:#fffaf0;stroke:#e9a34d;stroke-width:2.2}
+.practiceCell.done{fill:#f3fbf6;stroke:#9fcfb0}
+.cellMidline{stroke:#e4ddd4;stroke-width:.85;stroke-dasharray:3 3;vector-effect:non-scaling-stroke;pointer-events:none}
 .guideStroke{fill:none;stroke:var(--guide);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;opacity:.82}
 .guideStroke.active{stroke:var(--active);opacity:1}
 .guideStroke.done{stroke:var(--done);opacity:1}
@@ -88,6 +90,8 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .panel{padding:14px}
 .sample{height:104px;display:flex;align-items:center;justify-content:center}
 .sample svg{width:100px;height:100px}
+.sample.compound{height:min(32vh,260px)}
+.sample.compound svg{width:auto;height:100%}
 .sampleStroke{fill:none;stroke:#35333d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
 .exampleWord{text-align:center;color:var(--sub);font-size:14px;font-weight:800;line-height:1.4;margin:-2px 0 9px}
 .exampleWord.compound{color:var(--ink);font-size:clamp(18px,2.6vw,23px)}
@@ -128,6 +132,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   .letters.sokuon{grid-template-columns:repeat(2,minmax(0,1fr))}
   .side{grid-template-columns:1fr}
   .boardCard{padding:7px}.board{border-radius:17px}
+  .board.multiCell{width:min(100%,180px);border-radius:10px}
 }
 </style>
 </head>
@@ -153,6 +158,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 
   <div class="board" id="board">
     <svg id="svg" viewBox="0 0 109 109" aria-label="ひらがな練習">
+      <g id="cellLayer" aria-hidden="true"></g>
       <g id="hanamaruLayer" class="hanamaru" aria-hidden="true">
         <image class="hanamaruImage" href="./assets/hanamaru.png" x="9" y="9" width="91" height="91" preserveAspectRatio="xMidYMid meet"/>
       </g>
@@ -612,13 +618,16 @@ const YOON_SERIES=[
   {label:'ぴ',items:[['ぴゃ','ゃ','ぴゃっと'],['ぴゅ','ゅ','ぴゅーん'],['ぴょ','ょ','ぴょんぴょん']]}
 ].map(series=>({
   label:series.label,
-  items:series.items.map(([key,small,word])=>({key,label:key,word,kind:'yoon',base:series.label,small}))
+  items:series.items.map(([key,small,word])=>({
+    key,label:key,word,kind:'yoon',base:series.label,small,
+    sequence:[{char:series.label,kind:'normal'},{char:small,kind:'small'}]
+  }))
 }));
 const SOKUON_ITEMS=[
-  {key:'っこ',label:'っこ',word:'がっこう',kind:'sokuon',next:'こ'},
-  {key:'って',label:'って',word:'きって',kind:'sokuon',next:'て'},
-  {key:'っし',label:'っし',word:'ざっし',kind:'sokuon',next:'し'},
-  {key:'っぱ',label:'っぱ',word:'らっぱ',kind:'sokuon',next:'ぱ'}
+  {key:'がっこう',label:'がっこう',word:'がっこう',kind:'sokuon',sequence:[{char:'が',kind:'normal'},{char:'っ',kind:'small'},{char:'こ',kind:'normal'},{char:'う',kind:'normal'}]},
+  {key:'きって',label:'きって',word:'きって',kind:'sokuon',sequence:[{char:'き',kind:'normal'},{char:'っ',kind:'small'},{char:'て',kind:'normal'}]},
+  {key:'ざっし',label:'ざっし',word:'ざっし',kind:'sokuon',sequence:[{char:'ざ',kind:'normal'},{char:'っ',kind:'small'},{char:'し',kind:'normal'}]},
+  {key:'らっぱ',label:'らっぱ',word:'らっぱ',kind:'sokuon',sequence:[{char:'ら',kind:'normal'},{char:'っ',kind:'small'},{char:'ぱ',kind:'normal'}]}
 ];
 const SMALL_ROWS=[
   {label:'ゃゅょ',kind:'yoon',series:YOON_SERIES},
@@ -649,11 +658,11 @@ const CHAR_INFO={
   'ぱ':{word:'ぱん'},'ぴ':{word:'ぴあの'},'ぷ':{word:'ぷりん'},'ぺ':{word:'ぺんぎん'},'ぽ':{word:'ぽすと'}
 };
 const NS='http://www.w3.org/2000/svg';
+const PRACTICE_CELL_SIZE=109;
+const SMALL_KANA_SCALE=.60;
+const SMALL_KANA_OFFSET_X=41;
+const SMALL_KANA_OFFSET_Y=-2;
 const IDENTITY_MATRIX={a:1,b:0,c:0,d:1,e:0,f:0};
-const COMPOUND_TRANSFORMS={
-  yoon:[{a:.68,b:0,c:0,d:.68,e:-2,f:12},{a:.55,b:0,c:0,d:.55,e:52,f:31}],
-  sokuon:[{a:.55,b:0,c:0,d:.55,e:-2,f:30},{a:.68,b:0,c:0,d:.68,e:40,f:12}]
-};
 const DAKUTEN_CHARS=new Set([...'がぎぐげござじずぜぞだぢづでどばびぶべぼ']);
 const COMPOUND_ITEMS=new Map([
   ...YOON_SERIES.flatMap(series=>series.items),
@@ -666,7 +675,7 @@ let hanamaruVisible=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 
 const $=id=>document.getElementById(id);
-const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),seriesTabs=$('seriesTabs'),letters=$('letters'),svg=$('svg'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
+const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),seriesTabs=$('seriesTabs'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
       celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
@@ -687,8 +696,7 @@ function currentPracticeItem(key=current){
   return {key,label:key,word:CHAR_INFO[key].word,kind:'single',char:key};
 }
 function componentsFor(item=currentPracticeItem()){
-  if(item.kind==='yoon')return [{char:item.base,role:'base'},{char:item.small,role:'small'}];
-  if(item.kind==='sokuon')return [{char:'っ',role:'small'},{char:item.next,role:'base'}];
+  if(item.sequence)return item.sequence.map(component=>({char:component.char,role:component.kind}));
   return [{char:item.char,role:'normal'}];
 }
 function multiplyMatrices(parent,local){
@@ -706,13 +714,20 @@ function dakutenTransform(char,index){
   const offset=index===DATA[char].length-2?-1.25:index===DATA[char].length-1?1.25:0;
   return {a:1,b:0,c:0,d:1,e:offset,f:offset};
 }
+function componentLayout(component,index){
+  const cellTop=index*PRACTICE_CELL_SIZE;
+  if(component.role==='small')return {
+    a:SMALL_KANA_SCALE,b:0,c:0,d:SMALL_KANA_SCALE,
+    e:SMALL_KANA_OFFSET_X,f:cellTop+SMALL_KANA_OFFSET_Y
+  };
+  return {a:1,b:0,c:0,d:1,e:0,f:cellTop};
+}
 function currentStrokes(){
   const item=currentPracticeItem();
   const components=componentsFor(item);
-  const layouts=item.kind==='single'?[IDENTITY_MATRIX]:COMPOUND_TRANSFORMS[item.kind];
   return components.flatMap((component,componentIndex)=>DATA[component.char].map((d,rawStrokeIndex)=>({
     d,char:component.char,role:component.role,componentIndex,rawStrokeIndex,
-    transform:multiplyMatrices(layouts[componentIndex],dakutenTransform(component.char,rawStrokeIndex))
+    transform:multiplyMatrices(componentLayout(component,componentIndex),dakutenTransform(component.char,rawStrokeIndex))
   })));
 }
 function buildGroupTabs(){
@@ -763,9 +778,9 @@ function buildLetters(){
     const b=document.createElement('button');
     b.className=`letter${choice.kind==='sokuon'?' wordChoice':''}`;
     b.dataset.item=choice.key;
-    if(choice.kind==='sokuon')b.innerHTML=`${choice.word}<small>「${choice.label}」を れんしゅう</small>`;
+    if(choice.kind==='sokuon')b.innerHTML=`${choice.word}<small>${choice.sequence.length}もじを れんしゅう</small>`;
     else b.textContent=choice.label;
-    b.setAttribute('aria-label',`${choice.word?`${choice.word}の`:''}${choice.label}をれんしゅう`);
+    b.setAttribute('aria-label',choice.kind==='sokuon'?`${choice.word}をれんしゅう`:`${choice.word?`${choice.word}の`:''}${choice.label}をれんしゅう`);
     b.onclick=()=>select(choice.key);
     letters.appendChild(b);
   }
@@ -803,6 +818,46 @@ function label(x,y,s,cls){
   t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('class',cls);t.textContent=s;
   return t;
 }
+function renderPracticeCells(components,strokes){
+  const count=components.length;
+  const height=count*PRACTICE_CELL_SIZE;
+  svg.setAttribute('viewBox',`0 0 ${PRACTICE_CELL_SIZE} ${height}`);
+  sampleSvg.setAttribute('viewBox',`0 0 ${PRACTICE_CELL_SIZE} ${height}`);
+  board.classList.toggle('multiCell',count>1);
+  board.style.aspectRatio=`1 / ${count}`;
+  sampleSvg.parentElement.classList.toggle('compound',count>1);
+  cellLayer.innerHTML='';
+
+  const activeComponent=strokeIndex<strokes.length?strokes[strokeIndex].componentIndex:-1;
+  components.forEach((component,index)=>{
+    const top=index*PRACTICE_CELL_SIZE;
+    const cell=document.createElementNS(NS,'rect');
+    let cls='practiceCell';
+    if(mode==='trace'){
+      const remaining=strokes.slice(strokeIndex).some(stroke=>stroke.componentIndex===index);
+      if(!remaining)cls+=' done';
+      else if(index===activeComponent)cls+=' active';
+    }
+    cell.setAttribute('x','.7');cell.setAttribute('y',top+.7);
+    cell.setAttribute('width',PRACTICE_CELL_SIZE-1.4);cell.setAttribute('height',PRACTICE_CELL_SIZE-1.4);
+    cell.setAttribute('class',cls);cellLayer.appendChild(cell);
+
+    const vertical=document.createElementNS(NS,'line');
+    vertical.setAttribute('x1',PRACTICE_CELL_SIZE/2);vertical.setAttribute('x2',PRACTICE_CELL_SIZE/2);
+    vertical.setAttribute('y1',top+1.4);vertical.setAttribute('y2',top+PRACTICE_CELL_SIZE-1.4);
+    vertical.setAttribute('class','cellMidline');cellLayer.appendChild(vertical);
+    const horizontal=document.createElementNS(NS,'line');
+    horizontal.setAttribute('x1','1.4');horizontal.setAttribute('x2',PRACTICE_CELL_SIZE-1.4);
+    horizontal.setAttribute('y1',top+PRACTICE_CELL_SIZE/2);horizontal.setAttribute('y2',top+PRACTICE_CELL_SIZE/2);
+    horizontal.setAttribute('class','cellMidline');cellLayer.appendChild(horizontal);
+  });
+
+  const image=hanamaruLayer.querySelector('image');
+  const size=count>1?76:91;
+  image.setAttribute('x',(PRACTICE_CELL_SIZE-size)/2);
+  image.setAttribute('y',(count-1)*PRACTICE_CELL_SIZE+(PRACTICE_CELL_SIZE-size)/2);
+  image.setAttribute('width',size);image.setAttribute('height',size);
+}
 function setSelected(){
   [...groupTabs.children].forEach((b,index)=>{
     const selected=index===currentGroupIndex;
@@ -826,10 +881,12 @@ function render(resetTrace=true){
   guideLayer.innerHTML=''; markerLayer.innerHTML=''; sampleSvg.innerHTML='';
   celebrate.classList.remove('show'); setSelected();
   hanamaruLayer.classList.toggle('show',mode==='trace'&&hanamaruVisible);
+  const item=currentPracticeItem();
   exampleWord.textContent=displayExample();
-  exampleWord.classList.toggle('compound',currentPracticeItem().kind!=='single');
+  exampleWord.classList.toggle('compound',item.kind!=='single');
 
   const ss=currentStrokes();
+  renderPracticeCells(componentsFor(item),ss);
   ss.forEach((stroke,i)=>{
     let cls='guideStroke';
     if(mode==='trace'){
@@ -930,6 +987,9 @@ const SMALL_MARK_END_RADIUS=9;
 const VISIBLE_CHECKPOINT_MIN_LENGTH=96;
 const VISIBLE_CHECKPOINT_SPACING=60;
 const VISIBLE_CHECKPOINT_MAX=4;
+const STROKE_BEHAVIOR_OVERRIDES={
+  'う:1':{type:'dot',minTravel:3.5,minProgress:.14,endRadius:19,minDirectionCos:.15}
+};
 const DEMO_SPEED=85;
 const DEMO_MIN_DURATION=350;
 const DEMO_STROKE_PAUSE=180;
@@ -990,6 +1050,16 @@ function strokeTolerances(samples,stroke){
   }
   if(stroke?.role==='small')return {start:11,path:11.5,end:14};
   return {start:12,path:12.5,end:16};
+}
+function strokeBehavior(stroke){
+  return STROKE_BEHAVIOR_OVERRIDES[`${stroke.char}:${stroke.rawStrokeIndex+1}`]||null;
+}
+function inputDirectionCos(inputPoints,samples){
+  if(inputPoints.length<2)return -1;
+  const from=inputPoints[0],to=inputPoints[inputPoints.length-1];
+  const expectedFrom=samples[0],expectedTo=samples[samples.length-1];
+  const ax=to.x-from.x,ay=to.y-from.y,bx=expectedTo.x-expectedFrom.x,by=expectedTo.y-expectedFrom.y;
+  return (ax*bx+ay*by)/(Math.hypot(ax,ay)*Math.hypot(bx,by)||1);
 }
 function checkpointTurnScore(samples,index,checkpointCount){
   const center=Math.round((index+1)/(checkpointCount+1)*(samples.length-1));
@@ -1094,6 +1164,8 @@ function pointsD(a){
   for(let i=1;i<a.length;i++)d+=` L${a[i].x.toFixed(2)} ${a[i].y.toFixed(2)}`;
   return d;
 }
+const SPEECH_VOLUME=.65;
+const SFX_GAIN=.025;
 const SPEECH_PART_PAUSE=250;
 let speechSequenceToken=0;
 function speak(text,force=false){
@@ -1111,7 +1183,7 @@ function speak(text,force=false){
       u.lang='ja-JP';
       u.rate=.90;
       u.pitch=1.12;
-      u.volume=1;
+      u.volume=SPEECH_VOLUME;
       if(ja)u.voice=ja;
       u.onend=()=>{
         if(index+1<parts.length)setTimeout(()=>play(index+1),SPEECH_PART_PAUSE);
@@ -1129,14 +1201,14 @@ function speechCharacter(key=current){
 function displayExample(key=current){
   const item=currentPracticeItem(key);
   if(item.kind==='yoon')return `${item.word}の「${item.label}」`;
-  if(item.kind==='sokuon')return `${item.word}　「${item.label}」を れんしゅう`;
+  if(item.kind==='sokuon')return `${item.word}を かいてみよう`;
   const info=CHAR_INFO[key];
   return info.displayExample||`${info.word}の「${key}」`;
 }
 function spokenIntroduction(key=current){
   const item=currentPracticeItem(key);
   if(item.kind==='yoon')return `${item.label}。${item.word}の「${item.label}」だよ。おおきい「${item.base}」と、ちいさい「${item.small}」を かくよ。`;
-  if(item.kind==='sokuon')return `${item.label}。${item.word}の、ちいさい「っ」だよ。ちいさい「っ」で、ちょっと つまるよ。`;
+  if(item.kind==='sokuon')return `${item.word}。「${item.word}」を かいてみよう。ちいさい「っ」が はいっているよ。`;
   const info=CHAR_INFO[key],spoken=speechCharacter(key);
   if(info.speechParts)return info.speechParts.join(' ');
   if(info.speechExample)return info.speechExample;
@@ -1162,7 +1234,7 @@ function say(s,spoken=s){
 function beep(ok=true){
   try{
     const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();
-    o.connect(g);g.connect(a.destination);o.frequency.value=ok?660:220;g.gain.value=.045;o.start();o.stop(a.currentTime+.1);
+    o.connect(g);g.connect(a.destination);o.frequency.value=ok?660:220;g.gain.value=SFX_GAIN;o.start();o.stop(a.currentTime+.1);
     o.onended=()=>a.close();
   }catch(e){}
 }
@@ -1222,12 +1294,18 @@ function end(ev){
   }
 
   const strokes=currentStrokes(),stroke=strokes[strokeIndex],s=samplesForStroke(stroke),z=s[s.length-1],last=points[points.length-1],tolerances=strokeTolerances(s,stroke);
+  const behavior=strokeBehavior(stroke),isDot=behavior?.type==='dot';
+  const inputTravel=samplesLength(points);
+  const dotDirectionOk=!isDot||inputDirectionCos(points,s)>=behavior.minDirectionCos;
   const offRatio=offCount/Math.max(1,points.length);
   const backRatio=backtrackCount/Math.max(1,points.length);
-  const clearlyReverse=backtrackCount>=8 && backRatio>.22;
+  const clearlyReverse=(backtrackCount>=8 && backRatio>.22)||(isDot&&inputTravel>=behavior.minTravel&&!dotDirectionOk);
   const passedAllStars=visibleCheckpointIndex===visibleCheckpointIndexes.length;
+  const progressOk=maxProgress>(isDot?behavior.minProgress:.72);
+  const endOk=dist(last,z)<(isDot?behavior.endRadius:tolerances.end);
+  const travelOk=!isDot||inputTravel>=behavior.minTravel;
 
-  if(maxProgress>.72 && dist(last,z)<tolerances.end && offRatio<.52 && !clearlyReverse && passedAllStars){
+  if(progressOk && endOk && travelOk && offRatio<.52 && !clearlyReverse && passedAllStars){
     const live=$('live');if(live)live.removeAttribute('id');
     strokeIndex++;beep(true);
 
