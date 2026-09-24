@@ -1,5 +1,5 @@
 (() => {
-  const version = '13.0';
+  const version = '14.0';
   self.APP_VERSION = version;
 
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
