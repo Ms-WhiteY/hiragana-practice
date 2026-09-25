@@ -27,6 +27,9 @@ button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
 h1{font-size:clamp(19px,3vw,30px);margin:0}
 .stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
+.rewardSummary{display:flex;align-items:stretch;justify-content:flex-end;gap:7px}
+.rewardEntry{border:0;border-radius:17px;background:#fff2c8;min-width:118px;padding:5px 11px;font-weight:900;line-height:1.15;box-shadow:var(--shadow)}
+.rewardEntry small{display:block;margin-top:2px;color:#7c6531;font-size:11px;white-space:nowrap}
 .groupTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:820px}
 .groupTab{border:0;background:#fff;border-radius:17px;min-height:54px;padding:7px 10px;font-size:clamp(17px,2.7vw,23px);font-weight:900;box-shadow:var(--shadow);line-height:1.15}
 .groupTab small{display:block;margin-top:3px;color:var(--sub);font-size:10px;line-height:1}
@@ -39,6 +42,10 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .kanaCell{display:flex;align-items:center;justify-content:center;padding:0;background:#fffdfa;font-size:clamp(20px,3.6vw,35px);font-weight:900;box-shadow:0 3px 8px rgba(80,60,40,.08);cursor:pointer}
 .kanaCell:active{transform:scale(.94);background:#fff1bd}
 .kanaCell.recent{outline:3px solid #8dcdf6;background:#eef8ff}
+.kanaGlyph{display:block;width:82%;height:82%;pointer-events:none}
+.kanaGlyphStroke{fill:none;stroke:var(--ink);stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
+.letter.glyphButton{display:flex;align-items:center;justify-content:center}
+.letter .kanaGlyph{width:62px;height:62px;max-width:88%;max-height:88%}
 .kanaBlank{background:#f6f1ea;opacity:.72}
 .smallIndex{display:grid;gap:10px;max-width:850px;margin:0 auto}
 .yoonIndex{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -52,6 +59,27 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .practiceNav{margin-bottom:10px}
 .backToIndex{border:0;border-radius:999px;background:#e8f4ff;padding:10px 16px;font-weight:900;box-shadow:var(--shadow)}
 .practiceHeading{text-align:center;font-size:clamp(18px,2.8vw,25px);margin:7px 0 8px}
+.rewardCardsView{background:#fff;border-radius:25px;padding:clamp(12px,2.5vw,24px);box-shadow:var(--shadow)}
+.rewardCardsTitle{text-align:center;margin:5px 0 4px;font-size:clamp(24px,4vw,36px)}
+.rewardCardsLead{text-align:center;color:var(--sub);font-weight:800;margin:0 0 14px}
+.rewardCardsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
+.rewardCard{position:relative;min-width:0;border:2px solid #eadfce;border-radius:23px;padding:16px 13px;background:#fffaf0;text-align:center;box-shadow:0 7px 18px rgba(80,60,40,.09)}
+.rewardCard.locked{background:#f4f1ed;color:#777;box-shadow:none}
+.rewardCard.completed{border-color:#8bcda3;background:#f0fbf4}
+.rewardCard h3{margin:0 0 7px;font-size:clamp(22px,3.4vw,31px)}
+.rewardCard p{min-height:42px;margin:0 0 10px;color:var(--sub);font-weight:800;line-height:1.4}
+.rewardCard button{border:0;border-radius:15px;min-height:45px;width:100%;background:#ffe188;font-weight:900}
+.rewardCard button:disabled{background:#ddd9d4;color:#888}
+.rewardStamp{display:inline-block;transform:rotate(5deg);margin:-3px 0 8px;border:2px solid #45a86a;border-radius:999px;padding:3px 8px;color:#2d8751;background:#fff;font-size:12px;font-weight:900}
+.rewardUnlock{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(53,51,61,.42)}
+.rewardUnlockBox{width:min(92vw,420px);border-radius:28px;padding:24px 20px;background:#fffdf5;text-align:center;box-shadow:0 20px 55px rgba(40,30,20,.24)}
+.rewardEnvelope{display:block;font-size:76px;line-height:1;animation:envelopeWiggle .65s ease-in-out infinite alternate}
+.rewardUnlock h2{margin:9px 0 5px;font-size:clamp(24px,6vw,34px)}
+.rewardUnlock p{margin:0 0 16px;color:var(--sub);font-weight:800}
+.rewardUnlockActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.rewardUnlockActions button{border:0;border-radius:16px;min-height:48px;font-weight:900;background:#eee9e2}
+.rewardUnlockActions .primary{background:#ffe188}
+@keyframes envelopeWiggle{from{transform:rotate(-5deg) scale(.98)}to{transform:rotate(5deg) scale(1.04)}}
 .rowTabs{display:grid;grid-template-columns:repeat(var(--row-count,5),minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:1050px}
 .rowTabs.compact{max-width:440px}
 .rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(15px,2.3vw,21px);font-weight:900;box-shadow:var(--shadow)}
@@ -131,6 +159,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .celebrate .star{display:block;font-size:clamp(70px,15vw,130px);animation:bounce .55s ease-in-out infinite alternate}
 .celebrate strong{font-size:clamp(28px,6vw,55px)}
 @keyframes bounce{to{transform:translateY(-12px) rotate(5deg)}}
+@media(prefers-reduced-motion:reduce){.rewardEnvelope,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo{animation:none!important}}
 .footer{text-align:center;color:#8b858d;font-size:11px;margin:12px 0 2px;line-height:1.5}
 .footer a{color:inherit}
 .appVersion{display:inline-block;margin-top:2px;font-size:10px;opacity:.8}
@@ -147,11 +176,13 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 }
 @media(max-width:480px){
   body{padding-left:7px;padding-right:7px}
+  header{gap:5px;flex-wrap:wrap}h1{font-size:18px;white-space:nowrap}.rewardSummary{width:100%;gap:4px}.stars{padding:7px 9px}.rewardEntry{min-width:105px;padding:5px 7px;font-size:13px}.rewardEntry small{font-size:10px}
   .groupTabs{gap:5px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
   .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}
   .kanaTable{gap:1px}.kanaTable.voiced{gap:4px;padding:0 12px}
   .kanaCell,.kanaBlank{border-radius:6px}.kanaCell{font-size:20px}
   .yoonIndex{grid-template-columns:1fr}.smallSeriesCard{padding:7px}.indexChoice{min-height:48px}
+  .rewardCardsGrid{grid-template-columns:1fr;gap:9px}.rewardCard{padding:13px 11px}.rewardCard p{min-height:0}
   .backToIndex{padding:9px 13px}
   .rowTabs{gap:4px}.rowTab{min-height:44px;border-radius:13px;font-size:15px}
   .seriesTabs{gap:5px;grid-template-columns:repeat(auto-fit,minmax(72px,1fr))}.seriesTab{min-height:43px}
@@ -167,7 +198,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <div class="app">
 <header>
   <h1>✏️ ひらがな なぞりれんしゅう</h1>
-  <div class="stars">⭐ <span id="stars">0</span></div>
+  <div class="rewardSummary">
+    <div class="stars">⭐ <span id="stars">0</span></div>
+    <button class="rewardEntry" id="rewardButton">✉️ おてがみ<small id="rewardProgress"></small></button>
+  </div>
 </header>
 
 <button id="installBtn" class="install">📱 この端末にアプリとして入れる</button>
@@ -176,6 +210,13 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   <div class="indexPrompt">きょうは どの もじを やる？</div>
   <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
   <div id="indexGrid"></div>
+</section>
+
+<section class="rewardCardsView" id="rewardCardsView" hidden>
+  <button class="backToIndex" id="cardsBackToIndex">← いちらんに戻る</button>
+  <h2 class="rewardCardsTitle">✉️ おてがみカード</h2>
+  <p class="rewardCardsLead">ほしを あつめて、ことばを かこう！</p>
+  <div class="rewardCardsGrid" id="rewardCardsGrid"></div>
 </section>
 
 <section id="practiceView" hidden>
@@ -237,6 +278,18 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   個人情報の送信・広告・アクセス解析はありません。<br>
   <span class="appVersion" id="appVersion"></span>
 </div>
+</div>
+
+<div class="rewardUnlock" id="rewardUnlock" role="dialog" aria-modal="true" aria-labelledby="rewardUnlockTitle" hidden>
+  <div class="rewardUnlockBox">
+    <span class="rewardEnvelope" aria-hidden="true">✉️✨</span>
+    <h2 id="rewardUnlockTitle">おてがみカードが ひらいた！</h2>
+    <p id="rewardUnlockText"></p>
+    <div class="rewardUnlockActions">
+      <button class="primary" id="viewUnlockedCards">みてみる</button>
+      <button id="dismissUnlock">あとで</button>
+    </div>
+  </div>
 </div>
 
 <script src="./app-version.js"></script>
@@ -666,6 +719,11 @@ const SOKUON_ITEMS=[
   {key:'ざっし',label:'ざっし',word:'ざっし',kind:'sokuon',sequence:[{char:'ざ',kind:'normal'},{char:'っ',kind:'small'},{char:'し',kind:'normal'}]},
   {key:'らっぱ',label:'らっぱ',word:'らっぱ',kind:'sokuon',sequence:[{char:'ら',kind:'normal'},{char:'っ',kind:'small'},{char:'ぱ',kind:'normal'}]}
 ];
+const REWARD_CARDS=[
+  {id:'daisuki',key:'reward:daisuki',threshold:10,text:'だいすき',label:'だいすき',word:'だいすき',kind:'reward',sequence:[{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]},
+  {id:'arigatou',key:'reward:arigatou',threshold:20,text:'ありがとう',label:'ありがとう',word:'ありがとう',kind:'reward',sequence:[{char:'あ',kind:'normal'},{char:'り',kind:'normal'},{char:'が',kind:'normal'},{char:'と',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'matane',key:'reward:matane',threshold:30,text:'またね',label:'またね',word:'またね',kind:'reward',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'ね',kind:'normal'}]}
+];
 const SMALL_ROWS=[
   {label:'ゃゅょ',kind:'yoon',series:YOON_SERIES},
   {label:'っ',kind:'sokuon',items:SOKUON_ITEMS}
@@ -703,25 +761,58 @@ const IDENTITY_MATRIX={a:1,b:0,c:0,d:1,e:0,f:0};
 const DAKUTEN_CHARS=new Set([...'がぎぐげござじずぜぞだぢづでどばびぶべぼ']);
 const COMPOUND_ITEMS=new Map([
   ...YOON_SERIES.flatMap(series=>series.items),
-  ...SOKUON_ITEMS
+  ...SOKUON_ITEMS,
+  ...REWARD_CARDS
 ].map(item=>[item.key,item]));
 let currentGroupIndex=0,currentRowIndex=0,currentSeriesIndex=0,current=CHAR_GROUPS[0].rows[0].chars[0],mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
-let viewState='index',lastPracticeKey=null,lastPracticeGroupIndex=null;
+let viewState='index',practiceContext='normal',currentRewardCard=null,lastPracticeKey=null,lastPracticeGroupIndex=null;
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let hanamaruVisible=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
+const REWARD_COMPLETED_KEY='hiragana-reward-cards-v1';
+const REWARD_SEEN_KEY='hiragana-reward-seen-v1';
+const completedRewardCards=loadStoredIds(REWARD_COMPLETED_KEY);
+const storedSeenRewards=localStorage.getItem(REWARD_SEEN_KEY);
+const seenRewardCards=loadStoredIds(REWARD_SEEN_KEY);
+let initialUnlockedRewardCount=0;
+if(storedSeenRewards===null){
+  const existingUnlocked=REWARD_CARDS.filter(card=>stars>=card.threshold);
+  if(existingUnlocked.length){
+    initialUnlockedRewardCount=existingUnlocked.length;
+    existingUnlocked.forEach(card=>seenRewardCards.add(card.id));
+    saveStoredIds(REWARD_SEEN_KEY,seenRewardCards);
+  }
+}
 
 const $=id=>document.getElementById(id);
-const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
+const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),rewardCardsView=$('rewardCardsView'),rewardCardsGrid=$('rewardCardsGrid'),rewardButton=$('rewardButton'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
-      celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord');
+      celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord'),rewardUnlock=$('rewardUnlock');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
-$('stars').textContent=stars;
+
+function loadStoredIds(key){
+  try{
+    const value=JSON.parse(localStorage.getItem(key)||'[]');
+    return new Set(Array.isArray(value)?value.filter(id=>typeof id==='string'):[]);
+  }catch(e){return new Set()}
+}
+function saveStoredIds(key,ids){localStorage.setItem(key,JSON.stringify([...ids]))}
+function unlockedRewardCards(){return REWARD_CARDS.filter(card=>stars>=card.threshold)}
+function updateRewardSummary(){
+  const unlocked=unlockedRewardCards();
+  const next=REWARD_CARDS.find(card=>stars<card.threshold);
+  $('stars').textContent=stars;
+  $('rewardProgress').textContent=next
+    ? `${unlocked.length?`${unlocked.length}まい・`:''}あと${next.threshold-stars}こ`
+    : `${unlocked.length}まい ひらいた！`;
+}
+updateRewardSummary();
 
 function activeRows(){return CHAR_GROUPS[currentGroupIndex].rows}
 function activeRow(){return activeRows()[currentRowIndex]}
 function activeChoices(){
+  if(practiceContext==='reward'&&currentRewardCard)return[currentRewardCard];
   const row=activeRow();
   if(row.chars)return row.chars.map(ch=>({key:ch,label:ch}));
   if(row.kind==='yoon')return row.series[currentSeriesIndex].items;
@@ -805,7 +896,8 @@ function buildIndexSubTabs(){
 function indexButton(label,key,open,extraClass=''){
   const button=document.createElement('button');
   button.className=`${extraClass||'indexChoice'}${lastPracticeGroupIndex===currentGroupIndex&&lastPracticeKey===key?' recent':''}`;
-  button.textContent=label;
+  if(extraClass==='kanaCell'&&DATA[label])button.appendChild(renderKanaGlyph(label));
+  else button.textContent=label;
   button.setAttribute('aria-label',`${label}をれんしゅう`);
   button.onclick=open;
   return button;
@@ -868,6 +960,7 @@ function buildIndex(){
   }else buildSmallIndex();
 }
 function practiceHeadingText(){
+  if(practiceContext==='reward')return '✉️ おてがみチャレンジ';
   const row=activeRow();
   if(row.kind==='yoon')return `${row.series[currentSeriesIndex].label} の なかま`;
   if(row.kind==='sokuon')return 'ちいさい「っ」の ことば';
@@ -880,34 +973,95 @@ function buildLetters(){
   letters.style.setProperty('--letter-count',String(count));
   letters.style.setProperty('--letters-max-width',`${count*210+Math.max(0,count-1)*8}px`);
   letters.classList.toggle('compact',count<5);
-  letters.classList.toggle('sokuon',activeRow().kind==='sokuon');
+  letters.classList.toggle('sokuon',practiceContext==='normal'&&activeRow().kind==='sokuon');
   for(const choice of choices){
+    const item=currentPracticeItem(choice.key);
     const b=document.createElement('button');
-    b.className=`letter${choice.kind==='sokuon'?' wordChoice':''}`;
+    const isWord=item.kind==='sokuon'||item.kind==='reward';
+    b.className=`letter${isWord?' wordChoice':''}${item.kind==='single'?' glyphButton':''}`;
     b.dataset.item=choice.key;
-    if(choice.kind==='sokuon')b.innerHTML=`${choice.word}<small>${choice.sequence.length}もじを れんしゅう</small>`;
-    else b.textContent=choice.label;
-    b.setAttribute('aria-label',choice.kind==='sokuon'?`${choice.word}をれんしゅう`:`${choice.word?`${choice.word}の`:''}${choice.label}をれんしゅう`);
+    if(isWord)b.innerHTML=`${item.word}<small>${item.sequence.length}もじを れんしゅう</small>`;
+    else if(item.kind==='single')b.appendChild(renderKanaGlyph(item.char));
+    else b.textContent=item.label;
+    b.setAttribute('aria-label',isWord?`${item.word}をれんしゅう`:`${item.word?`${item.word}の`:''}${item.label}をれんしゅう`);
     b.onclick=()=>select(choice.key);
     letters.appendChild(b);
   }
 }
 function showIndex(){
-  viewState='index';groupTabs.hidden=false;indexView.hidden=false;practiceView.hidden=true;
+  viewState='index';practiceContext='normal';currentRewardCard=null;
+  groupTabs.hidden=false;indexView.hidden=false;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=false;
   buildIndex();
+}
+function rewardCardState(card){
+  if(stars<card.threshold)return'locked';
+  return completedRewardCards.has(card.id)?'completed':'unlocked';
+}
+function buildRewardCards(){
+  rewardCardsGrid.innerHTML='';
+  REWARD_CARDS.forEach(card=>{
+    const state=rewardCardState(card);
+    const panel=document.createElement('article');panel.className=`rewardCard ${state}`;
+    const title=document.createElement('h3');title.textContent=`${state==='locked'?'🔒':'✉️'} ${card.text}`;panel.appendChild(title);
+    const detail=document.createElement('p');
+    detail.textContent=state==='locked'
+      ? `⭐${card.threshold}で ひらく（あと${card.threshold-stars}こ）`
+      : state==='completed'?'できた！ なんどでも かけるよ':`⭐${card.threshold} ひらいた！`;
+    panel.appendChild(detail);
+    if(state==='completed'){
+      const stamp=document.createElement('span');stamp.className='rewardStamp';stamp.textContent='できた！';panel.appendChild(stamp);
+    }
+    const button=document.createElement('button');
+    button.textContent=state==='locked'?'まだ おやすみ':state==='completed'?'もういちど':'なぞってみる';
+    button.disabled=state==='locked';
+    button.setAttribute('aria-label',state==='locked'?`${card.text}はあと${card.threshold-stars}こでひらく`:`${card.text}をなぞる`);
+    if(state!=='locked')button.onclick=()=>enterRewardPractice(card.id);
+    panel.appendChild(button);rewardCardsGrid.appendChild(panel);
+  });
+}
+function hideRewardUnlock(){rewardUnlock.hidden=true}
+function showRewardUnlock(cards,existing=false){
+  if(!cards.length)return;
+  $('rewardUnlockTitle').textContent=existing&&cards.length>1
+    ? `おてがみカードが ${cards.length}まい ひらいているよ！`
+    : 'おてがみカードが ひらいた！';
+  $('rewardUnlockText').textContent=existing&&cards.length>1
+    ? 'カードを みてみよう！'
+    : `「${cards[cards.length-1].text}」を かけるよ！`;
+  rewardUnlock.hidden=false;
+}
+function showRewardCards(){
+  if(demoing)return;
+  hideRewardUnlock();viewState='cards';practiceContext='normal';currentRewardCard=null;
+  groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=true;rewardCardsView.hidden=false;rewardButton.hidden=true;
+  buildRewardCards();
 }
 async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=true){
   if(demoing)return;
+  practiceContext='normal';currentRewardCard=null;
   currentGroupIndex=groupIndex;currentRowIndex=rowIndex;currentSeriesIndex=seriesIndex;current=key;
   lastPracticeGroupIndex=groupIndex;lastPracticeKey=key;strokeIndex=0;hanamaruVisible=false;
-  viewState='practice';groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=false;
+  viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
+  $('backToIndex').textContent='← いちらんに戻る';
   practiceHeading.textContent=practiceHeadingText();buildLetters();render();
   if(speakIntro)speak(currentInstruction());
   if(mode==='free')await demo(true);
 }
+async function enterRewardPractice(cardId){
+  if(demoing)return;
+  const card=REWARD_CARDS.find(item=>item.id===cardId);
+  if(!card||stars<card.threshold)return;
+  practiceContext='reward';currentRewardCard=card;current=card.key;strokeIndex=0;hanamaruVisible=false;
+  viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
+  $('backToIndex').textContent='← おてがみに戻る';
+  practiceHeading.textContent=practiceHeadingText();buildLetters();render();
+  if(mode==='free')await demo(true);
+}
 function backToIndex(){
   if(demoing)return;
-  strokeIndex=0;hanamaruVisible=false;celebrate.classList.remove('show');showIndex();
+  strokeIndex=0;hanamaruVisible=false;celebrate.classList.remove('show');
+  if(practiceContext==='reward')showRewardCards();
+  else showIndex();
 }
 buildGroupTabs();showIndex();
 
@@ -916,6 +1070,19 @@ function mkPath(d,cls){
   p.setAttribute('d',d);
   if(cls)p.setAttribute('class',cls);
   return p;
+}
+function renderKanaGlyph(char){
+  const glyph=document.createElementNS(NS,'svg');
+  glyph.setAttribute('viewBox','0 0 109 109');
+  glyph.setAttribute('class','kanaGlyph');
+  glyph.setAttribute('aria-hidden','true');
+  glyph.setAttribute('focusable','false');
+  DATA[char].forEach((d,index)=>{
+    const path=mkPath(d,'kanaGlyphStroke');
+    path.setAttribute('transform',matrixAttribute(dakutenTransform(char,index)));
+    glyph.appendChild(path);
+  });
+  return glyph;
 }
 function matrixAttribute(matrix){return `matrix(${matrix.a} ${matrix.b} ${matrix.c} ${matrix.d} ${matrix.e} ${matrix.f})`}
 function pathForStroke(stroke,cls){
@@ -1016,7 +1183,7 @@ function render(resetTrace=true){
       addMarkers(strokeIndex);
       $('prompt').textContent='🟢から 🟠▶のほうへ！';
     }else{
-      $('prompt').textContent='できた！ 🌟';
+      $('prompt').textContent=practiceContext==='reward'?'できた！ ✉️':'できた！ 🌟';
     }
   }else{
     $('counter').textContent='じゆう';
@@ -1315,6 +1482,7 @@ function displayExample(key=current){
   const item=currentPracticeItem(key);
   if(item.kind==='yoon')return `${item.word}の「${item.label}」`;
   if(item.kind==='sokuon')return `${item.word}を かいてみよう`;
+  if(item.kind==='reward')return `✉️ ${item.text}を かいてみよう`;
   const info=CHAR_INFO[key];
   return info.displayExample||`${info.word}の「${key}」`;
 }
@@ -1322,6 +1490,7 @@ function spokenIntroduction(key=current){
   const item=currentPracticeItem(key);
   if(item.kind==='yoon')return `${item.label}。${item.word}の「${item.label}」だよ。おおきい「${item.base}」と、ちいさい「${item.small}」を かくよ。`;
   if(item.kind==='sokuon')return `${item.word}。「${item.word}」を かいてみよう。ちいさい「っ」が はいっているよ。`;
+  if(item.kind==='reward')return `${item.text}。「${item.text}」を かいてみよう。`;
   const info=CHAR_INFO[key],spoken=speechCharacter(key);
   if(info.speechParts)return info.speechParts.join(' ');
   if(info.speechExample)return info.speechExample;
@@ -1398,6 +1567,32 @@ function move(ev){
   }
 }
 
+function completePractice(strokes=currentStrokes()){
+  let newlyUnlocked=[];
+  if(practiceContext==='reward'){
+    completedRewardCards.add(currentRewardCard.id);
+    saveStoredIds(REWARD_COMPLETED_KEY,completedRewardCards);
+  }else{
+    const previousStars=stars;
+    stars++;
+    localStorage.setItem('hiragana-stars-v3',String(stars));
+    newlyUnlocked=REWARD_CARDS.filter(card=>previousStars<card.threshold&&stars>=card.threshold&&!seenRewardCards.has(card.id));
+    newlyUnlocked.forEach(card=>seenRewardCards.add(card.id));
+    if(newlyUnlocked.length)saveStoredIds(REWARD_SEEN_KEY,seenRewardCards);
+    updateRewardSummary();
+  }
+  $('counter').textContent=`${strokes.length} / ${strokes.length} がめ`;
+  hanamaruVisible=true;
+  render(false);
+  $('celebrateText').textContent=`「${currentPracticeItem().label}」できた！`;
+  celebrate.classList.add('show');
+  if(practiceContext!=='reward')speak(`${speechCharacter()}、できた！すごい！`);
+  setTimeout(()=>{
+    celebrate.classList.remove('show');
+    if(newlyUnlocked.length)showRewardUnlock(newlyUnlocked);
+  },1800);
+}
+
 function end(ev){
   if(!down||ev.pointerId!==pointerId)return;
   ev.preventDefault();down=false;pointerId=null;
@@ -1423,17 +1618,7 @@ function end(ev){
     strokeIndex++;beep(true);
 
     if(strokeIndex>=strokes.length){
-      stars++;
-      localStorage.setItem('hiragana-stars-v3',String(stars));
-      $('stars').textContent=stars;
-      $('prompt').textContent='できた！ 🌟';
-      $('counter').textContent=`${strokes.length} / ${strokes.length} がめ`;
-      hanamaruVisible=true;
-      render(false);
-      $('celebrateText').textContent=`「${currentPracticeItem().label}」できた！`;
-      celebrate.classList.add('show');
-      speak(`${speechCharacter()}、できた！すごい！`);
-      setTimeout(()=>celebrate.classList.remove('show'),1800);
+      completePractice(strokes);
     }else{
       render(false);say('じょうず！ つぎの せん ✨','じょうず！つぎのせんだよ。');
     }
@@ -1449,7 +1634,11 @@ function end(ev){
 
 async function select(ch){
   if(demoing)return;
-  current=ch;lastPracticeGroupIndex=currentGroupIndex;lastPracticeKey=ch;strokeIndex=0;hanamaruVisible=false;render();
+  current=ch;
+  if(practiceContext==='normal'){
+    lastPracticeGroupIndex=currentGroupIndex;lastPracticeKey=ch;
+  }
+  strokeIndex=0;hanamaruVisible=false;render();
   if(mode==='free')await demo(true);
 }
 async function selectRow(index){
@@ -1536,11 +1725,18 @@ $('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(mode==='
 $('demoBtn').onclick=()=>demo();
 $('listenBtn').onclick=()=>speak(currentInstruction(),true);
 $('backToIndex').onclick=backToIndex;
+$('rewardButton').onclick=showRewardCards;
+$('cardsBackToIndex').onclick=showIndex;
+$('viewUnlockedCards').onclick=showRewardCards;
+$('dismissUnlock').onclick=hideRewardUnlock;
 if(!('speechSynthesis' in window)){
   $('listenBtn').textContent='🔇 こえ非対応';
   $('listenBtn').disabled=true;
 }
 celebrate.onclick=()=>celebrate.classList.remove('show');
+if(initialUnlockedRewardCount){
+  setTimeout(()=>showRewardUnlock(unlockedRewardCards().slice(0,initialUnlockedRewardCount),true),350);
+}
 
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
