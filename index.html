@@ -36,6 +36,8 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .groupTab.selected{background:#dff1ff;outline:3px solid #82c5f4}
 .indexView{background:#fff;border-radius:25px;padding:clamp(10px,2vw,20px);box-shadow:var(--shadow)}
 .indexPrompt{text-align:center;font-weight:900;font-size:clamp(18px,2.7vw,25px);margin:2px 0 12px}
+.rewardHowItWorks{display:flex;align-items:center;justify-content:center;gap:7px;max-width:620px;margin:0 auto 12px;padding:7px 12px;border:1px solid #f1dfaa;border-radius:16px;background:#fff9e6;color:#665321;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
+.rewardHowArrow{color:#d28a2d}
 .kanaTable{display:grid;grid-template-columns:repeat(var(--table-columns),minmax(0,1fr));gap:3px;max-width:900px;margin:0 auto}
 .kanaTable.voiced{max-width:600px;gap:6px}
 .kanaCell,.kanaBlank{aspect-ratio:1;border:1px solid #dfd7cd;border-radius:10px;min-width:0}
@@ -67,7 +69,7 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .rewardCard.locked{background:#f4f1ed;color:#777;box-shadow:none}
 .rewardCard.completed{border-color:#8bcda3;background:#f0fbf4}
 .rewardCard h3{margin:0 0 7px;font-size:clamp(22px,3.4vw,31px)}
-.rewardCard p{min-height:42px;margin:0 0 10px;color:var(--sub);font-weight:800;line-height:1.4}
+.rewardCard p{min-height:42px;margin:0 0 10px;color:var(--sub);font-weight:800;line-height:1.4;white-space:pre-line}
 .rewardCard button{border:0;border-radius:15px;min-height:45px;width:100%;background:#ffe188;font-weight:900}
 .rewardCard button:disabled{background:#ddd9d4;color:#888}
 .rewardStamp{display:inline-block;transform:rotate(5deg);margin:-3px 0 8px;border:2px solid #45a86a;border-radius:999px;padding:3px 8px;color:#2d8751;background:#fff;font-size:12px;font-weight:900}
@@ -179,6 +181,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   header{gap:5px;flex-wrap:wrap}h1{font-size:18px;white-space:nowrap}.rewardSummary{width:100%;gap:4px}.stars{padding:7px 9px}.rewardEntry{min-width:105px;padding:5px 7px;font-size:13px}.rewardEntry small{font-size:10px}
   .groupTabs{gap:5px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
   .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}
+  .rewardHowItWorks{display:grid;grid-template-columns:1fr;gap:1px;margin-bottom:8px;padding:6px 8px}.rewardHowArrow{display:none}
   .kanaTable{gap:1px}.kanaTable.voiced{gap:4px;padding:0 12px}
   .kanaCell,.kanaBlank{border-radius:6px}.kanaCell{font-size:20px}
   .yoonIndex{grid-template-columns:1fr}.smallSeriesCard{padding:7px}.indexChoice{min-height:48px}
@@ -208,6 +211,11 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <div class="groupTabs" id="groupTabs" role="group" aria-label="ひらがなのグループを選ぶ"></div>
 <section class="indexView" id="indexView">
   <div class="indexPrompt">きょうは どの もじを やる？</div>
+  <div class="rewardHowItWorks" aria-label="ほしを10こあつめると、おてがみカードがもらえるよ">
+    <span>⭐ 10こ れんしゅうすると</span>
+    <span class="rewardHowArrow" aria-hidden="true">→</span>
+    <span>✉️ おてがみカードが もらえるよ！</span>
+  </div>
   <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
   <div id="indexGrid"></div>
 </section>
@@ -804,7 +812,7 @@ function updateRewardSummary(){
   const next=REWARD_CARDS.find(card=>stars<card.threshold);
   $('stars').textContent=stars;
   $('rewardProgress').textContent=next
-    ? `${unlocked.length?`${unlocked.length}まい・`:''}あと${next.threshold-stars}こ`
+    ? `あと${next.threshold-stars}こで ${unlocked.length?'つぎの':''}おてがみ！`
     : `${unlocked.length}まい ひらいた！`;
 }
 updateRewardSummary();
@@ -1002,19 +1010,19 @@ function buildRewardCards(){
   REWARD_CARDS.forEach(card=>{
     const state=rewardCardState(card);
     const panel=document.createElement('article');panel.className=`rewardCard ${state}`;
-    const title=document.createElement('h3');title.textContent=`${state==='locked'?'🔒':'✉️'} ${card.text}`;panel.appendChild(title);
+    const title=document.createElement('h3');title.textContent=state==='locked'?'🔒 ？？？':`✉️ ${card.text}`;panel.appendChild(title);
     const detail=document.createElement('p');
     detail.textContent=state==='locked'
-      ? `⭐${card.threshold}で ひらく（あと${card.threshold-stars}こ）`
+      ? `まだ ひみつ\nあと${card.threshold-stars}こで ひらくよ`
       : state==='completed'?'できた！ なんどでも かけるよ':`⭐${card.threshold} ひらいた！`;
     panel.appendChild(detail);
     if(state==='completed'){
       const stamp=document.createElement('span');stamp.className='rewardStamp';stamp.textContent='できた！';panel.appendChild(stamp);
     }
     const button=document.createElement('button');
-    button.textContent=state==='locked'?'まだ おやすみ':state==='completed'?'もういちど':'なぞってみる';
+    button.textContent=state==='locked'?'まだ ひみつ':state==='completed'?'もういちど':'なぞってみる';
     button.disabled=state==='locked';
-    button.setAttribute('aria-label',state==='locked'?`${card.text}はあと${card.threshold-stars}こでひらく`:`${card.text}をなぞる`);
+    button.setAttribute('aria-label',state==='locked'?`まだひみつのおてがみ。あと${card.threshold-stars}こでひらく`:`${card.text}をなぞる`);
     if(state!=='locked')button.onclick=()=>enterRewardPractice(card.id);
     panel.appendChild(button);rewardCardsGrid.appendChild(panel);
   });
@@ -1055,7 +1063,7 @@ async function enterRewardPractice(cardId){
   viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
   $('backToIndex').textContent='← おてがみに戻る';
   practiceHeading.textContent=practiceHeadingText();buildLetters();render();
-  if(mode==='free')await demo(true);
+  speak(currentInstruction());
 }
 function backToIndex(){
   if(demoing)return;
@@ -1490,7 +1498,7 @@ function spokenIntroduction(key=current){
   const item=currentPracticeItem(key);
   if(item.kind==='yoon')return `${item.label}。${item.word}の「${item.label}」だよ。おおきい「${item.base}」と、ちいさい「${item.small}」を かくよ。`;
   if(item.kind==='sokuon')return `${item.word}。「${item.word}」を かいてみよう。ちいさい「っ」が はいっているよ。`;
-  if(item.kind==='reward')return `${item.text}。「${item.text}」を かいてみよう。`;
+  if(item.kind==='reward')return `${item.text}を かいてみよう。`;
   const info=CHAR_INFO[key],spoken=speechCharacter(key);
   if(info.speechParts)return info.speechParts.join(' ');
   if(info.speechExample)return info.speechExample;
@@ -1589,7 +1597,10 @@ function completePractice(strokes=currentStrokes()){
   if(practiceContext!=='reward')speak(`${speechCharacter()}、できた！すごい！`);
   setTimeout(()=>{
     celebrate.classList.remove('show');
-    if(newlyUnlocked.length)showRewardUnlock(newlyUnlocked);
+    if(newlyUnlocked.length){
+      showRewardUnlock(newlyUnlocked);
+      speak(['おてがみカードが とどいたよ。','おてがみを かいてみよう。']);
+    }
   },1800);
 }
 
@@ -1639,7 +1650,7 @@ async function select(ch){
     lastPracticeGroupIndex=currentGroupIndex;lastPracticeKey=ch;
   }
   strokeIndex=0;hanamaruVisible=false;render();
-  if(mode==='free')await demo(true);
+  if(mode==='free'&&practiceContext!=='reward')await demo(true);
 }
 async function selectRow(index){
   if(demoing||viewState!=='index'||index===currentRowIndex)return;
@@ -1658,7 +1669,7 @@ async function setMode(m){
   $('traceMode').classList.toggle('active',m==='trace');
   $('freeMode').classList.toggle('active',m==='free');
   render();
-  if(m==='free')await demo(true);
+  if(m==='free'&&practiceContext!=='reward')await demo(true);
 }
 
 function demoStrokeTiming(stroke){
