@@ -1053,7 +1053,7 @@ async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=tr
   $('backToIndex').textContent='← いちらんに戻る';
   practiceHeading.textContent=practiceHeadingText();buildLetters();render();
   if(speakIntro)speak(currentInstruction());
-  if(mode==='free')await demo(true);
+  if(speakIntro||mode==='free')await demo(true);
 }
 async function enterRewardPractice(cardId){
   if(demoing)return;
@@ -1650,7 +1650,10 @@ async function select(ch){
     lastPracticeGroupIndex=currentGroupIndex;lastPracticeKey=ch;
   }
   strokeIndex=0;hanamaruVisible=false;render();
-  if(mode==='free'&&practiceContext!=='reward')await demo(true);
+  if(practiceContext==='normal'){
+    speak(currentInstruction());
+    await demo(true);
+  }
 }
 async function selectRow(index){
   if(demoing||viewState!=='index'||index===currentRowIndex)return;
