@@ -64,11 +64,15 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .rewardCardsView{background:#fff;border-radius:25px;padding:clamp(12px,2.5vw,24px);box-shadow:var(--shadow)}
 .rewardCardsTitle{text-align:center;margin:5px 0 4px;font-size:clamp(24px,4vw,36px)}
 .rewardCardsLead{text-align:center;color:var(--sub);font-weight:800;margin:0 0 14px}
-.rewardCardsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
+.rewardCardsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
 .rewardCard{position:relative;min-width:0;border:2px solid #eadfce;border-radius:23px;padding:16px 13px;background:#fffaf0;text-align:center;box-shadow:0 7px 18px rgba(80,60,40,.09)}
 .rewardCard.locked{background:#f4f1ed;color:#777;box-shadow:none}
 .rewardCard.completed{border-color:#8bcda3;background:#f0fbf4}
-.rewardCard h3{margin:0 0 7px;font-size:clamp(22px,3.4vw,31px)}
+.rewardCard.special{border-color:#efb52f;background:linear-gradient(145deg,#fffbea,#fff3be);box-shadow:0 8px 22px rgba(218,155,30,.2)}
+.rewardCard.special::before,.rewardCard.special::after{position:absolute;color:#e6a812;font-size:19px;content:'✦';animation:rewardSparkle 1.4s ease-in-out infinite alternate}
+.rewardCard.special::before{top:9px;left:12px}.rewardCard.special::after{top:9px;right:12px;animation-delay:.35s}
+.rewardSpecialBadge{display:inline-block;margin:0 0 7px;border-radius:999px;padding:4px 10px;background:#fff0a6;color:#8b6211;font-size:12px;font-weight:900}
+.rewardCard h3{margin:0 0 7px;font-size:clamp(22px,3.4vw,31px);overflow-wrap:anywhere}
 .rewardCard p{min-height:42px;margin:0 0 10px;color:var(--sub);font-weight:800;line-height:1.4;white-space:pre-line}
 .rewardCard button{border:0;border-radius:15px;min-height:45px;width:100%;background:#ffe188;font-weight:900}
 .rewardCard button:disabled{background:#ddd9d4;color:#888}
@@ -81,7 +85,27 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .rewardUnlockActions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .rewardUnlockActions button{border:0;border-radius:16px;min-height:48px;font-weight:900;background:#eee9e2}
 .rewardUnlockActions .primary{background:#ffe188}
+.rewardSendArea{display:flex;justify-content:center;padding:11px 2px 1px}
+.sendLetterButton{width:min(100%,430px);min-height:58px;border:0;border-radius:19px;background:linear-gradient(135deg,#ffdf83,#ffc96c);font-size:clamp(18px,3vw,24px);font-weight:900;box-shadow:0 7px 17px rgba(181,117,28,.18)}
+.sendLetterButton:active{transform:scale(.97)}
+.letterDelivery{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(53,51,61,.42)}
+.deliveryBox{width:min(94vw,500px);border-radius:29px;padding:17px;background:#fffdf5;text-align:center;box-shadow:0 22px 60px rgba(40,30,20,.27);overflow:hidden}
+.deliveryScene{position:relative;height:clamp(195px,48vw,235px);border-radius:22px;background:linear-gradient(#dff4ff 0 68%,#e7f5d8 68%);overflow:hidden}
+.deliveryScene::before,.deliveryScene::after{position:absolute;content:'';border-radius:50%;background:rgba(255,255,255,.82)}
+.deliveryScene::before{width:74px;height:26px;left:8%;top:18%}.deliveryScene::after{width:56px;height:20px;left:39%;top:8%}
+.deliveryEnvelope{position:absolute;z-index:3;left:7%;top:44%;font-size:clamp(43px,11vw,64px);line-height:1;filter:drop-shadow(0 4px 4px rgba(90,70,40,.2))}
+.letterDelivery.playing .deliveryEnvelope{animation:deliverLetter 1.65s cubic-bezier(.28,.72,.42,1) forwards}
+.deliveryBird{position:absolute;z-index:2;right:4%;bottom:3%;width:min(35%,145px);height:auto;filter:drop-shadow(0 5px 5px rgba(70,70,50,.14));transform-origin:50% 90%}
+.deliveryBubble{position:absolute;z-index:4;right:3%;top:5%;width:58%;margin:0;border:3px solid #e6c56e;border-radius:20px;padding:9px 10px;background:#fff;color:#5d4a20;font-size:clamp(14px,3.8vw,19px);font-weight:900;line-height:1.35;opacity:0;transform:translateY(7px);transition:opacity .28s ease,transform .28s ease;overflow-wrap:anywhere}
+.deliveryBubble::after{position:absolute;right:24%;bottom:-12px;content:'';width:17px;height:17px;border-right:3px solid #e6c56e;border-bottom:3px solid #e6c56e;background:#fff;transform:rotate(45deg)}
+.letterDelivery.received .deliveryBubble{opacity:1;transform:translateY(0)}
+.letterDelivery.received .deliveryBird{animation:birdHappy .42s ease-in-out 2}
+.deliveryStatus{display:block;min-height:36px;margin:12px 0 4px;font-size:clamp(22px,5.5vw,31px)}
+.deliveryClose{width:min(100%,300px);min-height:50px;margin-top:7px;border:0;border-radius:17px;background:#dff1ff;font-weight:900}
 @keyframes envelopeWiggle{from{transform:rotate(-5deg) scale(.98)}to{transform:rotate(5deg) scale(1.04)}}
+@keyframes rewardSparkle{from{opacity:.45;transform:scale(.85)}to{opacity:1;transform:scale(1.12)}}
+@keyframes deliverLetter{0%{left:7%;top:44%;transform:rotate(-7deg) scale(.92)}55%{left:43%;top:29%;transform:rotate(5deg) scale(1.02)}100%{left:66%;top:61%;transform:rotate(-3deg) scale(.68);opacity:.18}}
+@keyframes birdHappy{50%{transform:translateY(-7px) rotate(3deg)}}
 .rowTabs{display:grid;grid-template-columns:repeat(var(--row-count,5),minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:1050px}
 .rowTabs.compact{max-width:440px}
 .rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(15px,2.3vw,21px);font-weight:900;box-shadow:var(--shadow)}
@@ -161,7 +185,8 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .celebrate .star{display:block;font-size:clamp(70px,15vw,130px);animation:bounce .55s ease-in-out infinite alternate}
 .celebrate strong{font-size:clamp(28px,6vw,55px)}
 @keyframes bounce{to{transform:translateY(-12px) rotate(5deg)}}
-@media(prefers-reduced-motion:reduce){.rewardEnvelope,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.rewardEnvelope,.rewardCard.special::before,.rewardCard.special::after,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo,.deliveryBird{animation:none!important}.letterDelivery.playing .deliveryEnvelope{animation:deliveryFade .35s ease forwards}.deliveryBubble{transition-duration:.12s}}
+@keyframes deliveryFade{to{left:58%;top:55%;opacity:.2;transform:scale(.8)}}
 .footer{text-align:center;color:#8b858d;font-size:11px;margin:12px 0 2px;line-height:1.5}
 .footer a{color:inherit}
 .appVersion{display:inline-block;margin-top:2px;font-size:10px;opacity:.8}
@@ -186,6 +211,8 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   .kanaCell,.kanaBlank{border-radius:6px}.kanaCell{font-size:20px}
   .yoonIndex{grid-template-columns:1fr}.smallSeriesCard{padding:7px}.indexChoice{min-height:48px}
   .rewardCardsGrid{grid-template-columns:1fr;gap:9px}.rewardCard{padding:13px 11px}.rewardCard p{min-height:0}
+  .rewardSendArea{padding-top:8px}.sendLetterButton{min-height:56px;font-size:18px}
+  .deliveryBox{width:100%;padding:11px;border-radius:23px}.deliveryScene{height:205px}.deliveryBubble{width:61%;right:2%;padding:8px;font-size:14px}.deliveryBird{width:36%;right:2%}
   .backToIndex{padding:9px 13px}
   .rowTabs{gap:4px}.rowTab{min-height:44px;border-radius:13px;font-size:15px}
   .seriesTabs{gap:5px;grid-template-columns:repeat(auto-fit,minmax(72px,1fr))}.seriesTab{min-height:43px}
@@ -211,10 +238,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <div class="groupTabs" id="groupTabs" role="group" aria-label="ひらがなのグループを選ぶ"></div>
 <section class="indexView" id="indexView">
   <div class="indexPrompt">きょうは どの もじを やる？</div>
-  <div class="rewardHowItWorks" aria-label="ほしを10こあつめると、おてがみカードがもらえるよ">
-    <span>⭐ 10こ れんしゅうすると</span>
+  <div class="rewardHowItWorks" id="rewardHowItWorks" aria-label="ほしを10こあつめると、おてがみカードがもらえるよ">
+    <span>⭐ <span id="rewardHowCount">10</span>こ れんしゅうすると</span>
     <span class="rewardHowArrow" aria-hidden="true">→</span>
-    <span>✉️ おてがみカードが もらえるよ！</span>
+    <span id="rewardHowMessage">✉️ おてがみカードが もらえるよ！</span>
   </div>
   <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
   <div id="indexGrid"></div>
@@ -255,6 +282,9 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     <div class="celebrate" id="celebrate">
       <div><span class="star">🌟</span><strong id="celebrateText">できた！</strong></div>
     </div>
+  </div>
+  <div class="rewardSendArea" id="rewardSendArea" hidden>
+    <button class="sendLetterButton" id="sendLetterButton">📮 おてがみを おくる</button>
   </div>
 </section>
 
@@ -297,6 +327,26 @@ svg{display:block;width:100%;height:100%;touch-action:none}
       <button class="primary" id="viewUnlockedCards">みてみる</button>
       <button id="dismissUnlock">あとで</button>
     </div>
+  </div>
+</div>
+
+<div class="letterDelivery" id="letterDelivery" role="dialog" aria-modal="true" aria-labelledby="deliveryStatus" hidden>
+  <div class="deliveryBox">
+    <div class="deliveryScene">
+      <div class="deliveryEnvelope" aria-hidden="true">✉️</div>
+      <svg class="deliveryBird" viewBox="0 0 150 125" aria-label="おてがみを受け取ることりさん">
+        <ellipse cx="79" cy="79" rx="48" ry="35" fill="#fff4be" stroke="#d9aa55" stroke-width="3"/>
+        <circle cx="108" cy="48" r="27" fill="#fff8d9" stroke="#d9aa55" stroke-width="3"/>
+        <path d="M130 49l17 8-17 8z" fill="#ff9b62" stroke="#d87848" stroke-width="2"/>
+        <circle cx="115" cy="42" r="3.8" fill="#47404a"/>
+        <path d="M64 70c-18 5-26 18-23 30 18 1 32-8 39-25" fill="#ffd88a" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
+        <path d="M42 72c-13-3-22-10-27-20 16-2 29 4 37 13" fill="#ffeba9" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
+        <path d="M71 111v8M94 110v9M64 120h14M87 120h14" fill="none" stroke="#b97b48" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <p class="deliveryBubble" id="deliveryReaction"></p>
+    </div>
+    <strong class="deliveryStatus" id="deliveryStatus">おてがみを おくっているよ…</strong>
+    <button class="deliveryClose" id="deliveryClose" hidden>できた！</button>
   </div>
 </div>
 
@@ -728,9 +778,19 @@ const SOKUON_ITEMS=[
   {key:'らっぱ',label:'らっぱ',word:'らっぱ',kind:'sokuon',sequence:[{char:'ら',kind:'normal'},{char:'っ',kind:'small'},{char:'ぱ',kind:'normal'}]}
 ];
 const REWARD_CARDS=[
-  {id:'daisuki',key:'reward:daisuki',threshold:10,text:'だいすき',label:'だいすき',word:'だいすき',kind:'reward',sequence:[{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]},
-  {id:'arigatou',key:'reward:arigatou',threshold:20,text:'ありがとう',label:'ありがとう',word:'ありがとう',kind:'reward',sequence:[{char:'あ',kind:'normal'},{char:'り',kind:'normal'},{char:'が',kind:'normal'},{char:'と',kind:'normal'},{char:'う',kind:'normal'}]},
-  {id:'matane',key:'reward:matane',threshold:30,text:'またね',label:'またね',word:'またね',kind:'reward',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'ね',kind:'normal'}]}
+  {id:'daisuki',key:'reward:daisuki',unlockType:'absolute',threshold:10,text:'だいすき',label:'だいすき',word:'だいすき',kind:'reward',rarity:'normal',reaction:'わあ！うれしい！',recipient:'bird',sequence:[{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]},
+  {id:'arigatou',key:'reward:arigatou',unlockType:'absolute',threshold:20,text:'ありがとう',label:'ありがとう',word:'ありがとう',kind:'reward',rarity:'normal',reaction:'ありがとうって すてき！',recipient:'bird',sequence:[{char:'あ',kind:'normal'},{char:'り',kind:'normal'},{char:'が',kind:'normal'},{char:'と',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'matane',key:'reward:matane',unlockType:'absolute',threshold:30,text:'またね',label:'またね',word:'またね',kind:'reward',rarity:'normal',reaction:'また あおうね！',recipient:'bird',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'ね',kind:'normal'}]},
+  {id:'ohayou',key:'reward:ohayou',unlockType:'track',offset:20,text:'おはよう',label:'おはよう',word:'おはよう',kind:'reward',rarity:'normal',reaction:'げんきが でるね！',recipient:'bird',sequence:[{char:'お',kind:'normal'},{char:'は',kind:'normal'},{char:'よ',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'oyasumi',key:'reward:oyasumi',unlockType:'track',offset:40,text:'おやすみ',label:'おやすみ',word:'おやすみ',kind:'reward',rarity:'normal',reaction:'やさしい おてがみだね',recipient:'bird',sequence:[{char:'お',kind:'normal'},{char:'や',kind:'normal'},{char:'す',kind:'normal'},{char:'み',kind:'normal'}]},
+  {id:'ureshii',key:'reward:ureshii',unlockType:'track',offset:60,text:'うれしい',label:'うれしい',word:'うれしい',kind:'reward',rarity:'normal',reaction:'にこにこしちゃう！',recipient:'bird',sequence:[{char:'う',kind:'normal'},{char:'れ',kind:'normal'},{char:'し',kind:'normal'},{char:'い',kind:'normal'}]},
+  {id:'omedetou',key:'reward:omedetou',unlockType:'track',offset:80,text:'おめでとう',label:'おめでとう',word:'おめでとう',kind:'reward',rarity:'normal',reaction:'おいわい うれしいね！',recipient:'bird',sequence:[{char:'お',kind:'normal'},{char:'め',kind:'normal'},{char:'で',kind:'normal'},{char:'と',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'isshoni-asobou',key:'reward:isshoni-asobou',unlockType:'track',offset:100,text:'いっしょにあそぼう',label:'いっしょにあそぼう',word:'いっしょにあそぼう',kind:'reward',rarity:'special',reaction:'あそぶの たのしみ！',recipient:'bird',sequence:[{char:'い',kind:'normal'},{char:'っ',kind:'small'},{char:'し',kind:'normal'},{char:'ょ',kind:'small'},{char:'に',kind:'normal'},{char:'あ',kind:'normal'},{char:'そ',kind:'normal'},{char:'ぼ',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'genki-de-ne',key:'reward:genki-de-ne',unlockType:'track',offset:120,text:'げんきでね',label:'げんきでね',word:'げんきでね',kind:'reward',rarity:'normal',reaction:'やさしいね！',recipient:'bird',sequence:[{char:'げ',kind:'normal'},{char:'ん',kind:'normal'},{char:'き',kind:'normal'},{char:'で',kind:'normal'},{char:'ね',kind:'normal'}]},
+  {id:'ganbatte',key:'reward:ganbatte',unlockType:'track',offset:140,text:'がんばって',label:'がんばって',word:'がんばって',kind:'reward',rarity:'normal',reaction:'げんきが でたよ！',recipient:'bird',sequence:[{char:'が',kind:'normal'},{char:'ん',kind:'normal'},{char:'ば',kind:'normal'},{char:'っ',kind:'small'},{char:'て',kind:'normal'}]},
+  {id:'mata-asobou',key:'reward:mata-asobou',unlockType:'track',offset:160,text:'またあそぼう',label:'またあそぼう',word:'またあそぼう',kind:'reward',rarity:'normal',reaction:'こんど あそぼうね！',recipient:'bird',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'あ',kind:'normal'},{char:'そ',kind:'normal'},{char:'ぼ',kind:'normal'},{char:'う',kind:'normal'}]},
+  {id:'mata-aou-ne',key:'reward:mata-aou-ne',unlockType:'track',offset:180,text:'またあおうね',label:'またあおうね',word:'またあおうね',kind:'reward',rarity:'normal',reaction:'また あえるの たのしみ！',recipient:'bird',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'あ',kind:'normal'},{char:'お',kind:'normal'},{char:'う',kind:'normal'},{char:'ね',kind:'normal'}]},
+  {id:'zutto-daisuki',key:'reward:zutto-daisuki',unlockType:'track',offset:200,text:'ずっとだいすき',label:'ずっとだいすき',word:'ずっとだいすき',kind:'reward',rarity:'special',reaction:'とっても しあわせ！',recipient:'bird',sequence:[{char:'ず',kind:'normal'},{char:'っ',kind:'small'},{char:'と',kind:'normal'},{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]}
 ];
 const SMALL_ROWS=[
   {label:'ゃゅょ',kind:'yoon',series:YOON_SERIES},
@@ -777,15 +837,19 @@ let viewState='index',practiceContext='normal',currentRewardCard=null,lastPracti
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let hanamaruVisible=false;
+let deliveryPlaying=false,deliveryTimers=[];
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 const REWARD_COMPLETED_KEY='hiragana-reward-cards-v1';
 const REWARD_SEEN_KEY='hiragana-reward-seen-v1';
+const REWARD_TRACK_KEY='hiragana-reward-track-v1';
+const rewardTrack=loadRewardTrack();
+const rewardBaseStars=rewardTrack.baseStars;
 const completedRewardCards=loadStoredIds(REWARD_COMPLETED_KEY);
 const storedSeenRewards=localStorage.getItem(REWARD_SEEN_KEY);
 const seenRewardCards=loadStoredIds(REWARD_SEEN_KEY);
 let initialUnlockedRewardCount=0;
 if(storedSeenRewards===null){
-  const existingUnlocked=REWARD_CARDS.filter(card=>stars>=card.threshold);
+  const existingUnlocked=unlockedRewardCards();
   if(existingUnlocked.length){
     initialUnlockedRewardCount=existingUnlocked.length;
     existingUnlocked.forEach(card=>seenRewardCards.add(card.id));
@@ -796,7 +860,7 @@ if(storedSeenRewards===null){
 const $=id=>document.getElementById(id);
 const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),rewardCardsView=$('rewardCardsView'),rewardCardsGrid=$('rewardCardsGrid'),rewardButton=$('rewardButton'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
-      celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord'),rewardUnlock=$('rewardUnlock');
+      celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord'),rewardUnlock=$('rewardUnlock'),letterDelivery=$('letterDelivery');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
 
 function loadStoredIds(key){
@@ -806,14 +870,33 @@ function loadStoredIds(key){
   }catch(e){return new Set()}
 }
 function saveStoredIds(key,ids){localStorage.setItem(key,JSON.stringify([...ids]))}
-function unlockedRewardCards(){return REWARD_CARDS.filter(card=>stars>=card.threshold)}
+function loadRewardTrack(){
+  try{
+    const stored=JSON.parse(localStorage.getItem(REWARD_TRACK_KEY)||'null');
+    if(stored&&Number.isFinite(stored.baseStars)&&stored.baseStars>=30)return {baseStars:Math.floor(stored.baseStars)};
+  }catch(e){}
+  const baseStars=Math.max(Number.isFinite(stars)?Math.floor(stars):0,30);
+  const track={baseStars};
+  localStorage.setItem(REWARD_TRACK_KEY,JSON.stringify(track));
+  return track;
+}
+function rewardUnlockStars(card){return card.unlockType==='track'?rewardBaseStars+card.offset:card.threshold}
+function isRewardCardUnlocked(card,atStars=stars){return atStars>=rewardUnlockStars(card)}
+function unlockedRewardCards(atStars=stars){return REWARD_CARDS.filter(card=>isRewardCardUnlocked(card,atStars))}
 function updateRewardSummary(){
   const unlocked=unlockedRewardCards();
-  const next=REWARD_CARDS.find(card=>stars<card.threshold);
+  const next=REWARD_CARDS.find(card=>!isRewardCardUnlocked(card));
+  const legacyUnlocked=REWARD_CARDS.filter(card=>card.unlockType==='absolute').every(card=>isRewardCardUnlocked(card));
+  const trackGuide=rewardBaseStars>30||legacyUnlocked;
   $('stars').textContent=stars;
   $('rewardProgress').textContent=next
-    ? `あと${next.threshold-stars}こで ${unlocked.length?'つぎの':''}おてがみ！`
+    ? `あと${rewardUnlockStars(next)-stars}こで ${unlocked.length?'つぎの':''}おてがみ！`
     : `${unlocked.length}まい ひらいた！`;
+  $('rewardHowCount').textContent=trackGuide?'20':'10';
+  $('rewardHowMessage').textContent=trackGuide?'✉️ つぎの おてがみカードが とどくよ！':'✉️ おてがみカードが もらえるよ！';
+  $('rewardHowItWorks').setAttribute('aria-label',trackGuide
+    ? 'ほしを20こあつめると、つぎのおてがみカードがとどくよ'
+    : 'ほしを10こあつめると、おてがみカードがもらえるよ');
 }
 updateRewardSummary();
 
@@ -997,24 +1080,30 @@ function buildLetters(){
   }
 }
 function showIndex(){
+  closeLetterDelivery();
   viewState='index';practiceContext='normal';currentRewardCard=null;
   groupTabs.hidden=false;indexView.hidden=false;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=false;
   buildIndex();
 }
 function rewardCardState(card){
-  if(stars<card.threshold)return'locked';
+  if(!isRewardCardUnlocked(card))return'locked';
   return completedRewardCards.has(card.id)?'completed':'unlocked';
 }
 function buildRewardCards(){
   rewardCardsGrid.innerHTML='';
   REWARD_CARDS.forEach(card=>{
     const state=rewardCardState(card);
-    const panel=document.createElement('article');panel.className=`rewardCard ${state}`;
+    const unlockAt=rewardUnlockStars(card);
+    const isSpecial=card.rarity==='special'&&state!=='locked';
+    const panel=document.createElement('article');panel.className=`rewardCard ${state}${isSpecial?' special':''}`;
+    if(isSpecial){
+      const badge=document.createElement('span');badge.className='rewardSpecialBadge';badge.textContent='✨ きらきらカード ✨';panel.appendChild(badge);
+    }
     const title=document.createElement('h3');title.textContent=state==='locked'?'🔒 ？？？':`✉️ ${card.text}`;panel.appendChild(title);
     const detail=document.createElement('p');
     detail.textContent=state==='locked'
-      ? `まだ ひみつ\nあと${card.threshold-stars}こで ひらくよ`
-      : state==='completed'?'できた！ なんどでも かけるよ':`⭐${card.threshold} ひらいた！`;
+      ? `まだ ひみつ\nあと${unlockAt-stars}こで ひらくよ`
+      : state==='completed'?'できた！ なんどでも かけるよ':`⭐${unlockAt} ひらいた！`;
     panel.appendChild(detail);
     if(state==='completed'){
       const stamp=document.createElement('span');stamp.className='rewardStamp';stamp.textContent='できた！';panel.appendChild(stamp);
@@ -1022,12 +1111,47 @@ function buildRewardCards(){
     const button=document.createElement('button');
     button.textContent=state==='locked'?'まだ ひみつ':state==='completed'?'もういちど':'なぞってみる';
     button.disabled=state==='locked';
-    button.setAttribute('aria-label',state==='locked'?`まだひみつのおてがみ。あと${card.threshold-stars}こでひらく`:`${card.text}をなぞる`);
+    button.setAttribute('aria-label',state==='locked'?`まだひみつのおてがみ。あと${unlockAt-stars}こでひらく`:`${card.text}をなぞる`);
     if(state!=='locked')button.onclick=()=>enterRewardPractice(card.id);
     panel.appendChild(button);rewardCardsGrid.appendChild(panel);
   });
 }
 function hideRewardUnlock(){rewardUnlock.hidden=true}
+function clearDeliveryTimers(){
+  deliveryTimers.forEach(timer=>clearTimeout(timer));
+  deliveryTimers=[];
+}
+function closeLetterDelivery(){
+  clearDeliveryTimers();deliveryPlaying=false;
+  letterDelivery.classList.remove('playing','received','delivered');
+  letterDelivery.hidden=true;
+}
+function updateRewardSendButton(){
+  const available=practiceContext==='reward'&&currentRewardCard&&completedRewardCards.has(currentRewardCard.id);
+  $('rewardSendArea').hidden=!available;
+  if(available)$('sendLetterButton').setAttribute('aria-label',`「${currentRewardCard.text}」のおてがみを ことりさんに おくる`);
+}
+function playLetterDelivery(){
+  if(demoing||deliveryPlaying||practiceContext!=='reward'||!currentRewardCard||!completedRewardCards.has(currentRewardCard.id))return;
+  clearDeliveryTimers();deliveryPlaying=true;
+  letterDelivery.classList.remove('playing','received','delivered');
+  $('deliveryReaction').textContent=currentRewardCard.reaction;
+  $('deliveryStatus').textContent='おてがみを おくっているよ…';
+  $('deliveryClose').hidden=true;
+  letterDelivery.dataset.recipient=currentRewardCard.recipient;
+  letterDelivery.hidden=false;
+  void letterDelivery.offsetWidth;
+  letterDelivery.classList.add('playing');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  deliveryTimers.push(setTimeout(()=>letterDelivery.classList.add('received'),reduced?360:1550));
+  deliveryTimers.push(setTimeout(()=>{
+    letterDelivery.classList.add('delivered');
+    $('deliveryStatus').textContent='とどいたよ！';
+    $('deliveryClose').hidden=false;
+    $('deliveryClose').focus();
+    deliveryPlaying=false;
+  },reduced?850:2400));
+}
 function showRewardUnlock(cards,existing=false){
   if(!cards.length)return;
   $('rewardUnlockTitle').textContent=existing&&cards.length>1
@@ -1040,12 +1164,14 @@ function showRewardUnlock(cards,existing=false){
 }
 function showRewardCards(){
   if(demoing)return;
+  closeLetterDelivery();
   hideRewardUnlock();viewState='cards';practiceContext='normal';currentRewardCard=null;
   groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=true;rewardCardsView.hidden=false;rewardButton.hidden=true;
   buildRewardCards();
 }
 async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=true){
   if(demoing)return;
+  closeLetterDelivery();
   practiceContext='normal';currentRewardCard=null;
   currentGroupIndex=groupIndex;currentRowIndex=rowIndex;currentSeriesIndex=seriesIndex;current=key;
   lastPracticeGroupIndex=groupIndex;lastPracticeKey=key;strokeIndex=0;hanamaruVisible=false;
@@ -1058,7 +1184,8 @@ async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=tr
 async function enterRewardPractice(cardId){
   if(demoing)return;
   const card=REWARD_CARDS.find(item=>item.id===cardId);
-  if(!card||stars<card.threshold)return;
+  if(!card||!isRewardCardUnlocked(card))return;
+  closeLetterDelivery();
   practiceContext='reward';currentRewardCard=card;current=card.key;strokeIndex=0;hanamaruVisible=false;
   viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
   $('backToIndex').textContent='← おてがみに戻る';
@@ -1067,6 +1194,7 @@ async function enterRewardPractice(cardId){
 }
 function backToIndex(){
   if(demoing)return;
+  closeLetterDelivery();
   strokeIndex=0;hanamaruVisible=false;celebrate.classList.remove('show');
   if(practiceContext==='reward')showRewardCards();
   else showIndex();
@@ -1168,6 +1296,7 @@ function render(resetTrace=true){
   if(resetTrace)traceLayer.innerHTML='';
   guideLayer.innerHTML=''; markerLayer.innerHTML=''; sampleSvg.innerHTML='';
   celebrate.classList.remove('show'); setSelected();
+  updateRewardSendButton();
   hanamaruLayer.classList.toggle('show',mode==='trace'&&hanamaruVisible);
   const item=currentPracticeItem();
   exampleWord.textContent=displayExample();
@@ -1454,32 +1583,61 @@ function pointsD(a){
 }
 const SPEECH_VOLUME=.65;
 const SFX_GAIN=.025;
+const SPEECH_LANG='ja-JP';
+const SPEECH_RATE=.90;
+const SPEECH_PITCH=1.12;
+const SPEECH_START_DELAY=120;
 const SPEECH_PART_PAUSE=250;
 let speechSequenceToken=0;
+let cachedSpeechVoice=null;
+let speechStartTimer=null;
+let speechPartTimer=null;
+function selectSpeechVoice(){
+  if(cachedSpeechVoice)return cachedSpeechVoice;
+  const voices=window.speechSynthesis.getVoices();
+  cachedSpeechVoice=voices.find(v=>(v.lang||'').toLowerCase()==='ja-jp')
+    ||voices.find(v=>(v.lang||'').toLowerCase().startsWith('ja'))
+    ||null;
+  return cachedSpeechVoice;
+}
+function createUtterance(text){
+  const utterance=new SpeechSynthesisUtterance(text);
+  const voice=selectSpeechVoice();
+  utterance.lang=SPEECH_LANG;
+  utterance.volume=SPEECH_VOLUME;
+  utterance.rate=SPEECH_RATE;
+  utterance.pitch=SPEECH_PITCH;
+  if(voice)utterance.voice=voice;
+  return utterance;
+}
+function clearSpeechTimers(){
+  clearTimeout(speechStartTimer);
+  clearTimeout(speechPartTimer);
+  speechStartTimer=null;speechPartTimer=null;
+}
 function speak(text,force=false){
   if(!('speechSynthesis' in window))return;
   try{
     const parts=(Array.isArray(text)?text:[text]).filter(Boolean);
     if(!parts.length)return;
     const token=++speechSequenceToken;
+    clearSpeechTimers();
     window.speechSynthesis.cancel();
-    const voices=window.speechSynthesis.getVoices();
-    const ja=voices.find(v=>(v.lang||'').toLowerCase().startsWith('ja'));
     const play=index=>{
       if(token!==speechSequenceToken||index>=parts.length)return;
-      const u=new SpeechSynthesisUtterance(parts[index]);
-      u.lang='ja-JP';
-      u.rate=.90;
-      u.pitch=1.12;
-      u.volume=SPEECH_VOLUME;
-      if(ja)u.voice=ja;
-      u.onend=()=>{
-        if(index+1<parts.length)setTimeout(()=>play(index+1),SPEECH_PART_PAUSE);
+      const utterance=createUtterance(parts[index]);
+      utterance.onend=()=>{
+        if(token!==speechSequenceToken||index+1>=parts.length)return;
+        speechPartTimer=setTimeout(()=>play(index+1),SPEECH_PART_PAUSE);
       };
-      window.speechSynthesis.speak(u);
+      window.speechSynthesis.speak(utterance);
     };
-    play(0);
+    speechStartTimer=setTimeout(()=>play(0),SPEECH_START_DELAY);
   }catch(e){}
+}
+if('speechSynthesis' in window){
+  selectSpeechVoice();
+  window.speechSynthesis.addEventListener('voiceschanged',selectSpeechVoice);
 }
 function speechCharacter(key=current){
   const item=currentPracticeItem(key);
@@ -1584,7 +1742,7 @@ function completePractice(strokes=currentStrokes()){
     const previousStars=stars;
     stars++;
     localStorage.setItem('hiragana-stars-v3',String(stars));
-    newlyUnlocked=REWARD_CARDS.filter(card=>previousStars<card.threshold&&stars>=card.threshold&&!seenRewardCards.has(card.id));
+    newlyUnlocked=REWARD_CARDS.filter(card=>!isRewardCardUnlocked(card,previousStars)&&isRewardCardUnlocked(card,stars)&&!seenRewardCards.has(card.id));
     newlyUnlocked.forEach(card=>seenRewardCards.add(card.id));
     if(newlyUnlocked.length)saveStoredIds(REWARD_SEEN_KEY,seenRewardCards);
     updateRewardSummary();
@@ -1743,6 +1901,8 @@ $('rewardButton').onclick=showRewardCards;
 $('cardsBackToIndex').onclick=showIndex;
 $('viewUnlockedCards').onclick=showRewardCards;
 $('dismissUnlock').onclick=hideRewardUnlock;
+$('sendLetterButton').onclick=playLetterDelivery;
+$('deliveryClose').onclick=closeLetterDelivery;
 if(!('speechSynthesis' in window)){
   $('listenBtn').textContent='🔇 こえ非対応';
   $('listenBtn').disabled=true;
@@ -1751,7 +1911,6 @@ celebrate.onclick=()=>celebrate.classList.remove('show');
 if(initialUnlockedRewardCount){
   setTimeout(()=>showRewardUnlock(unlockedRewardCards().slice(0,initialUnlockedRewardCount),true),350);
 }
-
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block';
