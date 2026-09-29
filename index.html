@@ -95,17 +95,19 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .deliveryScene::before{width:74px;height:26px;left:8%;top:18%}.deliveryScene::after{width:56px;height:20px;left:39%;top:8%}
 .deliveryEnvelope{position:absolute;z-index:3;left:7%;top:44%;font-size:clamp(43px,11vw,64px);line-height:1;filter:drop-shadow(0 4px 4px rgba(90,70,40,.2))}
 .letterDelivery.playing .deliveryEnvelope{animation:deliverLetter 1.65s cubic-bezier(.28,.72,.42,1) forwards}
-.deliveryBird{position:absolute;z-index:2;right:4%;bottom:3%;width:min(35%,145px);height:auto;filter:drop-shadow(0 5px 5px rgba(70,70,50,.14));transform-origin:50% 90%}
+.deliveryCharacter{position:absolute;z-index:2;right:4%;bottom:3%;width:min(35%,145px);filter:drop-shadow(0 5px 5px rgba(70,70,50,.14));transform-origin:50% 90%}
+.deliveryCharacter svg{display:none;width:100%;height:auto}
+.letterDelivery[data-recipient="bird"] .deliveryBird,.letterDelivery[data-recipient="rabbit"] .deliveryRabbit,.letterDelivery[data-recipient="bear"] .deliveryBear{display:block}
 .deliveryBubble{position:absolute;z-index:4;right:3%;top:5%;width:58%;margin:0;border:3px solid #e6c56e;border-radius:20px;padding:9px 10px;background:#fff;color:#5d4a20;font-size:clamp(14px,3.8vw,19px);font-weight:900;line-height:1.35;opacity:0;transform:translateY(7px);transition:opacity .28s ease,transform .28s ease;overflow-wrap:anywhere}
 .deliveryBubble::after{position:absolute;right:24%;bottom:-12px;content:'';width:17px;height:17px;border-right:3px solid #e6c56e;border-bottom:3px solid #e6c56e;background:#fff;transform:rotate(45deg)}
 .letterDelivery.received .deliveryBubble{opacity:1;transform:translateY(0)}
-.letterDelivery.received .deliveryBird{animation:birdHappy .42s ease-in-out 2}
+.letterDelivery.received .deliveryCharacter{animation:recipientHappy .42s ease-in-out 2}
 .deliveryStatus{display:block;min-height:36px;margin:12px 0 4px;font-size:clamp(22px,5.5vw,31px)}
 .deliveryClose{width:min(100%,300px);min-height:50px;margin-top:7px;border:0;border-radius:17px;background:#dff1ff;font-weight:900}
 @keyframes envelopeWiggle{from{transform:rotate(-5deg) scale(.98)}to{transform:rotate(5deg) scale(1.04)}}
 @keyframes rewardSparkle{from{opacity:.45;transform:scale(.85)}to{opacity:1;transform:scale(1.12)}}
 @keyframes deliverLetter{0%{left:7%;top:44%;transform:rotate(-7deg) scale(.92)}55%{left:43%;top:29%;transform:rotate(5deg) scale(1.02)}100%{left:66%;top:61%;transform:rotate(-3deg) scale(.68);opacity:.18}}
-@keyframes birdHappy{50%{transform:translateY(-7px) rotate(3deg)}}
+@keyframes recipientHappy{50%{transform:translateY(-7px) rotate(3deg)}}
 .rowTabs{display:grid;grid-template-columns:repeat(var(--row-count,5),minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:1050px}
 .rowTabs.compact{max-width:440px}
 .rowTab{border:0;background:#fff7d7;border-radius:16px;min-height:48px;font-size:clamp(15px,2.3vw,21px);font-weight:900;box-shadow:var(--shadow)}
@@ -185,7 +187,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .celebrate .star{display:block;font-size:clamp(70px,15vw,130px);animation:bounce .55s ease-in-out infinite alternate}
 .celebrate strong{font-size:clamp(28px,6vw,55px)}
 @keyframes bounce{to{transform:translateY(-12px) rotate(5deg)}}
-@media(prefers-reduced-motion:reduce){.rewardEnvelope,.rewardCard.special::before,.rewardCard.special::after,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo,.deliveryBird{animation:none!important}.letterDelivery.playing .deliveryEnvelope{animation:deliveryFade .35s ease forwards}.deliveryBubble{transition-duration:.12s}}
+@media(prefers-reduced-motion:reduce){.rewardEnvelope,.rewardCard.special::before,.rewardCard.special::after,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo,.deliveryCharacter{animation:none!important}.letterDelivery.playing .deliveryEnvelope{animation:deliveryFade .35s ease forwards}.deliveryBubble{transition-duration:.12s}}
 @keyframes deliveryFade{to{left:58%;top:55%;opacity:.2;transform:scale(.8)}}
 .footer{text-align:center;color:#8b858d;font-size:11px;margin:12px 0 2px;line-height:1.5}
 .footer a{color:inherit}
@@ -212,7 +214,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   .yoonIndex{grid-template-columns:1fr}.smallSeriesCard{padding:7px}.indexChoice{min-height:48px}
   .rewardCardsGrid{grid-template-columns:1fr;gap:9px}.rewardCard{padding:13px 11px}.rewardCard p{min-height:0}
   .rewardSendArea{padding-top:8px}.sendLetterButton{min-height:56px;font-size:18px}
-  .deliveryBox{width:100%;padding:11px;border-radius:23px}.deliveryScene{height:205px}.deliveryBubble{width:61%;right:2%;padding:8px;font-size:14px}.deliveryBird{width:36%;right:2%}
+  .deliveryBox{width:100%;padding:11px;border-radius:23px}.deliveryScene{height:205px}.deliveryBubble{width:61%;right:2%;padding:8px;font-size:14px}.deliveryCharacter{width:36%;right:2%}
   .backToIndex{padding:9px 13px}
   .rowTabs{gap:4px}.rowTab{min-height:44px;border-radius:13px;font-size:15px}
   .seriesTabs{gap:5px;grid-template-columns:repeat(auto-fit,minmax(72px,1fr))}.seriesTab{min-height:43px}
@@ -334,15 +336,41 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   <div class="deliveryBox">
     <div class="deliveryScene">
       <div class="deliveryEnvelope" aria-hidden="true">✉️</div>
-      <svg class="deliveryBird" viewBox="0 0 150 125" aria-label="おてがみを受け取ることりさん">
-        <ellipse cx="79" cy="79" rx="48" ry="35" fill="#fff4be" stroke="#d9aa55" stroke-width="3"/>
-        <circle cx="108" cy="48" r="27" fill="#fff8d9" stroke="#d9aa55" stroke-width="3"/>
-        <path d="M130 49l17 8-17 8z" fill="#ff9b62" stroke="#d87848" stroke-width="2"/>
-        <circle cx="115" cy="42" r="3.8" fill="#47404a"/>
-        <path d="M64 70c-18 5-26 18-23 30 18 1 32-8 39-25" fill="#ffd88a" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
-        <path d="M42 72c-13-3-22-10-27-20 16-2 29 4 37 13" fill="#ffeba9" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
-        <path d="M71 111v8M94 110v9M64 120h14M87 120h14" fill="none" stroke="#b97b48" stroke-width="3" stroke-linecap="round"/>
-      </svg>
+      <div class="deliveryCharacter" id="deliveryCharacter" role="img">
+        <svg class="deliveryBird" viewBox="0 0 150 125" aria-hidden="true">
+          <ellipse cx="71" cy="79" rx="48" ry="35" fill="#fff4be" stroke="#d9aa55" stroke-width="3"/>
+          <circle cx="42" cy="48" r="27" fill="#fff8d9" stroke="#d9aa55" stroke-width="3"/>
+          <path d="M20 49L3 57l17 8z" fill="#ff9b62" stroke="#d87848" stroke-width="2"/>
+          <circle cx="35" cy="42" r="3.8" fill="#47404a"/>
+          <path d="M86 70c18 5 26 18 23 30-18 1-32-8-39-25" fill="#ffd88a" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
+          <path d="M108 72c13-3 22-10 27-20-16-2-29 4-37 13" fill="#ffeba9" stroke="#d9aa55" stroke-width="3" stroke-linecap="round"/>
+          <path d="M56 111v8M79 110v9M49 120h14M72 120h14" fill="none" stroke="#b97b48" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <svg class="deliveryRabbit" viewBox="0 0 150 125" aria-hidden="true">
+          <ellipse cx="84" cy="85" rx="45" ry="31" fill="#fff9f3" stroke="#c99888" stroke-width="3"/>
+          <ellipse cx="47" cy="25" rx="12" ry="31" fill="#fff9f3" stroke="#c99888" stroke-width="3" transform="rotate(-9 47 25)"/>
+          <ellipse cx="68" cy="24" rx="12" ry="31" fill="#fff9f3" stroke="#c99888" stroke-width="3" transform="rotate(7 68 24)"/>
+          <path d="M46 8c-3 12-2 23 2 33M68 8c2 12 1 23-2 33" fill="none" stroke="#f5c5c5" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="55" cy="58" r="29" fill="#fff9f3" stroke="#c99888" stroke-width="3"/>
+          <circle cx="43" cy="54" r="3.7" fill="#47404a"/>
+          <path d="M27 62l-8 4 8 4" fill="#f6a8a1" stroke="#c9827d" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M34 70q8 8 16 0" fill="none" stroke="#b77573" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="126" cy="82" r="15" fill="#fff" stroke="#c99888" stroke-width="3"/>
+          <path d="M72 111v8M98 109v10M64 120h16M90 120h16" fill="none" stroke="#a9796d" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <svg class="deliveryBear" viewBox="0 0 150 125" aria-hidden="true">
+          <circle cx="42" cy="34" r="16" fill="#c99563" stroke="#8f643f" stroke-width="3"/>
+          <circle cx="91" cy="34" r="16" fill="#c99563" stroke="#8f643f" stroke-width="3"/>
+          <ellipse cx="80" cy="88" rx="45" ry="31" fill="#d9aa73" stroke="#8f643f" stroke-width="3"/>
+          <circle cx="64" cy="57" r="36" fill="#d9aa73" stroke="#8f643f" stroke-width="3"/>
+          <circle cx="50" cy="52" r="4" fill="#423a35"/>
+          <ellipse cx="39" cy="67" rx="14" ry="11" fill="#f5d7b0"/>
+          <circle cx="32" cy="64" r="3.4" fill="#423a35"/>
+          <path d="M33 71q7 7 14 0" fill="none" stroke="#7f5540" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M69 77q-16 6-19 20 16 5 29-8" fill="#c99563" stroke="#8f643f" stroke-width="3" stroke-linecap="round"/>
+          <path d="M65 111v8M91 110v9M57 120h16M83 120h16" fill="none" stroke="#79543c" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
       <p class="deliveryBubble" id="deliveryReaction"></p>
     </div>
     <strong class="deliveryStatus" id="deliveryStatus">おてがみを おくっているよ…</strong>
@@ -792,6 +820,11 @@ const REWARD_CARDS=[
   {id:'mata-aou-ne',key:'reward:mata-aou-ne',unlockType:'track',offset:180,text:'またあおうね',label:'またあおうね',word:'またあおうね',kind:'reward',rarity:'normal',reaction:'また あえるの たのしみ！',recipient:'bird',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'あ',kind:'normal'},{char:'お',kind:'normal'},{char:'う',kind:'normal'},{char:'ね',kind:'normal'}]},
   {id:'zutto-daisuki',key:'reward:zutto-daisuki',unlockType:'track',offset:200,text:'ずっとだいすき',label:'ずっとだいすき',word:'ずっとだいすき',kind:'reward',rarity:'special',reaction:'とっても しあわせ！',recipient:'bird',sequence:[{char:'ず',kind:'normal'},{char:'っ',kind:'small'},{char:'と',kind:'normal'},{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]}
 ];
+const DELIVERY_RECIPIENTS=[
+  {type:'bird',label:'ことりさん'},
+  {type:'rabbit',label:'うさぎさん'},
+  {type:'bear',label:'くまさん'}
+];
 const SMALL_ROWS=[
   {label:'ゃゅょ',kind:'yoon',series:YOON_SERIES},
   {label:'っ',kind:'sokuon',items:SOKUON_ITEMS}
@@ -837,7 +870,7 @@ let viewState='index',practiceContext='normal',currentRewardCard=null,lastPracti
 let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let hanamaruVisible=false;
-let deliveryPlaying=false,deliveryTimers=[];
+let deliveryPlaying=false,deliveryTimers=[],rewardReadyToSend=false,rewardLetterSent=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 const REWARD_COMPLETED_KEY='hiragana-reward-cards-v1';
 const REWARD_SEEN_KEY='hiragana-reward-seen-v1';
@@ -1081,6 +1114,7 @@ function buildLetters(){
 }
 function showIndex(){
   closeLetterDelivery();
+  rewardReadyToSend=false;rewardLetterSent=false;
   viewState='index';practiceContext='normal';currentRewardCard=null;
   groupTabs.hidden=false;indexView.hidden=false;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=false;
   buildIndex();
@@ -1127,18 +1161,24 @@ function closeLetterDelivery(){
   letterDelivery.hidden=true;
 }
 function updateRewardSendButton(){
-  const available=practiceContext==='reward'&&currentRewardCard&&completedRewardCards.has(currentRewardCard.id);
+  const available=practiceContext==='reward'&&currentRewardCard&&rewardReadyToSend;
+  const button=$('sendLetterButton');
   $('rewardSendArea').hidden=!available;
-  if(available)$('sendLetterButton').setAttribute('aria-label',`「${currentRewardCard.text}」のおてがみを ことりさんに おくる`);
+  if(available){
+    button.textContent=rewardLetterSent?'📮 もういちど おくる':'📮 おてがみを おくる';
+    button.setAttribute('aria-label',`「${currentRewardCard.text}」のおてがみを ${rewardLetterSent?'もういちど ':''}おくる`);
+  }
 }
 function playLetterDelivery(){
-  if(demoing||deliveryPlaying||practiceContext!=='reward'||!currentRewardCard||!completedRewardCards.has(currentRewardCard.id))return;
+  if(demoing||deliveryPlaying||practiceContext!=='reward'||!currentRewardCard||!rewardReadyToSend)return;
   clearDeliveryTimers();deliveryPlaying=true;
   letterDelivery.classList.remove('playing','received','delivered');
   $('deliveryReaction').textContent=currentRewardCard.reaction;
   $('deliveryStatus').textContent='おてがみを おくっているよ…';
   $('deliveryClose').hidden=true;
-  letterDelivery.dataset.recipient=currentRewardCard.recipient;
+  const recipient=DELIVERY_RECIPIENTS[Math.floor(Math.random()*DELIVERY_RECIPIENTS.length)];
+  letterDelivery.dataset.recipient=recipient.type;
+  $('deliveryCharacter').setAttribute('aria-label',`おてがみを受け取る${recipient.label}`);
   letterDelivery.hidden=false;
   void letterDelivery.offsetWidth;
   letterDelivery.classList.add('playing');
@@ -1149,6 +1189,7 @@ function playLetterDelivery(){
     $('deliveryStatus').textContent='とどいたよ！';
     $('deliveryClose').hidden=false;
     $('deliveryClose').focus();
+    rewardLetterSent=true;updateRewardSendButton();
     deliveryPlaying=false;
   },reduced?850:2400));
 }
@@ -1165,6 +1206,7 @@ function showRewardUnlock(cards,existing=false){
 function showRewardCards(){
   if(demoing)return;
   closeLetterDelivery();
+  rewardReadyToSend=false;rewardLetterSent=false;
   hideRewardUnlock();viewState='cards';practiceContext='normal';currentRewardCard=null;
   groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=true;rewardCardsView.hidden=false;rewardButton.hidden=true;
   buildRewardCards();
@@ -1172,6 +1214,7 @@ function showRewardCards(){
 async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=true){
   if(demoing)return;
   closeLetterDelivery();
+  rewardReadyToSend=false;rewardLetterSent=false;
   practiceContext='normal';currentRewardCard=null;
   currentGroupIndex=groupIndex;currentRowIndex=rowIndex;currentSeriesIndex=seriesIndex;current=key;
   lastPracticeGroupIndex=groupIndex;lastPracticeKey=key;strokeIndex=0;hanamaruVisible=false;
@@ -1186,6 +1229,7 @@ async function enterRewardPractice(cardId){
   const card=REWARD_CARDS.find(item=>item.id===cardId);
   if(!card||!isRewardCardUnlocked(card))return;
   closeLetterDelivery();
+  rewardReadyToSend=false;rewardLetterSent=false;
   practiceContext='reward';currentRewardCard=card;current=card.key;strokeIndex=0;hanamaruVisible=false;
   viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
   $('backToIndex').textContent='← おてがみに戻る';
@@ -1195,6 +1239,7 @@ async function enterRewardPractice(cardId){
 function backToIndex(){
   if(demoing)return;
   closeLetterDelivery();
+  rewardReadyToSend=false;rewardLetterSent=false;
   strokeIndex=0;hanamaruVisible=false;celebrate.classList.remove('show');
   if(practiceContext==='reward')showRewardCards();
   else showIndex();
@@ -1738,6 +1783,7 @@ function completePractice(strokes=currentStrokes()){
   if(practiceContext==='reward'){
     completedRewardCards.add(currentRewardCard.id);
     saveStoredIds(REWARD_COMPLETED_KEY,completedRewardCards);
+    rewardReadyToSend=true;rewardLetterSent=false;
   }else{
     const previousStars=stars;
     stars++;
@@ -1804,6 +1850,7 @@ function end(ev){
 async function select(ch){
   if(demoing)return;
   current=ch;
+  if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}
   if(practiceContext==='normal'){
     lastPracticeGroupIndex=currentGroupIndex;lastPracticeKey=ch;
   }
@@ -1827,6 +1874,7 @@ async function setMode(m){
   if(demoing)return;
   if(mode===m)return;
   mode=m;strokeIndex=0;hanamaruVisible=false;
+  if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}
   $('traceMode').classList.toggle('active',m==='trace');
   $('freeMode').classList.toggle('active',m==='free');
   render();
@@ -1892,8 +1940,8 @@ svg.addEventListener('pointerup',end,{passive:false});
 svg.addEventListener('pointercancel',end,{passive:false});
 $('traceMode').onclick=()=>setMode('trace');
 $('freeMode').onclick=()=>setMode('free');
-$('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;render()};
-$('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(mode==='trace'){strokeIndex=0;hanamaruVisible=false;render()}};
+$('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}render()};
+$('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}if(mode==='trace'){strokeIndex=0;hanamaruVisible=false;render()}else updateRewardSendButton()};
 $('demoBtn').onclick=()=>demo();
 $('listenBtn').onclick=()=>speak(currentInstruction(),true);
 $('backToIndex').onclick=backToIndex;
