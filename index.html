@@ -36,12 +36,14 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .groupTab.selected{background:#dff1ff;outline:3px solid #82c5f4}
 .indexView{background:#fff;border-radius:25px;padding:clamp(10px,2vw,20px);box-shadow:var(--shadow)}
 .indexPrompt{text-align:center;font-weight:900;font-size:clamp(18px,2.7vw,25px);margin:2px 0 12px}
+.dailyPracticeSummary{display:flex;align-items:center;justify-content:center;gap:8px;max-width:620px;margin:12px auto 7px;padding:8px 12px;border-radius:16px;background:#eef8ff;color:#3e6681;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
+.dailyPracticeSummary strong{color:#31566e;white-space:nowrap}
 .rewardHowItWorks{display:flex;align-items:center;justify-content:center;gap:7px;max-width:620px;margin:0 auto 12px;padding:7px 12px;border:1px solid #f1dfaa;border-radius:16px;background:#fff9e6;color:#665321;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
 .rewardHowArrow{color:#d28a2d}
 .kanaTable{display:grid;grid-template-columns:repeat(var(--table-columns),minmax(0,1fr));gap:3px;max-width:900px;margin:0 auto}
 .kanaTable.voiced{max-width:600px;gap:6px}
 .kanaCell,.kanaBlank{aspect-ratio:1;border:1px solid #dfd7cd;border-radius:10px;min-width:0}
-.kanaCell{display:flex;align-items:center;justify-content:center;padding:0;background:#fffdfa;font-size:clamp(20px,3.6vw,35px);font-weight:900;box-shadow:0 3px 8px rgba(80,60,40,.08);cursor:pointer}
+.kanaCell{position:relative;display:flex;align-items:center;justify-content:center;padding:0;background:#fffdfa;font-size:clamp(20px,3.6vw,35px);font-weight:900;box-shadow:0 3px 8px rgba(80,60,40,.08);cursor:pointer}
 .kanaCell:active{transform:scale(.94);background:#fff1bd}
 .kanaCell.recent{outline:3px solid #8dcdf6;background:#eef8ff}
 .kanaGlyph{display:block;width:82%;height:82%;pointer-events:none}
@@ -54,8 +56,9 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .smallSeriesCard{background:#fffaf0;border:1px solid #eadfce;border-radius:18px;padding:8px}
 .smallSeriesLabel{display:block;text-align:center;color:var(--sub);font-size:14px;font-weight:900;margin-bottom:6px}
 .smallChoices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.indexChoice{border:0;border-radius:14px;min-height:52px;background:#fff;font-size:clamp(23px,4vw,34px);font-weight:900;box-shadow:0 4px 12px rgba(80,60,40,.1)}
+.indexChoice{position:relative;border:0;border-radius:14px;min-height:52px;background:#fff;font-size:clamp(23px,4vw,34px);font-weight:900;box-shadow:0 4px 12px rgba(80,60,40,.1)}
 .indexChoice.recent{outline:3px solid #8dcdf6;background:#eef8ff}
+.todayStar{position:absolute;z-index:2;top:3px;right:4px;font-size:clamp(10px,2vw,15px);line-height:1;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(105,75,10,.2))}
 .sokuonIndex{grid-template-columns:repeat(2,minmax(0,1fr));max-width:620px}
 .sokuonIndex .indexChoice{font-size:clamp(20px,3.5vw,29px);padding:12px 6px}
 .practiceNav{margin-bottom:10px}
@@ -117,7 +120,7 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .seriesTab.selected{background:#bfe4ff;outline:3px solid #67b5ec}
 .letters{display:grid;grid-template-columns:repeat(var(--letter-count,5),minmax(0,1fr));gap:8px;margin-bottom:12px}
 .letters.compact{max-width:var(--letters-max-width);margin-left:auto;margin-right:auto}
-.letter{border:0;background:#fff;border-radius:19px;min-height:66px;font-size:clamp(30px,6vw,48px);font-weight:800;box-shadow:var(--shadow)}
+.letter{position:relative;border:0;background:#fff;border-radius:19px;min-height:66px;font-size:clamp(30px,6vw,48px);font-weight:800;box-shadow:var(--shadow)}
 .letter.selected{outline:4px solid var(--yellow)}
 .letter.wordChoice{font-size:clamp(22px,4.2vw,34px);line-height:1.05;padding:8px 5px}
 .letter.wordChoice small{display:block;margin-top:6px;color:var(--sub);font-size:clamp(12px,1.9vw,16px)}
@@ -180,12 +183,14 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .actions button.primary{background:#ffe188}
 .actions button.green{background:#e5f6ea}
 .hint{font-size:14px;line-height:1.55;color:var(--sub);margin:10px 0 0}
-.toast{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(53,51,61,.94);color:#fff;border-radius:999px;padding:11px 17px;font-weight:900;opacity:0;transition:.18s;pointer-events:none;white-space:nowrap;z-index:5;max-width:92%;overflow:hidden;text-overflow:ellipsis}
-.toast.show{opacity:1;bottom:25px}
-.celebrate{position:absolute;inset:0;display:none;z-index:8;align-items:center;justify-content:center;background:rgba(255,253,250,.9);text-align:center}
+.practiceFeedback{min-height:40px;padding-top:28px;text-align:center}
+.toast{display:none;max-width:100%;margin:0 auto;background:rgba(53,51,61,.94);color:#fff;border-radius:18px;padding:9px 15px;font-weight:900;line-height:1.35;pointer-events:none;white-space:normal}
+.toast.show{display:inline-block}
+.celebrate{display:none;align-items:center;justify-content:center;gap:9px;max-width:620px;margin:0 auto;border-radius:18px;padding:9px 14px;background:#fff9dc;text-align:center}
 .celebrate.show{display:flex}
-.celebrate .star{display:block;font-size:clamp(70px,15vw,130px);animation:bounce .55s ease-in-out infinite alternate}
-.celebrate strong{font-size:clamp(28px,6vw,55px)}
+.celebrate .star{display:block;font-size:clamp(34px,7vw,52px);animation:bounce .55s ease-in-out infinite alternate}
+.celebrate.withoutAward .star{display:none}
+.celebrate strong{font-size:clamp(18px,3.2vw,28px);line-height:1.35;white-space:pre-line}
 @keyframes bounce{to{transform:translateY(-12px) rotate(5deg)}}
 @media(prefers-reduced-motion:reduce){.rewardEnvelope,.rewardCard.special::before,.rewardCard.special::after,.celebrate .star,.dirArrow,.pathCheckpoint.next .checkpointHalo,.deliveryCharacter{animation:none!important}.letterDelivery.playing .deliveryEnvelope{animation:deliveryFade .35s ease forwards}.deliveryBubble{transition-duration:.12s}}
 @keyframes deliveryFade{to{left:58%;top:55%;opacity:.2;transform:scale(.8)}}
@@ -207,7 +212,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   body{padding-left:7px;padding-right:7px}
   header{gap:5px;flex-wrap:wrap}h1{font-size:18px;white-space:nowrap}.rewardSummary{width:100%;gap:4px}.stars{padding:7px 9px}.rewardEntry{min-width:105px;padding:5px 7px;font-size:13px}.rewardEntry small{font-size:10px}
   .groupTabs{gap:5px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
-  .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}
+  .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}.dailyPracticeSummary{display:grid;gap:1px;margin:8px auto 6px;padding:7px 8px}
   .rewardHowItWorks{display:grid;grid-template-columns:1fr;gap:1px;margin-bottom:8px;padding:6px 8px}.rewardHowArrow{display:none}
   .kanaTable{gap:1px}.kanaTable.voiced{gap:4px;padding:0 12px}
   .kanaCell,.kanaBlank{border-radius:6px}.kanaCell{font-size:20px}
@@ -240,13 +245,17 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 <div class="groupTabs" id="groupTabs" role="group" aria-label="ひらがなのグループを選ぶ"></div>
 <section class="indexView" id="indexView">
   <div class="indexPrompt">きょうは どの もじを やる？</div>
+  <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
+  <div id="indexGrid"></div>
+  <div class="dailyPracticeSummary" id="dailyPracticeSummary">
+    <strong>きょうの れんしゅう ⭐<span id="dailyPracticeCount">0</span>こ</strong>
+    <span>いろんな もじも れんしゅうしてみよう！</span>
+  </div>
   <div class="rewardHowItWorks" id="rewardHowItWorks" aria-label="ほしを10こあつめると、おてがみカードがもらえるよ">
     <span>⭐ <span id="rewardHowCount">10</span>こ れんしゅうすると</span>
     <span class="rewardHowArrow" aria-hidden="true">→</span>
     <span id="rewardHowMessage">✉️ おてがみカードが もらえるよ！</span>
   </div>
-  <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
-  <div id="indexGrid"></div>
 </section>
 
 <section class="rewardCardsView" id="rewardCardsView" hidden>
@@ -280,9 +289,11 @@ svg{display:block;width:100%;height:100%;touch-action:none}
       <g id="traceLayer"></g>
       <g id="markerLayer"></g>
     </svg>
+  </div>
+  <div class="practiceFeedback" id="practiceFeedback" aria-live="polite">
     <div class="toast" id="toast"></div>
     <div class="celebrate" id="celebrate">
-      <div><span class="star">🌟</span><strong id="celebrateText">できた！</strong></div>
+      <span class="star" aria-hidden="true">🌟</span><strong id="celebrateText">できた！</strong>
     </div>
   </div>
   <div class="rewardSendArea" id="rewardSendArea" hidden>
@@ -872,11 +883,14 @@ let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let hanamaruVisible=false;
 let deliveryPlaying=false,deliveryTimers=[],rewardReadyToSend=false,rewardLetterSent=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
+const DAILY_PRACTICE_KEY='hiragana-daily-practice-v1';
 const REWARD_COMPLETED_KEY='hiragana-reward-cards-v1';
 const REWARD_SEEN_KEY='hiragana-reward-seen-v1';
 const REWARD_TRACK_KEY='hiragana-reward-track-v1';
 const rewardTrack=loadRewardTrack();
 const rewardBaseStars=rewardTrack.baseStars;
+let dailyPractice=loadDailyPractice();
+saveDailyPractice();
 const completedRewardCards=loadStoredIds(REWARD_COMPLETED_KEY);
 const storedSeenRewards=localStorage.getItem(REWARD_SEEN_KEY);
 const seenRewardCards=loadStoredIds(REWARD_SEEN_KEY);
@@ -901,6 +915,59 @@ function loadStoredIds(key){
     const value=JSON.parse(localStorage.getItem(key)||'[]');
     return new Set(Array.isArray(value)?value.filter(id=>typeof id==='string'):[]);
   }catch(e){return new Set()}
+}
+function localDateString(date=new Date()){
+  const year=date.getFullYear();
+  const month=String(date.getMonth()+1).padStart(2,'0');
+  const day=String(date.getDate()).padStart(2,'0');
+  return `${year}-${month}-${day}`;
+}
+function loadDailyPractice(){
+  const today=localDateString();
+  try{
+    const value=JSON.parse(localStorage.getItem(DAILY_PRACTICE_KEY)||'null');
+    if(!value||value.date!==today||!Array.isArray(value.awarded))return{date:today,awarded:new Set()};
+    return{date:today,awarded:new Set(value.awarded.filter(key=>typeof key==='string'))};
+  }catch(e){return{date:today,awarded:new Set()}}
+}
+function saveDailyPractice(){
+  localStorage.setItem(DAILY_PRACTICE_KEY,JSON.stringify({date:dailyPractice.date,awarded:[...dailyPractice.awarded]}));
+}
+function ensureDailyPracticeDate(){
+  const today=localDateString();
+  if(dailyPractice.date===today)return false;
+  dailyPractice={date:today,awarded:new Set()};
+  saveDailyPractice();
+  return true;
+}
+function practiceKeyFor(item=currentPracticeItem()){
+  if(item.kind==='single')return `kana:${item.char}`;
+  if(item.kind==='yoon')return `yoon:${item.key}`;
+  if(item.kind==='sokuon')return `sokuon:${item.key}`;
+  return null;
+}
+function awardDailyPracticeStar(practiceKey){
+  ensureDailyPracticeDate();
+  if(!practiceKey||dailyPractice.awarded.has(practiceKey))return false;
+  dailyPractice.awarded.add(practiceKey);
+  saveDailyPractice();
+  stars++;
+  localStorage.setItem('hiragana-stars-v3',String(stars));
+  updateRewardSummary();
+  updateDailyPracticeSummary();
+  return true;
+}
+function updateDailyPracticeSummary(){
+  $('dailyPracticeCount').textContent=String(dailyPractice.awarded.size);
+  $('dailyPracticeSummary').setAttribute('aria-label',`きょうのれんしゅう、ほし${dailyPractice.awarded.size}こ。いろんなもじもれんしゅうしてみよう`);
+}
+function appendTodayStar(button,item){
+  const key=practiceKeyFor(item);
+  if(!key||!dailyPractice.awarded.has(key))return;
+  const mark=document.createElement('span');
+  mark.className='todayStar';mark.textContent='⭐';mark.setAttribute('aria-hidden','true');
+  button.appendChild(mark);
+  button.setAttribute('aria-label',`${button.getAttribute('aria-label')}。きょうのほしをもらったよ`);
 }
 function saveStoredIds(key,ids){localStorage.setItem(key,JSON.stringify([...ids]))}
 function loadRewardTrack(){
@@ -932,6 +999,7 @@ function updateRewardSummary(){
     : 'ほしを10こあつめると、おてがみカードがもらえるよ');
 }
 updateRewardSummary();
+updateDailyPracticeSummary();
 
 function activeRows(){return CHAR_GROUPS[currentGroupIndex].rows}
 function activeRow(){return activeRows()[currentRowIndex]}
@@ -1019,10 +1087,12 @@ function buildIndexSubTabs(){
 }
 function indexButton(label,key,open,extraClass=''){
   const button=document.createElement('button');
+  const item=currentPracticeItem(key);
   button.className=`${extraClass||'indexChoice'}${lastPracticeGroupIndex===currentGroupIndex&&lastPracticeKey===key?' recent':''}`;
   if(extraClass==='kanaCell'&&DATA[label])button.appendChild(renderKanaGlyph(label));
   else button.textContent=label;
   button.setAttribute('aria-label',`${label}をれんしゅう`);
+  appendTodayStar(button,item);
   button.onclick=open;
   return button;
 }
@@ -1073,6 +1143,7 @@ function buildSmallIndex(){
   indexGrid.appendChild(container);
 }
 function buildIndex(){
+  ensureDailyPracticeDate();updateDailyPracticeSummary();
   indexGrid.innerHTML='';
   setGroupSelected();buildIndexSubTabs();
   const group=CHAR_GROUPS[currentGroupIndex];
@@ -1091,6 +1162,7 @@ function practiceHeadingText(){
   return row.label;
 }
 function buildLetters(){
+  ensureDailyPracticeDate();
   letters.innerHTML='';
   const choices=activeChoices();
   const count=choices.length;
@@ -1108,6 +1180,7 @@ function buildLetters(){
     else if(item.kind==='single')b.appendChild(renderKanaGlyph(item.char));
     else b.textContent=item.label;
     b.setAttribute('aria-label',isWord?`${item.word}をれんしゅう`:`${item.word?`${item.word}の`:''}${item.label}をれんしゅう`);
+    appendTodayStar(b,item);
     b.onclick=()=>select(choice.key);
     letters.appendChild(b);
   }
@@ -1780,32 +1853,42 @@ function move(ev){
 
 function completePractice(strokes=currentStrokes()){
   let newlyUnlocked=[];
+  let starAwarded=false;
   if(practiceContext==='reward'){
     completedRewardCards.add(currentRewardCard.id);
     saveStoredIds(REWARD_COMPLETED_KEY,completedRewardCards);
     rewardReadyToSend=true;rewardLetterSent=false;
   }else{
     const previousStars=stars;
-    stars++;
-    localStorage.setItem('hiragana-stars-v3',String(stars));
-    newlyUnlocked=REWARD_CARDS.filter(card=>!isRewardCardUnlocked(card,previousStars)&&isRewardCardUnlocked(card,stars)&&!seenRewardCards.has(card.id));
-    newlyUnlocked.forEach(card=>seenRewardCards.add(card.id));
-    if(newlyUnlocked.length)saveStoredIds(REWARD_SEEN_KEY,seenRewardCards);
-    updateRewardSummary();
+    starAwarded=awardDailyPracticeStar(practiceKeyFor());
+    if(starAwarded){
+      newlyUnlocked=REWARD_CARDS.filter(card=>!isRewardCardUnlocked(card,previousStars)&&isRewardCardUnlocked(card,stars)&&!seenRewardCards.has(card.id));
+      newlyUnlocked.forEach(card=>seenRewardCards.add(card.id));
+      if(newlyUnlocked.length)saveStoredIds(REWARD_SEEN_KEY,seenRewardCards);
+      buildLetters();
+    }
   }
   $('counter').textContent=`${strokes.length} / ${strokes.length} がめ`;
   hanamaruVisible=true;
   render(false);
-  $('celebrateText').textContent=`「${currentPracticeItem().label}」できた！`;
+  const repeatedToday=practiceContext==='normal'&&!starAwarded;
+  clearTimeout(say.t);toast.classList.remove('show');
+  if(repeatedToday)$('prompt').textContent='できた！';
+  $('celebrateText').textContent=repeatedToday
+    ? 'できた！\nほかの もじも\nれんしゅうすると\n⭐が もらえるよ！'
+    : `「${currentPracticeItem().label}」できた！`;
+  celebrate.classList.toggle('withoutAward',repeatedToday);
   celebrate.classList.add('show');
-  if(practiceContext!=='reward')speak(`${speechCharacter()}、できた！すごい！`);
+  if(practiceContext!=='reward')speak(starAwarded
+    ? `${speechCharacter()}、できた！すごい！`
+    : 'できた！ ほかの もじも れんしゅうすると、ほしが もらえるよ。');
   setTimeout(()=>{
     celebrate.classList.remove('show');
     if(newlyUnlocked.length){
       showRewardUnlock(newlyUnlocked);
       speak(['おてがみカードが とどいたよ。','おてがみを かいてみよう。']);
     }
-  },1800);
+  },repeatedToday?4200:1800);
 }
 
 function end(ev){
@@ -1959,6 +2042,12 @@ celebrate.onclick=()=>celebrate.classList.remove('show');
 if(initialUnlockedRewardCount){
   setTimeout(()=>showRewardUnlock(unlockedRewardCards().slice(0,initialUnlockedRewardCount),true),350);
 }
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState!=='visible'||!ensureDailyPracticeDate())return;
+  updateDailyPracticeSummary();
+  if(viewState==='index')buildIndex();
+  else if(viewState==='practice'&&practiceContext==='normal')buildLetters();
+});
 let deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block';
