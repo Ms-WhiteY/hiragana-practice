@@ -40,6 +40,40 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .dailyPracticeSummary strong{color:#31566e;white-space:nowrap}
 .rewardHowItWorks{display:flex;align-items:center;justify-content:center;gap:7px;max-width:620px;margin:0 auto 12px;padding:7px 12px;border:1px solid #f1dfaa;border-radius:16px;background:#fff9e6;color:#665321;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
 .rewardHowArrow{color:#d28a2d}
+.skillEntry{display:block;width:min(100%,620px);min-height:48px;margin:0 auto;border:1px solid #d4c8ee;border-radius:16px;background:#f3edff;font-size:clamp(16px,2.4vw,21px);font-weight:900;box-shadow:0 4px 12px rgba(80,60,100,.08)}
+.skillView{max-width:760px;margin:0 auto;border-radius:25px;padding:clamp(14px,3vw,26px);background:#fff;box-shadow:var(--shadow);text-align:center}
+.skillView h2{margin:9px 0 5px;font-size:clamp(25px,5vw,36px)}
+.skillLead{margin:0 0 18px;color:var(--sub);font-weight:800;line-height:1.45}
+.skillChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:620px;margin:0 auto 18px}
+.skillChoice{min-height:100px;border:2px solid #dfd5f3;border-radius:22px;background:#f9f5ff;font-size:clamp(21px,3vw,27px);font-weight:900;box-shadow:0 5px 14px rgba(80,60,100,.09)}
+.skillChoice small{display:block;margin-top:6px;color:#715e89;font-size:15px}
+.skillHistoryEntry{min-height:44px;border:0;border-radius:15px;padding:8px 16px;background:#edf7ff;font-weight:900}
+.skillProgress{display:inline-block;margin:12px 0 8px;border-radius:999px;padding:7px 17px;background:#f2edff;color:#63517f;font-size:20px;font-weight:900}
+.skillQuestionPrompt{margin:3px 0 14px;font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.45}
+.skillGlyphFrame{display:flex;align-items:center;justify-content:center;width:min(72vw,270px);aspect-ratio:1;margin:0 auto 16px;border:2px solid #e6ddcf;border-radius:20px;background:#fffdfa}
+.skillGlyphFrame .kanaGlyph,.skillGlyphFrame svg{width:84%;height:84%}
+.skillDemoGuide{fill:none;stroke:#ddd8d2;stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
+.skillWriteBoard{width:min(78vw,390px);aspect-ratio:1;margin:0 auto 14px;border-radius:20px;overflow:hidden;background:#fffdfa;touch-action:none;user-select:none;-webkit-user-select:none}
+.skillWriteBoard svg{touch-action:none}
+.skillActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:620px;margin:0 auto 12px}
+.skillActions button,.skillNext,.skillClear{min-height:56px;border:0;border-radius:17px;padding:9px 11px;background:#e9f5ff;font-size:clamp(16px,2.4vw,21px);font-weight:900}
+.skillActions .skillPrimary,.skillNext{background:#ffe188}
+.skillActions button:disabled,.skillNext:disabled{opacity:.55}
+.skillClear{min-height:44px;margin:0 0 12px;background:#f1eeea;font-size:17px}
+.skillFeedback{min-height:30px;margin:4px 0 12px;font-size:clamp(19px,3vw,24px);font-weight:900}
+.skillReveal{margin:12px auto 0}
+.skillReveal p{margin:0 0 8px;font-weight:900}
+.skillReveal .skillGlyphFrame{width:min(56vw,220px)}
+.skillMedal{margin:15px auto 9px;border-radius:20px;padding:12px;background:#fff2c3;font-size:clamp(20px,3vw,27px);font-weight:900}
+.skillScore{font-size:clamp(25px,4vw,34px);font-weight:900}
+.skillResultGroup{margin:13px auto;padding:12px;border-radius:18px;background:#f7f6f1;text-align:left}
+.skillResultGroup h3{margin:0 0 9px;font-size:18px}
+.skillResultItems{display:flex;flex-wrap:wrap;gap:8px}
+.skillResultChar{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border:0;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(80,60,40,.08)}
+.skillResultChar .kanaGlyph{width:48px;height:48px}
+.skillHistoryList{display:grid;gap:9px;max-width:530px;margin:0 auto 16px;text-align:left}
+.skillHistoryItem{border-radius:15px;padding:11px 15px;background:#f7f4ff;font-weight:900}
+.skillHistoryItem span{display:inline-block;min-width:68px;color:#6d617e}
 .kanaTable{display:grid;grid-template-columns:repeat(var(--table-columns),minmax(0,1fr));gap:3px;max-width:900px;margin:0 auto}
 .kanaTable.voiced{max-width:600px;gap:6px}
 .kanaCell,.kanaBlank{aspect-ratio:1;border:1px solid #dfd7cd;border-radius:10px;min-width:0}
@@ -213,6 +247,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   header{gap:5px;flex-wrap:wrap}h1{font-size:18px;white-space:nowrap}.rewardSummary{width:100%;gap:4px}.stars{padding:7px 9px}.rewardEntry{min-width:105px;padding:5px 7px;font-size:13px}.rewardEntry small{font-size:10px}
   .groupTabs{gap:5px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
   .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}.dailyPracticeSummary{display:grid;gap:1px;margin:8px auto 6px;padding:7px 8px}
+  .skillChoices{grid-template-columns:1fr;gap:9px}.skillChoice{min-height:76px}.skillView{padding:12px 9px}.skillActions{gap:7px}.skillActions button{padding:8px 5px}
   .rewardHowItWorks{display:grid;grid-template-columns:1fr;gap:1px;margin-bottom:8px;padding:6px 8px}.rewardHowArrow{display:none}
   .kanaTable{gap:1px}.kanaTable.voiced{gap:4px;padding:0 12px}
   .kanaCell,.kanaBlank{border-radius:6px}.kanaCell{font-size:20px}
@@ -256,6 +291,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     <span class="rewardHowArrow" aria-hidden="true">→</span>
     <span id="rewardHowMessage">✉️ おてがみカードが もらえるよ！</span>
   </div>
+  <button class="skillEntry" id="skillEntry">🌟 ちからだめし</button>
 </section>
 
 <section class="rewardCardsView" id="rewardCardsView" hidden>
@@ -263,6 +299,65 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   <h2 class="rewardCardsTitle">✉️ おてがみカード</h2>
   <p class="rewardCardsLead">ほしを あつめて、ことばを かこう！</p>
   <div class="rewardCardsGrid" id="rewardCardsGrid"></div>
+</section>
+
+<section class="skillView" id="skillHomeView" hidden>
+  <h2>🌟 ちからだめし</h2>
+  <p class="skillLead">どれくらい できるようになったかな？</p>
+  <div class="skillChoices">
+    <button class="skillChoice" id="skillStartRead">👀 よめるかな？<small>10もん</small></button>
+    <button class="skillChoice" id="skillStartWrite">✏️ かけるかな？<small>5もん</small></button>
+  </div>
+  <button class="skillHistoryEntry" id="skillOpenHistory">📖 これまで</button>
+  <p><button class="backToIndex" id="skillHomeBack">← いちらんに戻る</button></p>
+</section>
+
+<section class="skillView" id="skillQuestionView" hidden>
+  <button class="backToIndex" id="skillQuit">← やめる</button>
+  <div class="skillProgress" id="skillProgress">1 / 10</div>
+  <p class="skillQuestionPrompt" id="skillQuestionPrompt"></p>
+  <div class="skillGlyphFrame" id="skillReadGlyph" role="img" aria-label="もんだいの もじ" hidden></div>
+  <div id="skillWriteArea" hidden>
+    <button class="skillClear" id="skillRepeatSound">🔊 もういちど きく</button>
+    <div class="skillWriteBoard">
+      <svg id="skillWriteSvg" viewBox="0 0 109 109" aria-label="もんだいを かく マス">
+        <rect class="practiceCell" x=".7" y=".7" width="107.6" height="107.6"></rect>
+        <line class="cellMidline" x1="54.5" x2="54.5" y1="1.4" y2="107.6"></line>
+        <line class="cellMidline" x1="1.4" x2="107.6" y1="54.5" y2="54.5"></line>
+        <g id="skillWriteTrace"></g>
+      </svg>
+    </div>
+    <button class="skillClear" id="skillClear">🧽 けす</button>
+  </div>
+  <div class="skillActions" id="skillAnswerActions">
+    <button class="skillPrimary" id="skillYes"></button>
+    <button id="skillRevealAnswer"></button>
+  </div>
+  <p class="skillFeedback" id="skillFeedback" aria-live="polite"></p>
+  <div class="skillReveal" id="skillReveal" hidden>
+    <p id="skillRevealText">こんな もじだよ</p>
+    <div class="skillGlyphFrame" role="img" aria-label="こたえの もじ">
+      <svg id="skillRevealSvg" viewBox="0 0 109 109" aria-hidden="true">
+        <g id="skillRevealGuide"></g><g id="skillRevealTrace"></g>
+      </svg>
+    </div>
+  </div>
+  <button class="skillNext" id="skillNext" hidden disabled>つぎへ →</button>
+</section>
+
+<section class="skillView" id="skillResultView" hidden>
+  <h2>🎉 おわったよ！</h2>
+  <div class="skillScore" id="skillScore"></div>
+  <div class="skillResultGroup"><h3 id="skillSuccessTitle"></h3><div class="skillResultItems" id="skillSuccessItems"></div></div>
+  <div class="skillResultGroup"><h3>こんど れんしゅうしてみよう</h3><div class="skillResultItems" id="skillPracticeItems"></div></div>
+  <div class="skillMedal">🏅 ちからだめし できた！</div>
+  <div class="skillActions"><button class="skillPrimary" id="skillRetry">もういちど</button><button id="skillResultBack">いちらんに戻る</button></div>
+</section>
+
+<section class="skillView" id="skillHistoryView" hidden>
+  <h2>📖 これまで</h2>
+  <div class="skillHistoryList" id="skillHistoryList"></div>
+  <button class="backToIndex" id="skillHistoryBack">← ちからだめしに戻る</button>
 </section>
 
 <section id="practiceView" hidden>
@@ -884,6 +979,7 @@ let hanamaruVisible=false;
 let deliveryPlaying=false,deliveryTimers=[],rewardReadyToSend=false,rewardLetterSent=false;
 let stars=Number(localStorage.getItem('hiragana-stars-v3')||0);
 const DAILY_PRACTICE_KEY='hiragana-daily-practice-v1';
+const SKILL_TEST_KEY='hiragana-skill-test-v1';
 const REWARD_COMPLETED_KEY='hiragana-reward-cards-v1';
 const REWARD_SEEN_KEY='hiragana-reward-seen-v1';
 const REWARD_TRACK_KEY='hiragana-reward-track-v1';
@@ -891,6 +987,8 @@ const rewardTrack=loadRewardTrack();
 const rewardBaseStars=rewardTrack.baseStars;
 let dailyPractice=loadDailyPractice();
 saveDailyPractice();
+let skillHistory=loadSkillHistory(),skillSession=null,currentQuestionIndex=0,skillAnswerTimer=null,skillDemoToken=0;
+let skillWriteDown=false,skillWritePointerId=null,skillWritePoints=[];
 const completedRewardCards=loadStoredIds(REWARD_COMPLETED_KEY);
 const storedSeenRewards=localStorage.getItem(REWARD_SEEN_KEY);
 const seenRewardCards=loadStoredIds(REWARD_SEEN_KEY);
@@ -908,6 +1006,8 @@ const $=id=>document.getElementById(id);
 const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),rewardCardsView=$('rewardCardsView'),rewardCardsGrid=$('rewardCardsGrid'),rewardButton=$('rewardButton'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
       celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord'),rewardUnlock=$('rewardUnlock'),letterDelivery=$('letterDelivery');
+const skillViews=[$('skillHomeView'),$('skillQuestionView'),$('skillResultView'),$('skillHistoryView')];
+const skillWriteSvg=$('skillWriteSvg'),skillWriteTrace=$('skillWriteTrace'),skillRevealSvg=$('skillRevealSvg');
 $('appVersion').textContent=`v${self.APP_VERSION}`;
 
 function loadStoredIds(key){
@@ -1186,6 +1286,7 @@ function buildLetters(){
   }
 }
 function showIndex(){
+  hideSkillViews();
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   viewState='index';practiceContext='normal';currentRewardCard=null;
@@ -1278,6 +1379,7 @@ function showRewardUnlock(cards,existing=false){
 }
 function showRewardCards(){
   if(demoing)return;
+  hideSkillViews();
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   hideRewardUnlock();viewState='cards';practiceContext='normal';currentRewardCard=null;
@@ -1286,6 +1388,7 @@ function showRewardCards(){
 }
 async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=true){
   if(demoing)return;
+  hideSkillViews();
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   practiceContext='normal';currentRewardCard=null;
@@ -1299,6 +1402,7 @@ async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=tr
 }
 async function enterRewardPractice(cardId){
   if(demoing)return;
+  hideSkillViews();
   const card=REWARD_CARDS.find(item=>item.id===cardId);
   if(!card||!isRewardCardUnlocked(card))return;
   closeLetterDelivery();
@@ -1337,6 +1441,227 @@ function renderKanaGlyph(char){
     glyph.appendChild(path);
   });
   return glyph;
+}
+function loadSkillHistory(){
+  try{
+    const stored=JSON.parse(localStorage.getItem(SKILL_TEST_KEY)||'null');
+    if(!stored||!Array.isArray(stored.history))return[];
+    const chars=new Set([...SEION_ROWS,...VOICED_ROWS].flatMap(row=>row.chars));
+    return stored.history.filter(entry=>{
+      const total=entry?.type==='read'?10:entry?.type==='write'?5:0;
+      return /^\d{4}-\d{2}-\d{2}$/.test(entry?.date||'')&&total===entry.total
+        &&Number.isInteger(entry.score)&&entry.score>=0&&entry.score<=total
+        &&Array.isArray(entry.items)&&entry.items.length===total
+        &&entry.items.every(item=>chars.has(item?.char)&&typeof item.success==='boolean')
+        &&entry.items.filter(item=>item.success).length===entry.score;
+    }).slice(-20);
+  }catch(e){return[]}
+}
+function saveSkillHistory(entry){
+  skillHistory=[...skillHistory,entry].slice(-20);
+  try{localStorage.setItem(SKILL_TEST_KEY,JSON.stringify({history:skillHistory}))}catch(e){}
+}
+function shuffleSkillItems(items){
+  const result=[...items];
+  for(let i=result.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [result[i],result[j]]=[result[j],result[i]];
+  }
+  return result;
+}
+function pickSkillRows(rows,count){
+  return shuffleSkillItems(rows).slice(0,count).map(row=>shuffleSkillItems(row.chars)[0]);
+}
+function makeSkillQuestions(type){
+  const seionCount=type==='read'?8:4,voicedCount=type==='read'?2:1;
+  return shuffleSkillItems([
+    ...pickSkillRows(SEION_ROWS,seionCount),
+    ...pickSkillRows(VOICED_ROWS,voicedCount)
+  ]);
+}
+function hideSkillViews(){
+  skillViews.forEach(view=>view.hidden=true);
+  clearTimeout(skillAnswerTimer);skillDemoToken++;skillWriteDown=false;
+}
+function setSkillView(view){
+  hideSkillViews();
+  viewState='skill';
+  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=true;
+  view.hidden=false;
+}
+function showSkillHome(){
+  skillSession=null;
+  setSkillView($('skillHomeView'));
+}
+function showSkillHistory(){
+  setSkillView($('skillHistoryView'));
+  const list=$('skillHistoryList');list.replaceChildren();
+  if(!skillHistory.length){list.textContent='まだ きろくは ないよ';return}
+  [...skillHistory].reverse().forEach(entry=>{
+    const item=document.createElement('div');item.className='skillHistoryItem';
+    const date=document.createElement('span');date.textContent=entry.date.slice(5).replace('-','/');
+    item.append(date,document.createTextNode(`${entry.type==='read'?'👀':'✏️'} ${entry.score} / ${entry.total}`));
+    list.appendChild(item);
+  });
+}
+function startSkillTest(type){
+  skillSession={type,questions:makeSkillQuestions(type),items:[],answered:false,nextReady:false};
+  currentQuestionIndex=0;
+  renderSkillQuestion();
+}
+function skillWritingSpeech(char){return speechWithSuffix(' かいてみよう。',char)}
+function renderSkillQuestion(){
+  const session=skillSession;if(!session)return;
+  setSkillView($('skillQuestionView'));
+  session.answered=false;session.nextReady=false;
+  const isRead=session.type==='read',char=session.questions[currentQuestionIndex];
+  $('skillProgress').textContent=`${currentQuestionIndex+1} / ${session.questions.length}`;
+  $('skillQuestionPrompt').textContent=isRead?'この もじ、よめるかな？':'おとを きいて かいてみよう！';
+  $('skillReadGlyph').hidden=!isRead;$('skillWriteArea').hidden=isRead;
+  $('skillAnswerActions').hidden=false;$('skillFeedback').textContent='';
+  $('skillReveal').hidden=true;$('skillNext').hidden=true;$('skillNext').disabled=true;
+  $('skillYes').disabled=false;$('skillRevealAnswer').disabled=false;
+  $('skillYes').textContent=isRead?'よめた！':'かけた！';
+  $('skillRevealAnswer').textContent=isRead?'こたえを きく':'おてほんを みる';
+  $('skillReadGlyph').replaceChildren();
+  if(isRead)$('skillReadGlyph').appendChild(renderKanaGlyph(char));
+  else{skillWriteTrace.replaceChildren();speak(skillWritingSpeech(char))}
+}
+function showSkillRevealGlyph(char,animated){
+  const guide=$('skillRevealGuide'),trace=$('skillRevealTrace');
+  guide.replaceChildren();trace.replaceChildren();
+  DATA[char].forEach((d,index)=>{
+    const path=mkPath(d,animated?'skillDemoGuide':'kanaGlyphStroke');
+    path.setAttribute('transform',matrixAttribute(dakutenTransform(char,index)));
+    guide.appendChild(path);
+  });
+  $('skillReveal').hidden=false;
+}
+function skillDemoSamples(char,d,index,duration){
+  const source=mkPath(d);
+  source.style.visibility='hidden';skillRevealSvg.appendChild(source);
+  const length=source.getTotalLength(),count=Math.max(24,Math.ceil(duration/16));
+  const transform=dakutenTransform(char,index);
+  const samples=[];
+  for(let i=0;i<=count;i++)samples.push(transformPoint(source.getPointAtLength(length*i/count),transform));
+  source.remove();
+  return samples;
+}
+async function playSkillAnswerDemo(char){
+  const token=++skillDemoToken;
+  for(let index=0;index<DATA[char].length;index++){
+    if(token!==skillDemoToken)return;
+    const d=DATA[char][index];
+    const source=mkPath(d);source.style.visibility='hidden';skillRevealSvg.appendChild(source);
+    const length=source.getTotalLength();source.remove();
+    const duration=Math.max(DEMO_MIN_DURATION,length/DEMO_SPEED*1000);
+    const samples=skillDemoSamples(char,d,index,duration);
+    const path=mkPath('','demoTrace');$('skillRevealTrace').appendChild(path);
+    await new Promise(resolve=>{
+      let started=null;
+      const draw=now=>{
+        if(token!==skillDemoToken){resolve();return}
+        if(started===null)started=now;
+        const progress=Math.min(1,(now-started)/duration);
+        const end=Math.max(1,Math.ceil(progress*(samples.length-1)));
+        path.setAttribute('d',pointsD(samples.slice(0,end+1)));
+        if(progress<1)requestAnimationFrame(draw);else resolve();
+      };
+      requestAnimationFrame(draw);
+    });
+    if(token!==skillDemoToken)return;
+    if(index<DATA[char].length-1)await new Promise(resolve=>setTimeout(resolve,DEMO_STROKE_PAUSE));
+  }
+}
+async function answerSkillQuestion(success){
+  const session=skillSession;
+  if(!session||session.answered||$('skillQuestionView').hidden)return;
+  const char=session.questions[currentQuestionIndex],isRead=session.type==='read';
+  session.answered=true;session.items.push({char,success});
+  $('skillAnswerActions').hidden=true;
+  $('skillFeedback').textContent=success?(isRead?'できた！':'かけた！'):'まだ むずかしいね';
+  if(isRead){
+    if(!success){
+      $('skillFeedback').textContent=`${char} だよ！`;
+      speak(speechWithSuffix('',char));
+    }
+  }else{
+    $('skillRevealText').textContent='こんな もじだよ';
+    showSkillRevealGlyph(char,!success);
+    if(!success)await playSkillAnswerDemo(char);
+  }
+  if(skillSession!==session||$('skillQuestionView').hidden)return;
+  const next=$('skillNext');
+  next.textContent=currentQuestionIndex===session.questions.length-1?'けっかを みる':'つぎへ →';
+  next.hidden=false;next.disabled=true;
+  const token=skillDemoToken;
+  skillAnswerTimer=setTimeout(()=>{
+    if(skillSession!==session||token!==skillDemoToken)return;
+    session.nextReady=true;next.disabled=false;
+  },300);
+}
+function advanceSkillQuestion(){
+  const session=skillSession;
+  if(!session||!session.answered||!session.nextReady)return;
+  session.nextReady=false;$('skillNext').disabled=true;
+  if(currentQuestionIndex+1<session.questions.length){currentQuestionIndex++;renderSkillQuestion()}
+  else finishSkillTest();
+}
+function appendSkillResultItems(container,items,canPractice){
+  container.replaceChildren();
+  if(!items.length){container.textContent=canPractice?'ぜんぶ できた！':'これから できるよ！';return}
+  items.forEach(item=>{
+    const element=document.createElement(canPractice?'button':'span');
+    element.className='skillResultChar';
+    element.appendChild(renderKanaGlyph(item.char));
+    if(canPractice){
+      element.setAttribute('aria-label',`${item.char}を れんしゅう`);
+      element.onclick=()=>openSkillPractice(item.char);
+    }else element.setAttribute('aria-label',item.char);
+    container.appendChild(element);
+  });
+}
+function finishSkillTest(){
+  const session=skillSession;
+  if(!session||session.items.length!==session.questions.length)return;
+  const entry={date:localDateString(),type:session.type,score:session.items.filter(item=>item.success).length,
+    total:session.questions.length,items:session.items.map(item=>({...item}))};
+  saveSkillHistory(entry);
+  setSkillView($('skillResultView'));
+  const action=entry.type==='read'?'👀 よめた':'✏️ かけた';
+  $('skillScore').textContent=`${action} ${entry.score} / ${entry.total}`;
+  $('skillSuccessTitle').textContent=entry.type==='read'?'よめた！':'かけた！';
+  appendSkillResultItems($('skillSuccessItems'),entry.items.filter(item=>item.success),false);
+  appendSkillResultItems($('skillPracticeItems'),entry.items.filter(item=>!item.success),true);
+}
+function openSkillPractice(char){
+  let groupIndex=0,rowIndex=SEION_ROWS.findIndex(row=>row.chars.includes(char));
+  if(rowIndex<0){groupIndex=1;rowIndex=VOICED_ROWS.findIndex(row=>row.chars.includes(char))}
+  if(rowIndex<0)return;
+  skillSession=null;mode='trace';
+  $('traceMode').classList.add('active');$('freeMode').classList.remove('active');
+  enterPractice(groupIndex,rowIndex,char,0,true);
+}
+function skillWriteStart(ev){
+  if(!skillSession||skillSession.type!=='write'||$('skillQuestionView').hidden||skillWriteDown)return;
+  ev.preventDefault();
+  const point=svgPoint(ev,skillWriteSvg);
+  skillWriteDown=true;skillWritePointerId=ev.pointerId;skillWritePoints=[point];
+  try{skillWriteSvg.setPointerCapture(ev.pointerId)}catch(e){}
+  const path=mkPath(`M${point.x} ${point.y}`,'trace');path.id='skillWriteLive';skillWriteTrace.appendChild(path);
+}
+function skillWriteMove(ev){
+  if(!skillWriteDown||ev.pointerId!==skillWritePointerId)return;
+  ev.preventDefault();
+  const point=svgPoint(ev,skillWriteSvg);
+  if(dist(point,skillWritePoints[skillWritePoints.length-1])<.6)return;
+  skillWritePoints.push(point);
+  const live=$('skillWriteLive');if(live)live.setAttribute('d',pointsD(skillWritePoints));
+}
+function skillWriteEnd(ev){
+  if(!skillWriteDown||ev.pointerId!==skillWritePointerId)return;
+  ev.preventDefault();skillWriteDown=false;skillWritePointerId=null;
+  const live=$('skillWriteLive');if(live)live.removeAttribute('id');
 }
 function matrixAttribute(matrix){return `matrix(${matrix.a} ${matrix.b} ${matrix.c} ${matrix.d} ${matrix.e} ${matrix.f})`}
 function pathForStroke(stroke,cls){
@@ -1507,10 +1832,10 @@ function addMarkers(i){
   markerLayer.appendChild(circle(endMarker.x,endMarker.y,3.7,'endDot'));
   markerLayer.appendChild(label(endMarker.x,endMarker.y,'✓','endMark'));
 }
-function svgPoint(ev){
-  const p=svg.createSVGPoint();
+function svgPoint(ev,target=svg){
+  const p=target.createSVGPoint();
   p.x=ev.clientX;p.y=ev.clientY;
-  return p.matrixTransform(svg.getScreenCTM().inverse());
+  return p.matrixTransform(target.getScreenCTM().inverse());
 }
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const CHECKPOINT_SPACING=24;
@@ -2021,6 +2346,26 @@ svg.addEventListener('pointerdown',start,{passive:false});
 svg.addEventListener('pointermove',move,{passive:false});
 svg.addEventListener('pointerup',end,{passive:false});
 svg.addEventListener('pointercancel',end,{passive:false});
+skillWriteSvg.addEventListener('pointerdown',skillWriteStart,{passive:false});
+skillWriteSvg.addEventListener('pointermove',skillWriteMove,{passive:false});
+skillWriteSvg.addEventListener('pointerup',skillWriteEnd,{passive:false});
+skillWriteSvg.addEventListener('pointercancel',skillWriteEnd,{passive:false});
+$('skillEntry').onclick=showSkillHome;
+$('skillHomeBack').onclick=showIndex;
+$('skillStartRead').onclick=()=>startSkillTest('read');
+$('skillStartWrite').onclick=()=>startSkillTest('write');
+$('skillOpenHistory').onclick=showSkillHistory;
+$('skillHistoryBack').onclick=showSkillHome;
+$('skillQuit').onclick=showSkillHome;
+$('skillYes').onclick=()=>answerSkillQuestion(true);
+$('skillRevealAnswer').onclick=()=>answerSkillQuestion(false);
+$('skillNext').onclick=advanceSkillQuestion;
+$('skillRepeatSound').onclick=()=>{
+  if(skillSession?.type==='write')speak(skillWritingSpeech(skillSession.questions[currentQuestionIndex]));
+};
+$('skillClear').onclick=()=>skillWriteTrace.replaceChildren();
+$('skillRetry').onclick=()=>{if(skillSession)startSkillTest(skillSession.type)};
+$('skillResultBack').onclick=showIndex;
 $('traceMode').onclick=()=>setMode('trace');
 $('freeMode').onclick=()=>setMode('free');
 $('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}render()};
