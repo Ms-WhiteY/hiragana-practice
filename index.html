@@ -52,6 +52,10 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .skillQuestionPrompt{margin:3px 0 14px;font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.45}
 .skillGlyphFrame{display:flex;align-items:center;justify-content:center;width:min(72vw,270px);aspect-ratio:1;margin:0 auto 16px;border:2px solid #e6ddcf;border-radius:20px;background:#fffdfa}
 .skillGlyphFrame .kanaGlyph,.skillGlyphFrame svg{width:84%;height:84%}
+.skillReadingLine{width:min(100%,620px);min-height:132px;aspect-ratio:auto;gap:0;padding:12px}
+.skillReadingLine .kanaGlyph{flex:1 1 0;width:0;min-width:0;max-width:82px;height:auto;aspect-ratio:1}
+.skillReadAnswer{margin:10px auto 14px;font-size:clamp(23px,4vw,31px);font-weight:900;line-height:1.4}
+.skillReadAnswer strong{display:block;color:#654c83;overflow-wrap:anywhere}
 .skillDemoGuide{fill:none;stroke:#ddd8d2;stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}
 .skillWriteBoard{width:min(78vw,390px);aspect-ratio:1;margin:0 auto 14px;border-radius:20px;overflow:hidden;background:#fffdfa;touch-action:none;user-select:none;-webkit-user-select:none}
 .skillWriteBoard svg{touch-action:none}
@@ -71,6 +75,10 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .skillResultItems{display:flex;flex-wrap:wrap;gap:8px}
 .skillResultChar{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border:0;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(80,60,40,.08)}
 .skillResultChar .kanaGlyph{width:48px;height:48px}
+.skillResultWord{display:inline-flex;align-items:center;justify-content:center;max-width:100%;min-height:56px;padding:4px 8px;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(80,60,40,.08)}
+.skillResultWord .kanaGlyph{width:clamp(31px,7vw,43px);max-width:calc((100vw - 90px)/var(--glyph-count));height:auto;aspect-ratio:1}
+.skillResultPractice{display:grid;gap:7px;max-width:100%}
+.skillResultPracticeChars{display:flex;flex-wrap:wrap;gap:6px}
 .skillHistoryList{display:grid;gap:9px;max-width:530px;margin:0 auto 16px;text-align:left}
 .skillHistoryItem{border-radius:15px;padding:11px 15px;background:#f7f4ff;font-weight:900}
 .skillHistoryItem span{display:inline-block;min-width:68px;color:#6d617e}
@@ -334,6 +342,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     <button id="skillRevealAnswer"></button>
   </div>
   <p class="skillFeedback" id="skillFeedback" aria-live="polite"></p>
+  <div class="skillReadAnswer" id="skillReadAnswer" hidden><strong id="skillReadAnswerText"></strong></div>
   <div class="skillReveal" id="skillReveal" hidden>
     <p id="skillRevealText">こんな もじだよ</p>
     <div class="skillGlyphFrame" role="img" aria-label="こたえの もじ">
@@ -926,6 +935,19 @@ const REWARD_CARDS=[
   {id:'mata-aou-ne',key:'reward:mata-aou-ne',unlockType:'track',offset:180,text:'またあおうね',label:'またあおうね',word:'またあおうね',kind:'reward',rarity:'normal',reaction:'また あえるの たのしみ！',recipient:'bird',sequence:[{char:'ま',kind:'normal'},{char:'た',kind:'normal'},{char:'あ',kind:'normal'},{char:'お',kind:'normal'},{char:'う',kind:'normal'},{char:'ね',kind:'normal'}]},
   {id:'zutto-daisuki',key:'reward:zutto-daisuki',unlockType:'track',offset:200,text:'ずっとだいすき',label:'ずっとだいすき',word:'ずっとだいすき',kind:'reward',rarity:'special',reaction:'とっても しあわせ！',recipient:'bird',sequence:[{char:'ず',kind:'normal'},{char:'っ',kind:'small'},{char:'と',kind:'normal'},{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]}
 ];
+const READING_CHAR_POOL=[...'ぬねれわめむほぽぺさきふがじずだでばびぶぱぴぷいおかこたなはへまらりるろをん'];
+const READING_WORDS=[
+  'いぬ','ねこ','くま','うさぎ','きつね','ぱんだ',
+  'りんご','いちご','すいか','みかん','たまご','とまと',
+  'くるま','ふね','つくえ','いす','えんぴつ','はさみ',
+  'おふろ','といれ','おうち','おへや','くつ','ぼうし','くつした','かばん',
+  'ふうせん','おにぎり','おべんとう','はみがき',
+  'さかな','そら','はな','もも','ばなな','ぶどう','ぱん','ぷりん',
+  'でんしゃ','じてんしゃ','きって','らっぱ','きゅうり'
+];
+const READING_EASY_WORD_COUNT=38;
+const READING_PHRASES=REWARD_CARDS.map(card=>card.text).filter(text=>[...text].length<=7);
+const READING_SMALL_KANA=new Set(['ゃ','ゅ','ょ','っ']);
 const DELIVERY_RECIPIENTS=[
   {type:'bird',label:'ことりさん'},
   {type:'rabbit',label:'うさぎさん'},
@@ -1442,6 +1464,18 @@ function renderKanaGlyph(char){
   });
   return glyph;
 }
+function renderReadingGlyph(char){
+  const glyph=renderKanaGlyph(char);
+  if(READING_SMALL_KANA.has(char)){
+    const transform=matrixAttribute(componentLayout({role:'small'},0));
+    glyph.querySelectorAll('path').forEach(path=>path.setAttribute('transform',transform));
+  }
+  return glyph;
+}
+function appendReadingGlyphs(container,text){
+  [...text].forEach(char=>container.appendChild(renderReadingGlyph(char)));
+}
+function skillItemText(item){return item.text||item.char}
 function loadSkillHistory(){
   try{
     const stored=JSON.parse(localStorage.getItem(SKILL_TEST_KEY)||'null');
@@ -1452,7 +1486,13 @@ function loadSkillHistory(){
       return /^\d{4}-\d{2}-\d{2}$/.test(entry?.date||'')&&total===entry.total
         &&Number.isInteger(entry.score)&&entry.score>=0&&entry.score<=total
         &&Array.isArray(entry.items)&&entry.items.length===total
-        &&entry.items.every(item=>chars.has(item?.char)&&typeof item.success==='boolean')
+        &&entry.items.every(item=>{
+          if(typeof item?.success!=='boolean')return false;
+          if(chars.has(item.char))return true;
+          if(entry.type!=='read'||!['char','word','phrase'].includes(item.kind)||typeof item.text!=='string')return false;
+          const letters=[...item.text];
+          return letters.length>0&&letters.length<=9&&letters.every(char=>chars.has(char)||READING_SMALL_KANA.has(char));
+        })
         &&entry.items.filter(item=>item.success).length===entry.score;
     }).slice(-20);
   }catch(e){return[]}
@@ -1473,7 +1513,13 @@ function pickSkillRows(rows,count){
   return shuffleSkillItems(rows).slice(0,count).map(row=>shuffleSkillItems(row.chars)[0]);
 }
 function makeSkillQuestions(type){
-  const seionCount=type==='read'?8:4,voicedCount=type==='read'?2:1;
+  if(type==='read')return shuffleSkillItems([
+    ...shuffleSkillItems(READING_CHAR_POOL).slice(0,2).map(text=>({kind:'char',text})),
+    ...shuffleSkillItems(READING_WORDS.slice(0,READING_EASY_WORD_COUNT)).slice(0,5).map(text=>({kind:'word',text})),
+    ...shuffleSkillItems(READING_WORDS.slice(READING_EASY_WORD_COUNT)).slice(0,1).map(text=>({kind:'word',text})),
+    ...shuffleSkillItems(READING_PHRASES).slice(0,2).map(text=>({kind:'phrase',text}))
+  ]);
+  const seionCount=4,voicedCount=1;
   return shuffleSkillItems([
     ...pickSkillRows(SEION_ROWS,seionCount),
     ...pickSkillRows(VOICED_ROWS,voicedCount)
@@ -1514,18 +1560,21 @@ function renderSkillQuestion(){
   const session=skillSession;if(!session)return;
   setSkillView($('skillQuestionView'));
   session.answered=false;session.nextReady=false;
-  const isRead=session.type==='read',char=session.questions[currentQuestionIndex];
+  const isRead=session.type==='read',question=session.questions[currentQuestionIndex];
   $('skillProgress').textContent=`${currentQuestionIndex+1} / ${session.questions.length}`;
-  $('skillQuestionPrompt').textContent=isRead?'この もじ、よめるかな？':'おとを きいて かいてみよう！';
+  $('skillQuestionPrompt').textContent=isRead?'これ、よめるかな？':'おとを きいて かいてみよう！';
   $('skillReadGlyph').hidden=!isRead;$('skillWriteArea').hidden=isRead;
   $('skillAnswerActions').hidden=false;$('skillFeedback').textContent='';
+  $('skillReadAnswer').hidden=true;$('skillReadAnswerText').textContent='';
   $('skillReveal').hidden=true;$('skillNext').hidden=true;$('skillNext').disabled=true;
   $('skillYes').disabled=false;$('skillRevealAnswer').disabled=false;
   $('skillYes').textContent=isRead?'よめた！':'かけた！';
   $('skillRevealAnswer').textContent=isRead?'こたえを きく':'おてほんを みる';
   $('skillReadGlyph').replaceChildren();
-  if(isRead)$('skillReadGlyph').appendChild(renderKanaGlyph(char));
-  else{skillWriteTrace.replaceChildren();speak(skillWritingSpeech(char))}
+  $('skillReadGlyph').classList.toggle('skillReadingLine',isRead&&question.kind!=='char');
+  $('skillReadGlyph').setAttribute('aria-label',isRead&&question.kind!=='char'?'もんだいの ことば':'もんだいの もじ');
+  if(isRead)appendReadingGlyphs($('skillReadGlyph'),question.text);
+  else{skillWriteTrace.replaceChildren();speak(skillWritingSpeech(question))}
 }
 function showSkillRevealGlyph(char,animated){
   const guide=$('skillRevealGuide'),trace=$('skillRevealTrace');
@@ -1576,19 +1625,23 @@ async function playSkillAnswerDemo(char){
 async function answerSkillQuestion(success){
   const session=skillSession;
   if(!session||session.answered||$('skillQuestionView').hidden)return;
-  const char=session.questions[currentQuestionIndex],isRead=session.type==='read';
-  session.answered=true;session.items.push({char,success});
+  const question=session.questions[currentQuestionIndex],isRead=session.type==='read';
+  session.answered=true;session.items.push(isRead?{...question,success}:{char:question,success});
   $('skillAnswerActions').hidden=true;
   $('skillFeedback').textContent=success?(isRead?'できた！':'かけた！'):'まだ むずかしいね';
   if(isRead){
-    if(!success){
-      $('skillFeedback').textContent=`${char} だよ！`;
-      speak(speechWithSuffix('',char));
-    }
+    const text=question.text,info=question.kind==='char'?CHAR_INFO[text]:null;
+    $('skillFeedback').textContent=success?'🎉 よめたね！':`${text} だよ！ こんど もういちど よんでみよう！`;
+    $('skillReadAnswerText').textContent=text;
+    $('skillReadAnswer').hidden=false;
+    const suffix=success?' よめたね！':'';
+    speak(info&&(info.speechExample||info.speechParts||info.speechChar)
+      ?speechWithSuffix(suffix,text)
+      :`${text}${success?'。よめたね！':'だよ。'}`);
   }else{
     $('skillRevealText').textContent='こんな もじだよ';
-    showSkillRevealGlyph(char,!success);
-    if(!success)await playSkillAnswerDemo(char);
+    showSkillRevealGlyph(question,!success);
+    if(!success)await playSkillAnswerDemo(question);
   }
   if(skillSession!==session||$('skillQuestionView').hidden)return;
   const next=$('skillNext');
@@ -1611,14 +1664,33 @@ function appendSkillResultItems(container,items,canPractice){
   container.replaceChildren();
   if(!items.length){container.textContent=canPractice?'ぜんぶ できた！':'これから できるよ！';return}
   items.forEach(item=>{
-    const element=document.createElement(canPractice?'button':'span');
-    element.className='skillResultChar';
-    element.appendChild(renderKanaGlyph(item.char));
-    if(canPractice){
-      element.setAttribute('aria-label',`${item.char}を れんしゅう`);
-      element.onclick=()=>openSkillPractice(item.char);
-    }else element.setAttribute('aria-label',item.char);
-    container.appendChild(element);
+    const value=skillItemText(item);
+    if([...value].length===1){
+      const element=document.createElement(canPractice?'button':'span');
+      element.className='skillResultChar';
+      element.appendChild(renderKanaGlyph(value));
+      if(canPractice){
+        element.setAttribute('aria-label',`${value}を れんしゅう`);
+        element.onclick=()=>openSkillPractice(value);
+      }else element.setAttribute('aria-label',value);
+      container.appendChild(element);
+      return;
+    }
+    const word=document.createElement('span');word.className='skillResultWord';
+    word.style.setProperty('--glyph-count',String([...value].length));
+    word.setAttribute('role','img');word.setAttribute('aria-label',value);
+    appendReadingGlyphs(word,value);
+    if(!canPractice){container.appendChild(word);return}
+    const group=document.createElement('div');group.className='skillResultPractice';
+    const candidates=document.createElement('div');candidates.className='skillResultPracticeChars';
+    [...new Set([...value].filter(char=>DATA[char]&&!READING_SMALL_KANA.has(char)))].forEach(char=>{
+      const button=document.createElement('button');button.className='skillResultChar';
+      button.appendChild(renderKanaGlyph(char));
+      button.setAttribute('aria-label',`${char}を れんしゅう`);
+      button.onclick=()=>openSkillPractice(char);
+      candidates.appendChild(button);
+    });
+    group.append(word,candidates);container.appendChild(group);
   });
 }
 function finishSkillTest(){
