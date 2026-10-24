@@ -16,31 +16,46 @@
   --bg:#fff7ec;--card:#fff;--ink:#35333d;--sub:#77727b;
   --yellow:#ffd766;--blue:#4f9dff;--green:#55c98a;--orange:#ff8c68;
   --guide:#ddd8d2;--active:#ffd2c3;--done:#c9eed8;
-  --shadow:0 12px 30px rgba(80,60,40,.12)
+  --shadow:0 12px 30px rgba(80,60,40,.12);
+  --button-bg:#e9f5ff;--button-border:#a9cfe9;--button-radius:16px;--button-shadow:0 4px 0 rgba(71,111,139,.18)
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0;min-height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);overscroll-behavior:none}
-body{padding:max(10px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));touch-action:manipulation}
-button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+body{padding:0 12px max(14px,env(safe-area-inset-bottom));touch-action:manipulation}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;cursor:pointer}
+button:disabled{cursor:default;opacity:.55;box-shadow:none!important}
+button:not(:disabled):active{transform:translateY(2px);filter:brightness(.97)}
+.actionButton,.navigationButton{min-height:44px;border:2px solid var(--button-border);border-radius:var(--button-radius);padding:9px 14px;background:var(--button-bg);box-shadow:var(--button-shadow);font-weight:900}
+.actionButton:focus-visible,.navigationButton:focus-visible,.homeChoice:focus-visible,.groupTab:focus-visible{outline:3px solid #ee9e32;outline-offset:2px}
 .app{max-width:1050px;margin:auto}
-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:2px 2px 10px}
-h1{font-size:clamp(19px,3vw,30px);margin:0}
-.stars{background:#fff;border-radius:999px;padding:8px 13px;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}
-.rewardSummary{display:flex;align-items:stretch;justify-content:flex-end;gap:7px}
-.rewardEntry{border:0;border-radius:17px;background:#fff2c8;min-width:118px;padding:5px 11px;font-weight:900;line-height:1.15;box-shadow:var(--shadow)}
-.rewardEntry small{display:block;margin-top:2px;color:#7c6531;font-size:11px;white-space:nowrap}
-.groupTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 auto 8px;max-width:820px}
-.groupTab{border:0;background:#fff;border-radius:17px;min-height:54px;padding:7px 10px;font-size:clamp(17px,2.7vw,23px);font-weight:900;box-shadow:var(--shadow);line-height:1.15}
+.appHeader{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;min-height:56px;margin:0 -12px 12px;padding:max(7px,env(safe-area-inset-top)) 14px 7px;background:var(--bg);border-bottom:1px solid #e9ddcd}
+.appHeader h1{font-size:clamp(19px,3vw,27px);margin:0;line-height:1.2}
+.homeNav{flex:none;white-space:nowrap;background:#fff;border-color:#d6cbbc;box-shadow:0 3px 0 #e4d8c8}
+.homeView{max-width:680px;margin:22px auto 0;text-align:center}
+.homeView h2{margin:0 0 20px;font-size:clamp(23px,4vw,32px)}
+.homeChoices{display:grid;gap:14px}
+.homeChoice{display:flex;align-items:center;gap:16px;width:100%;min-height:106px;border:3px solid #d8c99e;border-radius:24px;padding:15px 20px;background:#fff9e9;box-shadow:0 7px 0 #e4d4ac;text-align:left}
+.homeChoice:nth-child(2){border-color:#e5bea9;background:#fff4ed;box-shadow:0 7px 0 #efcebb}
+.homeChoice:nth-child(3){border-color:#c9b8e3;background:#f7f1ff;box-shadow:0 7px 0 #ded1ed}
+.homeChoice:active{box-shadow:0 2px 0 #c9bba0;transform:translateY(5px)}
+.homeIcon{flex:none;width:56px;text-align:center;font-size:37px}
+.homeChoice strong{display:block;font-size:clamp(21px,3.4vw,28px);line-height:1.2}
+.homeChoice small{display:block;margin-top:6px;color:#6d6570;font-size:clamp(14px,2.2vw,18px);line-height:1.3}
+.homeStars{margin:24px 0 0;color:#766d60;font-size:15px;font-weight:800}
+.rewardEntry{max-width:360px;margin:0 auto 12px;border:1px solid #ead7a8;border-radius:15px;background:#fff9e9;padding:8px 12px;font-weight:900;line-height:1.3;text-align:center}
+.rewardEntry small{display:block;margin-top:2px;color:#7c6531;font-size:13px}
+.groupTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;margin:0 auto;max-width:1050px;padding:0 6px;border-bottom:2px solid #b9d2e4}
+.groupTab{position:relative;min-width:0;border:2px solid #d8e0e6;border-bottom:0;background:#ecf3f7;border-radius:15px 15px 0 0;min-height:54px;padding:7px 8px;font-size:clamp(16px,2.7vw,22px);font-weight:800;line-height:1.15}
 .groupTab small{display:block;margin-top:3px;color:var(--sub);font-size:10px;line-height:1}
-.groupTab.selected{background:#dff1ff;outline:3px solid #82c5f4}
-.indexView{background:#fff;border-radius:25px;padding:clamp(10px,2vw,20px);box-shadow:var(--shadow)}
+.groupTab.selected{z-index:1;background:#fff;border-color:#91c6eb;color:#245d85;font-weight:900}
+.groupTab.selected::after{position:absolute;content:'';height:4px;left:10px;right:10px;bottom:0;border-radius:4px;background:#59a9e4}
+.indexView{background:#fff;border:2px solid #b9d2e4;border-top:0;border-radius:0 0 25px 25px;padding:clamp(10px,2vw,20px);box-shadow:var(--shadow)}
 .indexPrompt{text-align:center;font-weight:900;font-size:clamp(18px,2.7vw,25px);margin:2px 0 12px}
 .dailyPracticeSummary{display:flex;align-items:center;justify-content:center;gap:8px;max-width:620px;margin:12px auto 7px;padding:8px 12px;border-radius:16px;background:#eef8ff;color:#3e6681;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
 .dailyPracticeSummary strong{color:#31566e;white-space:nowrap}
 .rewardHowItWorks{display:flex;align-items:center;justify-content:center;gap:7px;max-width:620px;margin:0 auto 12px;padding:7px 12px;border:1px solid #f1dfaa;border-radius:16px;background:#fff9e6;color:#665321;font-size:clamp(13px,2vw,17px);font-weight:900;line-height:1.35;text-align:center}
 .rewardHowArrow{color:#d28a2d}
-.skillEntry{display:block;width:min(100%,620px);min-height:48px;margin:0 auto;border:1px solid #d4c8ee;border-radius:16px;background:#f3edff;font-size:clamp(16px,2.4vw,21px);font-weight:900;box-shadow:0 4px 12px rgba(80,60,100,.08)}
 .skillView{max-width:760px;margin:0 auto;border-radius:25px;padding:clamp(14px,3vw,26px);background:#fff;box-shadow:var(--shadow);text-align:center}
 .skillView h2{margin:9px 0 5px;font-size:clamp(25px,5vw,36px)}
 .skillLead{margin:0 0 18px;color:var(--sub);font-weight:800;line-height:1.45}
@@ -48,7 +63,7 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .skillChoice{min-height:100px;border:2px solid #dfd5f3;border-radius:22px;background:#f9f5ff;font-size:clamp(21px,3vw,27px);font-weight:900;box-shadow:0 5px 14px rgba(80,60,100,.09)}
 .skillChoice small{display:block;margin-top:6px;color:#715e89;font-size:15px}
 .skillHistoryEntry{min-height:44px;border:0;border-radius:15px;padding:8px 16px;background:#edf7ff;font-weight:900}
-.skillProgress{display:inline-block;margin:12px 0 8px;border-radius:999px;padding:7px 17px;background:#f2edff;color:#63517f;font-size:20px;font-weight:900}
+.skillProgress{display:inline-block;margin:12px 0 8px;padding:7px 17px;color:#63517f;font-size:20px;font-weight:900}
 .skillQuestionPrompt{margin:3px 0 14px;font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1.45}
 .skillGlyphFrame{display:flex;align-items:center;justify-content:center;width:min(72vw,270px);aspect-ratio:1;margin:0 auto 16px;border:2px solid #e6ddcf;border-radius:20px;background:#fffdfa}
 .skillGlyphFrame .kanaGlyph,.skillGlyphFrame svg{width:84%;height:84%}
@@ -73,9 +88,10 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .skillResultGroup{margin:13px auto;padding:12px;border-radius:18px;background:#f7f6f1;text-align:left}
 .skillResultGroup h3{margin:0 0 9px;font-size:18px}
 .skillResultItems{display:flex;flex-wrap:wrap;gap:8px}
-.skillResultChar{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border:0;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(80,60,40,.08)}
+.skillResultChar{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border:0;border-radius:12px;background:#fff}
+button.skillResultChar{border:2px solid var(--button-border);box-shadow:var(--button-shadow)}
 .skillResultChar .kanaGlyph{width:48px;height:48px}
-.skillResultWord{display:inline-flex;align-items:center;justify-content:center;max-width:100%;min-height:56px;padding:4px 8px;border-radius:12px;background:#fff;box-shadow:0 2px 7px rgba(80,60,40,.08)}
+.skillResultWord{display:inline-flex;align-items:center;justify-content:center;max-width:100%;min-height:56px;padding:4px 8px;border-radius:12px;background:#fff}
 .skillResultWord .kanaGlyph{width:clamp(31px,7vw,43px);max-width:calc((100vw - 90px)/var(--glyph-count));height:auto;aspect-ratio:1}
 .skillResultPractice{display:grid;gap:7px;max-width:100%}
 .skillResultPracticeChars{display:flex;flex-wrap:wrap;gap:6px}
@@ -104,13 +120,13 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .sokuonIndex{grid-template-columns:repeat(2,minmax(0,1fr));max-width:620px}
 .sokuonIndex .indexChoice{font-size:clamp(20px,3.5vw,29px);padding:12px 6px}
 .practiceNav{margin-bottom:10px}
-.backToIndex{border:0;border-radius:999px;background:#e8f4ff;padding:10px 16px;font-weight:900;box-shadow:var(--shadow)}
+.backToIndex{border:2px solid var(--button-border);border-radius:999px;background:#e8f4ff;min-height:44px;padding:9px 16px;font-weight:900;box-shadow:var(--button-shadow)}
 .practiceHeading{text-align:center;font-size:clamp(18px,2.8vw,25px);margin:7px 0 8px}
 .rewardCardsView{background:#fff;border-radius:25px;padding:clamp(12px,2.5vw,24px);box-shadow:var(--shadow)}
 .rewardCardsTitle{text-align:center;margin:5px 0 4px;font-size:clamp(24px,4vw,36px)}
 .rewardCardsLead{text-align:center;color:var(--sub);font-weight:800;margin:0 0 14px}
 .rewardCardsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
-.rewardCard{position:relative;min-width:0;border:2px solid #eadfce;border-radius:23px;padding:16px 13px;background:#fffaf0;text-align:center;box-shadow:0 7px 18px rgba(80,60,40,.09)}
+.rewardCard{position:relative;min-width:0;border:2px solid #eadfce;border-radius:23px;padding:16px 13px;background:#fffaf0;text-align:center;box-shadow:0 2px 8px rgba(80,60,40,.05)}
 .rewardCard.locked{background:#f4f1ed;color:#777;box-shadow:none}
 .rewardCard.completed{border-color:#8bcda3;background:#f0fbf4}
 .rewardCard.special{border-color:#efb52f;background:linear-gradient(145deg,#fffbea,#fff3be);box-shadow:0 8px 22px rgba(218,155,30,.2)}
@@ -119,7 +135,7 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .rewardSpecialBadge{display:inline-block;margin:0 0 7px;border-radius:999px;padding:4px 10px;background:#fff0a6;color:#8b6211;font-size:12px;font-weight:900}
 .rewardCard h3{margin:0 0 7px;font-size:clamp(22px,3.4vw,31px);overflow-wrap:anywhere}
 .rewardCard p{min-height:42px;margin:0 0 10px;color:var(--sub);font-weight:800;line-height:1.4;white-space:pre-line}
-.rewardCard button{border:0;border-radius:15px;min-height:45px;width:100%;background:#ffe188;font-weight:900}
+.rewardCard button{border:2px solid #d9a84a;border-radius:15px;min-height:46px;width:100%;background:#ffe188;box-shadow:0 4px 0 #efcf82;font-weight:900}
 .rewardCard button:disabled{background:#ddd9d4;color:#888}
 .rewardStamp{display:inline-block;transform:rotate(5deg);margin:-3px 0 8px;border:2px solid #45a86a;border-radius:999px;padding:3px 8px;color:#2d8751;background:#fff;font-size:12px;font-weight:900}
 .rewardUnlock{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(53,51,61,.42)}
@@ -171,7 +187,7 @@ h1{font-size:clamp(19px,3vw,30px);margin:0}
 .boardCard{padding:10px}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 6px 8px}
 .prompt{font-weight:900;font-size:clamp(17px,2.3vw,24px)}
-.counter{font-weight:800;font-size:14px;background:#f5f1ec;border-radius:999px;padding:7px 10px;white-space:nowrap}
+.counter{font-weight:800;font-size:14px;color:#6e6670;padding:7px 0;white-space:nowrap}
 .board{
   position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;border-radius:21px;
   background:#fffdfa;
@@ -219,11 +235,12 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .exampleWord{text-align:center;color:var(--sub);font-size:14px;font-weight:800;line-height:1.4;margin:-2px 0 9px}
 .exampleWord.compound{color:var(--ink);font-size:clamp(18px,2.6vw,23px)}
 .mode{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.mode button,.actions button{border:0;border-radius:16px;padding:11px 7px;font-weight:900;background:#f2efeb}
+.mode button,.actions button{border:2px solid #d2c6bb;border-radius:16px;min-height:46px;padding:9px 7px;font-weight:900;background:#f2efeb;box-shadow:0 3px 0 #ded5cd}
 .mode button.active{background:#dff1ff;outline:3px solid #a6d4ff}
 .actions{display:grid;gap:8px}
 .actions button.primary{background:#ffe188}
 .actions button.green{background:#e5f6ea}
+.actions button.actionButton{border-color:#cbb8a3;box-shadow:0 4px 0 #ded3c7}
 .hint{font-size:14px;line-height:1.55;color:var(--sub);margin:10px 0 0}
 .practiceFeedback{min-height:40px;padding-top:28px;text-align:center}
 .toast{display:none;max-width:100%;margin:0 auto;background:rgba(53,51,61,.94);color:#fff;border-radius:18px;padding:9px 15px;font-weight:900;line-height:1.35;pointer-events:none;white-space:normal}
@@ -240,6 +257,9 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 .footer a{color:inherit}
 .appVersion{display:inline-block;margin-top:2px;font-size:10px;opacity:.8}
 .install{display:none;margin:0 0 10px;border:0;border-radius:15px;background:#e8f4ff;padding:10px 14px;font-weight:800;width:100%}
+.skillActions button,.skillNext,.skillClear,.skillHistoryEntry,.deliveryClose,.rewardUnlockActions button{border:2px solid var(--button-border);box-shadow:var(--button-shadow)}
+.skillActions .skillPrimary,.skillNext{border-color:#d4ac49;box-shadow:0 4px 0 #e3ca83}
+.skillGlyphFrame,.skillResultGroup,.skillMedal,.skillHistoryItem,.dailyPracticeSummary,.rewardHowItWorks,.rewardEntry{cursor:default}
 @media(max-width:760px){
   .layout{grid-template-columns:1fr}
   .side{display:grid;grid-template-columns:1fr 1fr}
@@ -252,8 +272,9 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 }
 @media(max-width:480px){
   body{padding-left:7px;padding-right:7px}
-  header{gap:5px;flex-wrap:wrap}h1{font-size:18px;white-space:nowrap}.rewardSummary{width:100%;gap:4px}.stars{padding:7px 9px}.rewardEntry{min-width:105px;padding:5px 7px;font-size:13px}.rewardEntry small{font-size:10px}
-  .groupTabs{gap:5px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
+  .appHeader{margin:0 -7px 10px;padding:8px 9px;gap:8px}.appHeader h1{font-size:18px;white-space:nowrap}.homeNav{padding:7px 10px;font-size:14px}
+  .homeView{margin-top:16px}.homeView h2{margin-bottom:15px}.homeChoices{gap:12px}.homeChoice{min-height:98px;padding:12px}.homeIcon{width:44px;font-size:32px}
+  .groupTabs{gap:2px;padding:0 3px}.groupTab{min-height:54px;padding:5px 3px;font-size:14px}
   .indexView{padding:8px 5px}.indexPrompt{margin:1px 0 9px;font-size:18px}.dailyPracticeSummary{display:grid;gap:1px;margin:8px auto 6px;padding:7px 8px}
   .skillChoices{grid-template-columns:1fr;gap:9px}.skillChoice{min-height:76px}.skillView{padding:12px 9px}.skillActions{gap:7px}.skillActions button{padding:8px 5px}
   .rewardHowItWorks{display:grid;grid-template-columns:1fr;gap:1px;margin-bottom:8px;padding:6px 8px}.rewardHowArrow{display:none}
@@ -276,17 +297,23 @@ svg{display:block;width:100%;height:100%;touch-action:none}
 </head>
 <body>
 <div class="app">
-<header>
-  <h1>✏️ ひらがな なぞりれんしゅう</h1>
-  <div class="rewardSummary">
-    <div class="stars">⭐ <span id="stars">0</span></div>
-    <button class="rewardEntry" id="rewardButton">✉️ おてがみ<small id="rewardProgress"></small></button>
-  </div>
+<header class="appHeader">
+  <button class="homeNav navigationButton" id="homeNav" hidden>🏠 トップへ</button>
+  <h1>ひらがな れんしゅう</h1>
 </header>
 
 <button id="installBtn" class="install">📱 この端末にアプリとして入れる</button>
-<div class="groupTabs" id="groupTabs" role="group" aria-label="ひらがなのグループを選ぶ"></div>
-<section class="indexView" id="indexView">
+<main class="homeView" id="homeView">
+  <h2>きょうは なにする？</h2>
+  <div class="homeChoices">
+    <button class="homeChoice" id="homePractice"><span class="homeIcon" aria-hidden="true">✏️</span><span><strong>なぞり れんしゅう</strong><small>ひらがなを れんしゅうしよう</small></span></button>
+    <button class="homeChoice" id="homeLetters"><span class="homeIcon" aria-hidden="true">✉️</span><span><strong>おてがみ</strong><small>かいて おくってみよう</small></span></button>
+    <button class="homeChoice" id="homeSkill"><span class="homeIcon" aria-hidden="true">🌟</span><span><strong>ちからだめし</strong><small>よめるかな？ かけるかな？</small></span></button>
+  </div>
+  <p class="homeStars">⭐ これまで <span id="stars">0</span>こ</p>
+</main>
+<div class="groupTabs" id="groupTabs" role="tablist" aria-label="なぞり練習の種類" hidden></div>
+<section class="indexView" id="indexView" role="tabpanel" hidden>
   <div class="indexPrompt">きょうは どの もじを やる？</div>
   <div class="rowTabs compact" id="rowTabs" role="group" aria-label="ちいさい文字の種類を選ぶ" hidden></div>
   <div id="indexGrid"></div>
@@ -294,18 +321,17 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     <strong>きょうの れんしゅう ⭐<span id="dailyPracticeCount">0</span>こ</strong>
     <span>いろんな もじも れんしゅうしてみよう！</span>
   </div>
+</section>
+
+<section class="rewardCardsView" id="rewardCardsView" hidden>
+  <h2 class="rewardCardsTitle">✉️ おてがみカード</h2>
+  <p class="rewardCardsLead">ほしを あつめて、ことばを かこう！</p>
+  <div class="rewardEntry">✉️ おてがみ <small id="rewardProgress"></small></div>
   <div class="rewardHowItWorks" id="rewardHowItWorks" aria-label="ほしを10こあつめると、おてがみカードがもらえるよ">
     <span>⭐ <span id="rewardHowCount">10</span>こ れんしゅうすると</span>
     <span class="rewardHowArrow" aria-hidden="true">→</span>
     <span id="rewardHowMessage">✉️ おてがみカードが もらえるよ！</span>
   </div>
-  <button class="skillEntry" id="skillEntry">🌟 ちからだめし</button>
-</section>
-
-<section class="rewardCardsView" id="rewardCardsView" hidden>
-  <button class="backToIndex" id="cardsBackToIndex">← いちらんに戻る</button>
-  <h2 class="rewardCardsTitle">✉️ おてがみカード</h2>
-  <p class="rewardCardsLead">ほしを あつめて、ことばを かこう！</p>
   <div class="rewardCardsGrid" id="rewardCardsGrid"></div>
 </section>
 
@@ -317,16 +343,15 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     <button class="skillChoice" id="skillStartWrite">✏️ かけるかな？<small>5もん</small></button>
   </div>
   <button class="skillHistoryEntry" id="skillOpenHistory">📖 これまで</button>
-  <p><button class="backToIndex" id="skillHomeBack">← いちらんに戻る</button></p>
 </section>
 
 <section class="skillView" id="skillQuestionView" hidden>
-  <button class="backToIndex" id="skillQuit">← やめる</button>
+  <button class="backToIndex navigationButton" id="skillQuit">← ちからだめしへ</button>
   <div class="skillProgress" id="skillProgress">1 / 10</div>
   <p class="skillQuestionPrompt" id="skillQuestionPrompt"></p>
   <div class="skillGlyphFrame" id="skillReadGlyph" role="img" aria-label="もんだいの もじ" hidden></div>
   <div id="skillWriteArea" hidden>
-    <button class="skillClear" id="skillRepeatSound">🔊 もういちど きく</button>
+    <button class="skillClear actionButton" id="skillRepeatSound">🔊 もういちど きく</button>
     <div class="skillWriteBoard">
       <svg id="skillWriteSvg" viewBox="0 0 109 109" aria-label="もんだいを かく マス">
         <rect class="practiceCell" x=".7" y=".7" width="107.6" height="107.6"></rect>
@@ -335,11 +360,11 @@ svg{display:block;width:100%;height:100%;touch-action:none}
         <g id="skillWriteTrace"></g>
       </svg>
     </div>
-    <button class="skillClear" id="skillClear">🧽 けす</button>
+    <button class="skillClear actionButton" id="skillClear">🧽 けす</button>
   </div>
   <div class="skillActions" id="skillAnswerActions">
-    <button class="skillPrimary" id="skillYes"></button>
-    <button id="skillRevealAnswer"></button>
+    <button class="skillPrimary actionButton" id="skillYes"></button>
+    <button class="actionButton" id="skillRevealAnswer"></button>
   </div>
   <p class="skillFeedback" id="skillFeedback" aria-live="polite"></p>
   <div class="skillReadAnswer" id="skillReadAnswer" hidden><strong id="skillReadAnswerText"></strong></div>
@@ -351,7 +376,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
       </svg>
     </div>
   </div>
-  <button class="skillNext" id="skillNext" hidden disabled>つぎへ →</button>
+  <button class="skillNext actionButton" id="skillNext" hidden disabled>つぎへ →</button>
 </section>
 
 <section class="skillView" id="skillResultView" hidden>
@@ -360,18 +385,18 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   <div class="skillResultGroup"><h3 id="skillSuccessTitle"></h3><div class="skillResultItems" id="skillSuccessItems"></div></div>
   <div class="skillResultGroup"><h3>こんど れんしゅうしてみよう</h3><div class="skillResultItems" id="skillPracticeItems"></div></div>
   <div class="skillMedal">🏅 ちからだめし できた！</div>
-  <div class="skillActions"><button class="skillPrimary" id="skillRetry">もういちど</button><button id="skillResultBack">いちらんに戻る</button></div>
+  <div class="skillActions"><button class="skillPrimary" id="skillRetry">もういちど</button><button id="skillResultBack">ちからだめしへ</button></div>
 </section>
 
 <section class="skillView" id="skillHistoryView" hidden>
   <h2>📖 これまで</h2>
   <div class="skillHistoryList" id="skillHistoryList"></div>
-  <button class="backToIndex" id="skillHistoryBack">← ちからだめしに戻る</button>
+  <button class="backToIndex navigationButton" id="skillHistoryBack">← ちからだめしへ</button>
 </section>
 
 <section id="practiceView" hidden>
   <div class="practiceNav">
-    <button class="backToIndex" id="backToIndex">← いちらんに戻る</button>
+    <button class="backToIndex navigationButton" id="backToIndex">← もじの いちらんへ</button>
     <h2 class="practiceHeading" id="practiceHeading"></h2>
     <div class="letters" id="letters"></div>
   </div>
@@ -401,7 +426,7 @@ svg{display:block;width:100%;height:100%;touch-action:none}
     </div>
   </div>
   <div class="rewardSendArea" id="rewardSendArea" hidden>
-    <button class="sendLetterButton" id="sendLetterButton">📮 おてがみを おくる</button>
+    <button class="sendLetterButton actionButton" id="sendLetterButton">📮 おてがみを おくる</button>
   </div>
 </section>
 
@@ -417,10 +442,10 @@ svg{display:block;width:100%;height:100%;touch-action:none}
   </div>
 
   <div class="card panel actions">
-    <button class="primary" id="demoBtn">▶ おてほん</button>
-    <button id="listenBtn">🔊 きく</button>
-    <button class="green" id="resetBtn">↻ もういちど</button>
-    <button id="clearBtn">🧽 けす</button>
+    <button class="primary actionButton" id="demoBtn">▶ おてほん</button>
+    <button class="actionButton" id="listenBtn">🔊 きく</button>
+    <button class="green actionButton" id="resetBtn">↻ もういちど</button>
+    <button class="actionButton" id="clearBtn">🧽 けす</button>
     <p class="hint">指でもタッチペンでもOK。<br>少しくらいはみ出しても大丈夫！</p>
   </div>
 </aside>
@@ -936,17 +961,27 @@ const REWARD_CARDS=[
   {id:'zutto-daisuki',key:'reward:zutto-daisuki',unlockType:'track',offset:200,text:'ずっとだいすき',label:'ずっとだいすき',word:'ずっとだいすき',kind:'reward',rarity:'special',reaction:'とっても しあわせ！',recipient:'bird',sequence:[{char:'ず',kind:'normal'},{char:'っ',kind:'small'},{char:'と',kind:'normal'},{char:'だ',kind:'normal'},{char:'い',kind:'normal'},{char:'す',kind:'normal'},{char:'き',kind:'normal'}]}
 ];
 const READING_CHAR_POOL=[...'ぬねれわめむほぽぺさきふがじずだでばびぶぱぴぷいおかこたなはへまらりるろをん'];
-const READING_WORDS=[
-  'いぬ','ねこ','くま','うさぎ','きつね','ぱんだ',
-  'りんご','いちご','すいか','みかん','たまご','とまと',
-  'くるま','ふね','つくえ','いす','えんぴつ','はさみ',
-  'おふろ','といれ','おうち','おへや','くつ','ぼうし','くつした','かばん',
-  'ふうせん','おにぎり','おべんとう','はみがき',
-  'さかな','そら','はな','もも','ばなな','ぶどう','ぱん','ぷりん',
-  'でんしゃ','じてんしゃ','きって','らっぱ','きゅうり'
+const READING_WORD_GROUPS={
+  どうぶつ:['いぬ','ねこ','くま','うさぎ','きつね','ぱんだ','さる','うま','うし','ぶた','ひつじ','やぎ','りす','ぞう','きりん','らいおん','かえる','とり','ねずみ'],
+  たべもの:['りんご','いちご','すいか','みかん','たまご','とまと','おにぎり','おべんとう','さかな','もも','ばなな','ぶどう','ぱん','ぷりん','きゅうり','にんじん','ごはん','うどん','なし','みそしる','やさい','おかし','あめ','せんべい','じゃがいも'],
+  のりもの:['くるま','ふね','でんしゃ','じてんしゃ','ばす','ひこうき','きしゃ'],
+  いえともちもの:['つくえ','いす','えんぴつ','はさみ','おふろ','といれ','おうち','おへや','くつ','ぼうし','くつした','かばん','はみがき','きって','かさ','たおる','こっぷ','まくら','ふとん','とけい','かがみ'],
+  しぜん:['そら','はな','うみ','かわ','やま','くも','ゆき','ほし','つき','たいよう','にじ','かぜ','あめ'],
+  あそび:['ふうせん','らっぱ','つみき','ぶらんこ','すべりだい','おえかき','おもちゃ','えほん','ぬりえ','おりがみ','なわとび'],
+  いろ:['あか','あお','きいろ','みどり','しろ','くろ'],
+  からだ:['みみ','あし','くち','おなか','ほっぺ','ゆび','かみのけ']
+};
+const READING_WORDS=[...new Set(Object.values(READING_WORD_GROUPS).flat())];
+const READING_EXTRA_PHRASES=[
+  'いってきます','いってらっしゃい','ただいま','おかえり',
+  'いただきます','ごちそうさま','おなかすいた','おいしいね',
+  'たのしいね','あそぼう','いっしょにいこう','だいじょうぶ',
+  'おてつだい','おやすみなさい','きをつけてね','いってみよう'
 ];
-const READING_EASY_WORD_COUNT=38;
-const READING_PHRASES=REWARD_CARDS.map(card=>card.text).filter(text=>[...text].length<=7);
+const READING_PHRASES=[...new Set([
+  ...REWARD_CARDS.map(card=>card.text).filter(text=>[...text].length<=8),
+  ...READING_EXTRA_PHRASES
+])];
 const READING_SMALL_KANA=new Set(['ゃ','ゅ','ょ','っ']);
 const DELIVERY_RECIPIENTS=[
   {type:'bird',label:'ことりさん'},
@@ -958,7 +993,7 @@ const SMALL_ROWS=[
   {label:'っ',kind:'sokuon',items:SOKUON_ITEMS}
 ];
 const CHAR_GROUPS=[
-  {id:'seion',label:'せいおん',rows:SEION_ROWS},
+  {id:'seion',label:'50おん',rows:SEION_ROWS},
   {id:'voiced',label:'゛゜の おと',hint:'だくおん・はんだくおん',rows:VOICED_ROWS},
   {id:'small',label:'ちいさい もじ',rows:SMALL_ROWS}
 ];
@@ -994,8 +1029,8 @@ const COMPOUND_ITEMS=new Map([
   ...REWARD_CARDS
 ].map(item=>[item.key,item]));
 let currentGroupIndex=0,currentRowIndex=0,currentSeriesIndex=0,current=CHAR_GROUPS[0].rows[0].chars[0],mode='trace',strokeIndex=0,down=false,pointerId=null,points=[];
-let viewState='index',practiceContext='normal',currentRewardCard=null,lastPracticeKey=null,lastPracticeGroupIndex=null;
-let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false;
+let viewState='home',practiceContext='normal',currentRewardCard=null,lastPracticeKey=null,lastPracticeGroupIndex=null;
+let maxProgress=0,offCount=0,backtrackCount=0,lastNearest=0,demoing=false,demoGeneration=0;
 let checkpoints=[],visibleCheckpointIndexes=[],visibleCheckpointIndex=0;
 let hanamaruVisible=false;
 let deliveryPlaying=false,deliveryTimers=[],rewardReadyToSend=false,rewardLetterSent=false;
@@ -1025,7 +1060,7 @@ if(storedSeenRewards===null){
 }
 
 const $=id=>document.getElementById(id);
-const groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),rewardCardsView=$('rewardCardsView'),rewardCardsGrid=$('rewardCardsGrid'),rewardButton=$('rewardButton'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
+const homeView=$('homeView'),homeNav=$('homeNav'),groupTabs=$('groupTabs'),rowTabs=$('rowTabs'),indexView=$('indexView'),indexGrid=$('indexGrid'),rewardCardsView=$('rewardCardsView'),rewardCardsGrid=$('rewardCardsGrid'),practiceView=$('practiceView'),practiceHeading=$('practiceHeading'),letters=$('letters'),board=$('board'),svg=$('svg'),cellLayer=$('cellLayer'),guideLayer=$('guideLayer'),traceLayer=$('traceLayer'),
       markerLayer=$('markerLayer'),sampleSvg=$('sampleSvg'),toast=$('toast'),
       celebrate=$('celebrate'),hanamaruLayer=$('hanamaruLayer'),exampleWord=$('exampleWord'),rewardUnlock=$('rewardUnlock'),letterDelivery=$('letterDelivery');
 const skillViews=[$('skillHomeView'),$('skillQuestionView'),$('skillResultView'),$('skillHistoryView')];
@@ -1177,6 +1212,9 @@ function buildGroupTabs(){
   CHAR_GROUPS.forEach((group,index)=>{
     const b=document.createElement('button');
     b.className='groupTab';
+    b.id=`groupTab-${group.id}`;
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-controls','indexView');
     b.innerHTML=`<span>${group.label}</span>${group.hint?`<small>${group.hint}</small>`:''}`;
     b.setAttribute('aria-label',`${group.label}をひらく`);
     b.onclick=()=>selectGroup(index);
@@ -1187,8 +1225,10 @@ function setGroupSelected(){
   [...groupTabs.children].forEach((button,index)=>{
     const selected=index===currentGroupIndex;
     button.classList.toggle('selected',selected);
-    button.setAttribute('aria-pressed',String(selected));
+    button.setAttribute('aria-selected',String(selected));
+    button.tabIndex=selected?0:-1;
   });
+  indexView.setAttribute('aria-labelledby',`groupTab-${CHAR_GROUPS[currentGroupIndex].id}`);
 }
 function buildIndexSubTabs(){
   rowTabs.innerHTML='';
@@ -1312,8 +1352,21 @@ function showIndex(){
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   viewState='index';practiceContext='normal';currentRewardCard=null;
-  groupTabs.hidden=false;indexView.hidden=false;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=false;
+  homeView.hidden=true;homeNav.hidden=false;
+  groupTabs.hidden=false;indexView.hidden=false;rewardCardsView.hidden=true;practiceView.hidden=true;
   buildIndex();
+  window.scrollTo(0,0);
+}
+function showHome(){
+  // お手本中でもホームへ戻れるよう、古い描画だけを無効化する。
+  demoGeneration++;demoing=false;mode='trace';strokeIndex=0;hanamaruVisible=false;
+  $('traceMode').classList.add('active');$('freeMode').classList.remove('active');
+  traceLayer.replaceChildren();celebrate.classList.remove('show');
+  hideSkillViews();closeLetterDelivery();hideRewardUnlock();
+  rewardReadyToSend=false;rewardLetterSent=false;practiceContext='normal';currentRewardCard=null;skillSession=null;
+  viewState='home';homeView.hidden=false;homeNav.hidden=true;
+  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=true;
+  window.scrollTo(0,0);
 }
 function rewardCardState(card){
   if(!isRewardCardUnlocked(card))return'locked';
@@ -1405,8 +1458,10 @@ function showRewardCards(){
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   hideRewardUnlock();viewState='cards';practiceContext='normal';currentRewardCard=null;
-  groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=true;rewardCardsView.hidden=false;rewardButton.hidden=true;
+  homeView.hidden=true;homeNav.hidden=false;
+  groupTabs.hidden=true;indexView.hidden=true;practiceView.hidden=true;rewardCardsView.hidden=false;
   buildRewardCards();
+  window.scrollTo(0,0);
 }
 async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=true){
   if(demoing)return;
@@ -1416,9 +1471,11 @@ async function enterPractice(groupIndex,rowIndex,key,seriesIndex=0,speakIntro=tr
   practiceContext='normal';currentRewardCard=null;
   currentGroupIndex=groupIndex;currentRowIndex=rowIndex;currentSeriesIndex=seriesIndex;current=key;
   lastPracticeGroupIndex=groupIndex;lastPracticeKey=key;strokeIndex=0;hanamaruVisible=false;
-  viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
-  $('backToIndex').textContent='← いちらんに戻る';
+  viewState='practice';homeView.hidden=true;homeNav.hidden=false;
+  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;
+  $('backToIndex').textContent='← もじの いちらんへ';
   practiceHeading.textContent=practiceHeadingText();buildLetters();render();
+  window.scrollTo(0,0);
   if(speakIntro)speak(currentInstruction());
   if(speakIntro||mode==='free')await demo(true);
 }
@@ -1430,9 +1487,11 @@ async function enterRewardPractice(cardId){
   closeLetterDelivery();
   rewardReadyToSend=false;rewardLetterSent=false;
   practiceContext='reward';currentRewardCard=card;current=card.key;strokeIndex=0;hanamaruVisible=false;
-  viewState='practice';groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;rewardButton.hidden=true;
+  viewState='practice';homeView.hidden=true;homeNav.hidden=false;
+  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=false;
   $('backToIndex').textContent='← おてがみに戻る';
   practiceHeading.textContent=practiceHeadingText();buildLetters();render();
+  window.scrollTo(0,0);
   speak(currentInstruction());
 }
 function backToIndex(){
@@ -1443,7 +1502,7 @@ function backToIndex(){
   if(practiceContext==='reward')showRewardCards();
   else showIndex();
 }
-buildGroupTabs();showIndex();
+buildGroupTabs();showHome();
 
 function mkPath(d,cls){
   const p=document.createElementNS(NS,'path');
@@ -1512,13 +1571,23 @@ function shuffleSkillItems(items){
 function pickSkillRows(rows,count){
   return shuffleSkillItems(rows).slice(0,count).map(row=>shuffleSkillItems(row.chars)[0]);
 }
+function recentReadingTexts(){
+  return new Set(skillHistory.filter(entry=>entry.type==='read').slice(-2)
+    .flatMap(entry=>entry.items.filter(item=>item.kind==='word'||item.kind==='phrase').map(item=>item.text)));
+}
+function pickReadingTexts(pool,count,recent){
+  const fresh=shuffleSkillItems(pool.filter(text=>!recent.has(text)));
+  return [...fresh.slice(0,count),...shuffleSkillItems(pool.filter(text=>recent.has(text))).slice(0,Math.max(0,count-fresh.length))];
+}
 function makeSkillQuestions(type){
-  if(type==='read')return shuffleSkillItems([
-    ...shuffleSkillItems(READING_CHAR_POOL).slice(0,2).map(text=>({kind:'char',text})),
-    ...shuffleSkillItems(READING_WORDS.slice(0,READING_EASY_WORD_COUNT)).slice(0,5).map(text=>({kind:'word',text})),
-    ...shuffleSkillItems(READING_WORDS.slice(READING_EASY_WORD_COUNT)).slice(0,1).map(text=>({kind:'word',text})),
-    ...shuffleSkillItems(READING_PHRASES).slice(0,2).map(text=>({kind:'phrase',text}))
-  ]);
+  if(type==='read'){
+    const recent=recentReadingTexts();
+    return shuffleSkillItems([
+      ...shuffleSkillItems(READING_CHAR_POOL).slice(0,2).map(text=>({kind:'char',text})),
+      ...pickReadingTexts(READING_WORDS,6,recent).map(text=>({kind:'word',text})),
+      ...pickReadingTexts(READING_PHRASES,2,recent).map(text=>({kind:'phrase',text}))
+    ]);
+  }
   const seionCount=4,voicedCount=1;
   return shuffleSkillItems([
     ...pickSkillRows(SEION_ROWS,seionCount),
@@ -1532,8 +1601,10 @@ function hideSkillViews(){
 function setSkillView(view){
   hideSkillViews();
   viewState='skill';
-  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=true;rewardButton.hidden=true;
+  homeView.hidden=true;homeNav.hidden=false;
+  groupTabs.hidden=true;indexView.hidden=true;rewardCardsView.hidden=true;practiceView.hidden=true;
   view.hidden=false;
+  window.scrollTo(0,0);
 }
 function showSkillHome(){
   skillSession=null;
@@ -2365,12 +2436,13 @@ function demoStrokeTiming(stroke){
   const length=samplesLength(samplesForStroke(stroke));
   return {length,duration:Math.max(DEMO_MIN_DURATION,length/DEMO_SPEED*1000)};
 }
-function animateDemoStroke(stroke,path){
+function animateDemoStroke(stroke,path,generation){
   const timing=demoStrokeTiming(stroke);
   const samples=samplesForStroke(stroke,Math.max(24,Math.ceil(timing.duration/16)));
   return new Promise(resolve=>{
     const started=performance.now();
     const draw=now=>{
+      if(generation!==demoGeneration){resolve(timing);return}
       const progress=Math.min(1,(now-started)/timing.duration);
       const end=Math.max(1,Math.ceil(progress*(samples.length-1)));
       path.setAttribute('d',pointsD(samples.slice(0,end+1)));
@@ -2385,6 +2457,7 @@ function animateDemoStroke(stroke,path){
 }
 async function demo(silent=false){
   if(demoing)return;
+  const generation=++demoGeneration;
   if(!silent)speak(speechWithSuffix('おてほんを、みてね。'));
   demoing=true;
   const oldMode=mode;
@@ -2401,13 +2474,16 @@ async function demo(silent=false){
   for(let k=0;k<strokes.length;k++){
     strokeIndex=k;render(false);
     const p=mkPath('','demoTrace');traceLayer.appendChild(p);
-    await animateDemoStroke(strokes[k],p);
+    await animateDemoStroke(strokes[k],p,generation);
+    if(generation!==demoGeneration)return;
     const next=strokes[k+1];
     const pause=next&&next.componentIndex!==strokes[k].componentIndex?DEMO_COMPONENT_PAUSE:DEMO_STROKE_PAUSE;
     await new Promise(r=>setTimeout(r,pause));
+    if(generation!==demoGeneration)return;
   }
 
   await new Promise(r=>setTimeout(r,400));
+  if(generation!==demoGeneration)return;
   demoing=false;mode=oldMode;strokeIndex=0;
   hanamaruVisible=oldMode==='trace'&&oldHanamaru;
   render();
@@ -2422,8 +2498,18 @@ skillWriteSvg.addEventListener('pointerdown',skillWriteStart,{passive:false});
 skillWriteSvg.addEventListener('pointermove',skillWriteMove,{passive:false});
 skillWriteSvg.addEventListener('pointerup',skillWriteEnd,{passive:false});
 skillWriteSvg.addEventListener('pointercancel',skillWriteEnd,{passive:false});
-$('skillEntry').onclick=showSkillHome;
-$('skillHomeBack').onclick=showIndex;
+$('homePractice').onclick=showIndex;
+$('homeLetters').onclick=showRewardCards;
+$('homeSkill').onclick=showSkillHome;
+homeNav.onclick=showHome;
+groupTabs.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const index=event.key==='Home'?0:event.key==='End'?CHAR_GROUPS.length-1
+    :(currentGroupIndex+(event.key==='ArrowRight'?1:-1)+CHAR_GROUPS.length)%CHAR_GROUPS.length;
+  selectGroup(index);
+  groupTabs.children[index].focus();
+});
 $('skillStartRead').onclick=()=>startSkillTest('read');
 $('skillStartWrite').onclick=()=>startSkillTest('write');
 $('skillOpenHistory').onclick=showSkillHistory;
@@ -2437,7 +2523,7 @@ $('skillRepeatSound').onclick=()=>{
 };
 $('skillClear').onclick=()=>skillWriteTrace.replaceChildren();
 $('skillRetry').onclick=()=>{if(skillSession)startSkillTest(skillSession.type)};
-$('skillResultBack').onclick=showIndex;
+$('skillResultBack').onclick=showSkillHome;
 $('traceMode').onclick=()=>setMode('trace');
 $('freeMode').onclick=()=>setMode('free');
 $('resetBtn').onclick=()=>{if(demoing)return;strokeIndex=0;hanamaruVisible=false;if(practiceContext==='reward'){rewardReadyToSend=false;rewardLetterSent=false}render()};
@@ -2445,8 +2531,6 @@ $('clearBtn').onclick=()=>{if(demoing)return;traceLayer.innerHTML='';if(practice
 $('demoBtn').onclick=()=>demo();
 $('listenBtn').onclick=()=>speak(currentInstruction(),true);
 $('backToIndex').onclick=backToIndex;
-$('rewardButton').onclick=showRewardCards;
-$('cardsBackToIndex').onclick=showIndex;
 $('viewUnlockedCards').onclick=showRewardCards;
 $('dismissUnlock').onclick=hideRewardUnlock;
 $('sendLetterButton').onclick=playLetterDelivery;
